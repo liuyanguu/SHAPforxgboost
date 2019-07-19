@@ -1,0 +1,15 @@
+Package: SHAPforxgboost
+Title: SHAP Visualization for XGBoost
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Yang",
+           family = "Liu",
+           role = c("aut", "cre"),
+           email = "lyhello@gmail.com",
+           comment = c(ORCID = "0000-0001-6557-6439"))
+Description: Visualize SHAP (SHapley Additive exPlanations) to explain the output of machine learning models (XGBoost).
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.1.9000
