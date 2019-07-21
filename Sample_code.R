@@ -1,4 +1,7 @@
 # prepare dataset, and xgboost model for plotting
+# to install
+# devtools::install_github("liuyanguu/SHAPforxgboost")
+
 
 suppressPackageStartupMessages({
   library("here")
@@ -91,6 +94,6 @@ plot.shap.dependence.color(shap_long, x="Petal.Length",
 plot.shap.dependence(shap_long, show_feature = "Petal.Length")
 
 # **SHAP force plot**
-force_plot_data <- shap.stack.data(shap_contrib = shap_values$shap_score, n_groups = 2)
+force_plot_data <- shap.stack.data(shap_contrib = shap_values$shap_score, n_groups = 4)
 plot.shap.force_plot(force_plot_data)
 plot.shap.force_plot_bygroup(force_plot_data)
