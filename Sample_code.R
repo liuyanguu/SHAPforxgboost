@@ -1,6 +1,7 @@
 # prepare dataset, and xgboost model for plotting
 
 suppressPackageStartupMessages({
+  library("here")
   library("SHAPforxgboost")
   # which requires:
   # library("data.table")
@@ -9,7 +10,6 @@ suppressPackageStartupMessages({
   # library("ggforce")
   # library("ggExtra") # for ggMarginal
   # library("gridExtra")
-  library("here")
 })
 
 
@@ -87,8 +87,10 @@ plot.shap.summary.wrap2(shap_score = shap_values$shap_score, X1, top_n = 3)
 # **SHAP dependence plot**
 plot.shap.dependence.color(shap_long, x="Petal.Length",
                            y_shap = "Petal.Length", color_feature = "Petal.Width")
+# without color
+plot.shap.dependence(shap_long, show_feature = "Petal.Length")
 
 # **SHAP force plot**
-plot_data <- shap.stack.data(shap_contrib = shap_values$shap_score, n_groups = 2)
-plot.shap.force_plot(plot_data)
-plot.shap.force_plot_bygroup(plot_data)
+force_plot_data <- shap.stack.data(shap_contrib = shap_values$shap_score, n_groups = 2)
+plot.shap.force_plot(force_plot_data)
+plot.shap.force_plot_bygroup(force_plot_data)

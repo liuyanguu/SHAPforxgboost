@@ -194,7 +194,7 @@ plot.shap.summary.wrap2 <- function(shap_score, X, top_n){
 
 #' helper function to modify variables names
 #' @param x feature names
-#'
+#' @export label.feature
 label.feature <- function(x){
   labs = list(diffcwv = "Diff CWV (cm)",
     dayint = "Time trend",
