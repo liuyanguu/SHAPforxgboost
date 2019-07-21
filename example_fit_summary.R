@@ -1,0 +1,22 @@
+
+data("iris")
+X1 = as.matrix(iris[,-5])
+mod1 = xgboost(
+  data = X1, label = iris$Species, gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = F)
+
+# shap.values() has the SHAP data matrix and ranked features by mean|SHAP|
+shap_values <- shap.values(mod1, X1)
+shap_values$mean_shap_score
+
+# shap.prep() returns the long-format SHAP data
+shap_long <- shap.prep(shap_values, X1)
+
+# **SHAP summary plot**
+plot.shap.summary(shap_long)
+
+# Alternatives:
+# option 1: from the xgboost model
+plot.shap.summary.wrap1(mod1, X1, top_n = 3)
+
+# option 2: supply a self-made SHAP values dataset (e.g. sometimes as output from cross-validation)
+plot.shap.summary.wrap2(shap_score = shap_values$shap_score, X1, top_n = 3)

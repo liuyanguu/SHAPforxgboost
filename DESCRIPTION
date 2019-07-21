@@ -1,5 +1,5 @@
 Package: SHAPforxgboost
-Title: SHAP Visualization for XGBoost
+Title: SHAP plots for xgboost
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Yang",
@@ -7,9 +7,19 @@ Authors@R:
            role = c("aut", "cre"),
            email = "lyhello@gmail.com",
            comment = c(ORCID = "0000-0001-6557-6439"))
-Description: Visualize SHAP (SHapley Additive exPlanations) to explain the output of machine learning models (XGBoost).
+Description: Create SHAP (SHapley Additive exPlnation) visualization plots for XGBoost in R.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Depends: 
+    data.table (>= 1.12.0),
+    ggplot2 (>= 3.2.0),
+    ggforce (>= 0.2.1.9000),
+    ggExtra (>= 0.8),
+    gridExtra (>= 2.3),
+    grid (>= 3.5.3),
+    RColorBrewer (>= 1.1.2)
+Suggests:
+    here (>= 0.1)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1.9000
