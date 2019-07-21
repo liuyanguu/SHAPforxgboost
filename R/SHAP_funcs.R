@@ -77,7 +77,7 @@ xgboost.fit <- function(X, Y, xgb_param, verbose = FALSE,...){
   # print(unlist(xgb_param))
   # be careful X should not contains Y.
   if (!is.null(xgb_param$seed)) set.seed(xgb_param$seed) else set.seed(1234)
-  xgbmod <- xgboost(data = as.matrix(X), label = as.matrix(Y),
+  xgbmod <- xgboost::xgboost(data = as.matrix(X), label = as.matrix(Y),
                     params = xgb_param, nrounds = xgb_param$nrounds,
                     verbose = verbose, print_every_n = xgb_param$nrounds/10,
                     nthread = xgb_threads,

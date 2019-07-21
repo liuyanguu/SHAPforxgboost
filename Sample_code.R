@@ -1,24 +1,23 @@
 # prepare dataset, and xgboost model for plotting
 
 suppressPackageStartupMessages({
-  library("data.table")
-  library("xgboost")
-  library("ggplot2")
-  library("ggforce")
-  library("ggExtra") # for ggMarginal
-  library("gridExtra")
+  library("SHAPforxgboost")
+  # which requires:
+  # library("data.table")
+  # library("xgboost")
+  # library("ggplot2")
+  # library("ggforce")
+  # library("ggExtra") # for ggMarginal
+  # library("gridExtra")
   library("here")
 })
 
-source(here("Code", "SHAP_funcs.R"))
-if (!dir.exists(here("Figure/"))) dir.create(here("Figure/"))
+
+# Sample 1. Satellite data ------------------------------------------------
+
+
 y_var <-  "diffcwv"
 date0 <- format(Sys.Date(), "%y_%m_%d")
-
-rferesults_terra <- readRDS(here("Intermediate/cwv_10by10_terra_new_f9"))
-dataXY_df <- rferesults_terra$dataXY_df
-fwrite(dataXY_df, here("Intermediate/terradataXY.csv"))
-
 dataX <- dataXY_df[,-..y_var]
 # hyperparameter tuning results
 param_dart <- list(objective = "reg:linear",  # For regression
@@ -29,12 +28,12 @@ param_dart <- list(objective = "reg:linear",  # For regression
                    subsample = 0.98,
                    colsample_bytree = 0.86)
 
-xgb_mod <- rfe.fit(X = as.matrix(dataX), Y = as.matrix(dataXY_df[[y_var]]), xgb_param = param_dart)
+xgb_mod <- xgboost.fit(X = as.matrix(dataX), Y = as.matrix(dataXY_df[[y_var]]), xgb_param = param_dart)
 pred_mod <- predict(xgb_mod, as.matrix(dataX))
 
 # to get shap_long directly from model
-shap_values_mod <- shap.score.rank(xgb_model = xgb_mod, X_train = dataX)
-shap_long_mod <- shap.long.data.prep(shap_values_mod, dataX)
+shap_values_mod <- shap.values(xgb_model = xgb_mod, X_train = dataX)
+shap_long_mod <- shap.prep(shap_values_mod, dataX)
 
 # or if the SHAP values were already calculated during cross-validation process, as in my case:
 shap_score <- rferesults_terra$shap_score
@@ -42,19 +41,17 @@ shap_values <- list(
   shap_score = shap_score,
   mean_shap_score = colMeans(abs(shap_score))[order(colMeans(abs(shap_score)), decreasing = T)]
 )
-shap_long <- shap.long.data.prep(shap_values, dataX) # the long data from the paper
+shap_long <- shap.prep(shap_values, dataX) # the long data from the paper
 
-# variable list
-var_list_a <- rferesults_terra$features_rank_full_model
 
-# Simple sample: Model A --------------------------------------------------
+# Sample 2. Model A --------------------------------------------------
 
 d <- as.data.table(cbind(Fever = c(0,0,1,1),
                          Cough = c(0,1,0,1),
                          y = c(0,0,0,80)
 ))
 X1 = as.matrix(d[,.(Fever, Cough)])
-m1 = xgboost(
+m1 = xgboost::xgboost(
   data = X1, label = d$y,base_score = 0, gamma = 0, eta = 1, lambda = 0, nrounds = 1, verbose = F)
 shap_m <- shap.values(m1, X1)
 shap_long_m <- shap.prep(shap_m, X1)
@@ -63,11 +60,11 @@ output_simple <- cbind(x = X1, y.actual = d$y, y.pred = predict(m1, X1), shap_m$
 output_simple
 
 
-# Example using iris ------------------------------------------------------
+# Sample 3. Example using iris ------------------------------------------------------
 
 data("iris")
 X1 = as.matrix(iris[,-5])
-mod1 = xgboost(
+mod1 = xgboost::xgboost(
   data = X1, label = iris$Species, gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = F)
 
 # shap.values() has the SHAP data matrix and ranked features by mean|SHAP|
