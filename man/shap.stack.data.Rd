@@ -20,9 +20,10 @@ SHAPstack plot
 shap_contrib is the SHAP value matrix returned from predict, top_n features, option to randomly plot p*100 percent of the data in case the dataset is large
 }
 \examples{
+library(SHAPforxgboost)
 data("iris")
 X1 = as.matrix(iris[,-5])
-mod1 = xgboost(
+mod1 = xgboost::xgboost(
   data = X1, label = iris$Species, gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = F)
 
 # shap.values() has the SHAP data matrix and ranked features by mean|SHAP|

@@ -259,7 +259,7 @@ plot.label <- function(plot1, show_feature){
 }
 
 #' SHAP dependence plot with marginal histogram
-#' This version is not colored by another variable, see `plot.shap.dependence.color`
+#' @description This version is not colored by another variable, see `plot.shap.dependence.color`
 #' @param show_feature which feature to show
 #' @param data_long the long format SHAP values
 #' @param dilute optional T/F to sample data

@@ -12,9 +12,10 @@
 make the stack plot, optional to zoom in at certain x or certain cluster
 }
 \examples{
+library(SHAPforxgboost)
 data("iris")
 X1 = as.matrix(iris[,-5])
-mod1 = xgboost(
+mod1 = xgboost::xgboost(
   data = X1, label = iris$Species, gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = F)
 
 # shap.values() has the SHAP data matrix and ranked features by mean|SHAP|

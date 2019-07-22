@@ -2,8 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{plot.shap.dependence}
 \alias{plot.shap.dependence}
-\title{SHAP dependence plot with marginal histogram
-This version is not colored by another variable, see \code{plot.shap.dependence.color}}
+\title{SHAP dependence plot with marginal histogram}
 \usage{
 \method{plot}{shap.dependence}(show_feature, data_long, dilute = F,
   customize_label = F, by100 = F)
@@ -18,13 +17,13 @@ This version is not colored by another variable, see \code{plot.shap.dependence.
 \item{by100}{T/F dilute by 100 or 10}
 }
 \description{
-SHAP dependence plot with marginal histogram
 This version is not colored by another variable, see \code{plot.shap.dependence.color}
 }
 \examples{
+library(SHAPforxgboost)
 data("iris")
 X1 = as.matrix(iris[,-5])
-mod1 = xgboost(
+mod1 = xgboost::xgboost(
   data = X1, label = iris$Species, gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = F)
 
 # shap.values() has the SHAP data matrix and ranked features by mean|SHAP|
