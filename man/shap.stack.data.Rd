@@ -2,22 +2,20 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.stack.data}
 \alias{shap.stack.data}
-\title{SHAPstack plot
-shap_contrib is the SHAP value matrix returned from predict, top_n features, option to randomly plot p*100 percent of the data in case the dataset is large}
+\title{SHAP force plot (stack plot)}
 \usage{
 shap.stack.data(shap_contrib, top_n = NULL, data_percent = 1,
   cluster_method = "ward.D", n_groups = 10)
 }
 \arguments{
-\item{shap_contrib}{the SHAP values dataset}
+\item{shap_contrib}{shap_contrib is the SHAP value data returned from predict.xgb.booster}
 
 \item{top_n}{optional to show only top_n features, combine the rest}
 
 \item{data_percent}{what percent of data to plot (to speed up), in the range of (0,1]}
 }
 \description{
-SHAPstack plot
-shap_contrib is the SHAP value matrix returned from predict, top_n features, option to randomly plot p*100 percent of the data in case the dataset is large
+Make force plot for \code{top_n} features, option to randomly plot p*100 percent of the data in case the dataset is large
 }
 \examples{
 library(SHAPforxgboost)

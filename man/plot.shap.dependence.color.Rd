@@ -2,21 +2,38 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{plot.shap.dependence.color}
 \alias{plot.shap.dependence.color}
-\title{SHAP dependence plot with marginal histogram, colored by a selcted feature value}
+\title{SHAP dependence plot and interaction plot, colored by a selcted feature value}
 \usage{
-\method{plot}{shap.dependence.color}(data_long, x, y_shap, color_feature)
+\method{plot}{shap.dependence.color}(data_int = NULL, data_long, x, y,
+  color_feature = NULL, smooth = T)
 }
 \arguments{
+\item{data_int}{the 3-dimention SHAP interaction values array
+from \code{predict.xgb.Booster} or \code{\link{shap.prep.interaction}}}
+
 \item{data_long}{the long format SHAP values}
 
-\item{x}{which feature to show on x axis}
+\item{x}{which feature to show on x axis, it will plot the feature value}
 
-\item{y_shap}{which shap values to show on y axis}
+\item{y}{which shap values to show on y axis, it will plot the SHAP value}
 
-\item{color_feature}{which feature value to use for coloring}
+\item{color_feature}{which feature value to use for coloring, color by the feature value}
+
+\item{smooth}{optional to add loess smooth line, default to T}
+}
+\value{
+ggplot2 object
 }
 \description{
-SHAP dependence plot with marginal histogram, colored by a selcted feature value
+This function makes the dependence plot by default.
+Colored by the feature value of \code{y} if \code{color_feature} is not supplied.
+You shall choose to plot SHAP values of \code{y} vs. feature values of \code{x}.
+If \code{data_int} (the SHAP interaction values dataset) is supplied, it will plot
+the interaction effect between \code{y} and \code{x} on the y axis.
+
+Dependence plot is very easy to make if you have the SHAP values dataset from \code{predict.xgb.Booster}
+It is not necessary to start with the long-format data, but since I used that
+for the summary plot, I just continue to use the long dataset
 }
 \examples{
 library(SHAPforxgboost)

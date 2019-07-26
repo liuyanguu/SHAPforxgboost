@@ -2,30 +2,29 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{plot.shap.summary}
 \alias{plot.shap.summary}
-\title{SHAP summary plot
-The summary plot (sina plot) using a long-format data of SHAP values.}
+\title{SHAP summary plot core function using the long-format SHAP values}
 \usage{
-\method{plot}{shap.summary}(data_long, x_bound_given = NULL,
-  dilute = F, scientific = F)
+\method{plot}{shap.summary}(data_long, x_bound = NULL, dilute = FALSE,
+  scientific = F)
 }
 \arguments{
-\item{x_bound_given}{in case need to limit x_axis_limit}
+\item{x_bound}{in case need to limit x_axis_limit}
 
 \item{dilute}{by default print all data, but that would be slow}
 
-\item{scientific}{default to F, "%.1e", show the mean|SHAP| in scientific or not
-if nobs > 10,000. if dilute, it will use at most 1000 observations}
+\item{scientific}{default to F, "%.1e", show the mean|SHAP| in scientific format or not}
 
-\item{data_long:}{a long format data of SHAP values which looks like:
-variable value rfvalue stdfvalue mean_value
-1:   dayint -0.23   11012   0.00000       0.14
-2:   dayint -0.20   11012   0.00000       0.14}
+\item{data_long:}{a long format data of SHAP values}
 
-\item{dilute}{dafault to F, if dilute, will plot at most 1,000 points per feature.}
+\item{dilute}{a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data
+for example, if dilute = 5 will plot 1/5 of the data.
+If dilute = TRUE or a number, we will plot at most 1,500 points per feature, so the plot won't be too slow
+If you put dilute over}
 }
 \description{
-SHAP summary plot
 The summary plot (sina plot) using a long-format data of SHAP values.
+If you want to start with xgbmodel and data_X, use \code{\link{plot.shap.summary.wrap1}}.
+If you want to use self-derived SHAP matrix, use \code{\link{plot.shap.summary.wrap2}}.
 }
 \examples{
 library(SHAPforxgboost)

@@ -4,7 +4,7 @@
 \alias{plot.shap.summary.wrap1}
 \title{A wraped function to make summary plot from xgb model and X}
 \usage{
-\method{plot}{shap.summary.wrap1}(model, X, top_n)
+\method{plot}{shap.summary.wrap1}(model, X, top_n, dilute = FALSE)
 }
 \arguments{
 \item{model}{the xgboost model}

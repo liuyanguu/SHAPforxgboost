@@ -2,11 +2,9 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{plot.shap.summary.wrap2}
 \alias{plot.shap.summary.wrap2}
-\title{summary plot using given SHAP values matrix
-supply a self-made SHAP values dataset
-(e.g. sometimes as output from cross-validation)}
+\title{summary plot using given SHAP values matrix}
 \usage{
-\method{plot}{shap.summary.wrap2}(shap_score, X, top_n)
+\method{plot}{shap.summary.wrap2}(shap_score, X, top_n, dilute = FALSE)
 }
 \arguments{
 \item{X}{the dataset of predictors used for the xgboost model}
@@ -16,9 +14,7 @@ supply a self-made SHAP values dataset
 \item{model}{the xgboost model}
 }
 \description{
-summary plot using given SHAP values matrix
-supply a self-made SHAP values dataset
-(e.g. sometimes as output from cross-validation)
+supply a self-made SHAP values dataset, for example, sometimes as output from cross-validation
 }
 \examples{
 library(SHAPforxgboost)

@@ -2,8 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.values}
 \alias{shap.values}
-\title{Functions for the SHAP visualization
-Further explained on my research blog: https://liuyanguu.github.io/post/2019/07/18/visualization-of-shap-for-xgboost/}
+\title{return SHAP contribution from}
 \usage{
 shap.values(xgb_model, X_train)
 }
@@ -11,6 +10,9 @@ shap.values(xgb_model, X_train)
 \item{xgb_model}{a xgboost model object}
 
 \item{X_train}{the dataset of predictors used for the xgboost model}
+}
+\value{
+a list of three elements, the SHAP values as data.table, ranked mean|SHAP|, BIAS
 }
 \description{
 return from xgboost model the matrix of shap score and ranked variable list

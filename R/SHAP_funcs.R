@@ -1,14 +1,21 @@
-#' Functions for the SHAP visualization
-#' Further explained on my research blog: https://liuyanguu.github.io/post/2019/07/18/visualization-of-shap-for-xgboost/
-#'
+# SHAP visualization functions for XGBoost,
+# wrapped up functions for
+# summary plot, dependence plot, force plot, and interaction effect plot
+# Further explained on my research blog: https://liuyanguu.github.io/post/2019/07/18/visualization-of-shap-for-xgboost/
+# Please cite http://doi.org/10.5281/zenodo.3334713
 
 
 # data preparation functions ----------------------------------------------
-
-#' return from xgboost model the matrix of shap score and ranked variable list
+#' return SHAP contribution from
+#' @description return from xgboost model the matrix of shap score and ranked variable list
 #' @param xgb_model a xgboost model object
 #' @param X_train the dataset of predictors used for the xgboost model
+#' @import data.table
+#' @import xgboost
+#'
 #' @export shap.values
+#' @return a list of three elements, the SHAP values as data.table, ranked mean|SHAP|, BIAS
+#'
 #' @example example_fit_summary.R
 #'
 shap.values <- function(xgb_model, X_train){
@@ -26,12 +33,16 @@ shap.values <- function(xgb_model, X_train){
 }
 
 
+
 #' prep SHAP values into long format for plotting
 #' @param shap_result is a list contains SHAP values dataset
 #'  and a vector of ranked variables, obtained by shap.values if derived from model
 #' @param X_train the dataset of predictors used for the xgboost model
+#' @param top_n to choose top_n variables ranked by mean|SHAP|
+#' @import data.table
 #' @export shap.prep
 #' @example example_fit_summary.R
+#' @return a long-format data.table
 #'
 shap.prep <- function(shap, X_train, top_n){
   std1 <- function(x){
@@ -61,23 +72,46 @@ shap.prep <- function(shap, X_train, top_n){
 }
 
 
+#' prepare the interaction SHAP values from predict.xgb.Booster
+#' @description This is very simple, just use xgboost::predict.xgb.Booster
+#' Or maybe just run \code{shap_int <- predict(xgb_mod, as.matrix(X_train), predinteraction = TRUE)}
+#' @param xgb_model a xgboost model object
+#' @param X_train the dataset of predictors used for the xgboost model
+#'
+#' @import xgboost
+#' @import data.table
+#' @export shap.prep.interaction
+#' @return a 3-dimention array: #obs x #features x #features
+#'
+shap.prep.interaction <- function(xgb_mod, X_train){
+  shap_int <- predict(xgb_mod, as.matrix(X_train), predinteraction = TRUE)
+  return(shap_int)
+}
+
+
 # modelling functions --------------------------------------------------------
 
 #' A wrapped function to run xgboost model
 #' @param X predictors, **should NOT contains Y**
 #' @param Y dependent variable Y
 #' @param xgb_param a list of hyperparameters selected
-#' @example example_fit_summary.R
+#'
+#' @importFrom  xgboost xgboost
+#' @importFrom parallel detectCores
 #' @export xgboost.fit
+#'
+#' @example example_fit_summary.R
+#'
 xgboost.fit <- function(X, Y, xgb_param, verbose = FALSE,...){
   xgb_threads  <-  (
     if (Sys.info()["nodename"] == "belle") 14 # 32 cores
     else if (Sys.info()["nodename"] == "coco") 22 # 48 cores
     else parallel::detectCores()) - 2
+
   # print(unlist(xgb_param))
   # be careful X should not contains Y.
   if (!is.null(xgb_param$seed)) set.seed(xgb_param$seed) else set.seed(1234)
-  xgbmod <- xgboost::xgboost(data = as.matrix(X), label = as.matrix(Y),
+  xgbmod <- xgboost(data = as.matrix(X), label = as.matrix(Y),
                     params = xgb_param, nrounds = xgb_param$nrounds,
                     verbose = verbose, print_every_n = xgb_param$nrounds/10,
                     nthread = xgb_threads,
@@ -88,43 +122,45 @@ xgboost.fit <- function(X, Y, xgb_param, verbose = FALSE,...){
 
 
 
-# summary plot ----------------------------------------------------------
+# SHAP summary plot ----------------------------------------------------------
 
-#' SHAP summary plot
+#' SHAP summary plot core function using the long-format SHAP values
+#'
 #' The summary plot (sina plot) using a long-format data of SHAP values.
-#' @param data_long: a long format data of SHAP values which looks like:
-#'     variable value rfvalue stdfvalue mean_value
-#' 1:   dayint -0.23   11012   0.00000       0.14
-#' 2:   dayint -0.20   11012   0.00000       0.14
+#' If you want to start with xgbmodel and data_X, use \code{\link{plot.shap.summary.wrap1}}.
+#' If you want to use self-derived SHAP matrix, use \code{\link{plot.shap.summary.wrap2}}.
+#'
+#' @param data_long: a long format data of SHAP values
 #' @param dilute by default print all data, but that would be slow
-#' @param x_bound_given in case need to limit x_axis_limit
-#' @param dilute dafault to F, if dilute, will plot at most 1,000 points per feature.
-#' @param scientific default to F, "%.1e", show the mean|SHAP| in scientific or not
-#' if nobs > 10,000. if dilute, it will use at most 1000 observations
-#' @example example_fit_summary.R
+#' @param x_bound in case need to limit x_axis_limit
+#' @param dilute a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data
+#' for example, if dilute = 5 will plot 1/5 of the data.
+#' If dilute = TRUE or a number, we will plot at most 1,500 points per feature, so the plot won't be too slow
+#' If you put dilute over
+#' @param scientific default to F, "%.1e", show the mean|SHAP| in scientific format or not
+#'
+#' @importFrom ggforce geom_sina
 #' @export plot.shap.summary
-plot.shap.summary <- function(data_long, x_bound_given = NULL,
-                              dilute = F, scientific = F){
+#' @example example_fit_summary.R
+plot.shap.summary <- function(data_long, x_bound = NULL,
+                              dilute = FALSE, scientific = F){
 
   if (scientific){label_format = "%.1e"} else {label_format = "%.3f"}
-  if (packageVersion("ggforce")<"0.2.1.9000"){message("To make sina plot work make sure ggforce is updated")}
+  # check number of observations
   N_features <- setDT(data_long)[,uniqueN(variable)]
-  N_obs <- nrow(data_long)/N_features
-  if (dilute){
+  nrow_X <- nrow(data_long)/N_features # nrow (X)
+  if (is.null(dilute)) dilute = TRUE
+  if (dilute!=0){
+    dilute <- ceiling(min(nrow_X/10, abs(as.numeric(dilute)))) # not allowed to dilute to fewer than 10 obs/feature
     set.seed(1234)
-    data_long <- data_long[sample(nrow(data_long), min(nrow(data_long), N_features*1000))] # dilute
+    data_long <- data_long[sample(nrow(data_long), min(nrow(data_long)/dilute, N_features*1500))] # dilute
   }
-  # mean_value cannot be 0 in the new version of ggforce
-  data_long <- data_long[mean_value!=0, ]
-  if (is.null(x_bound_given)){
-    x_bound <- max(abs(data_long$value))} else {
-      x_bound <- x_bound_given # given bound of SHAP values
-    }
+
+  x_bound <- if (is.null(x_bound)) max(abs(data_long$value))*1.1 else as.numeric(abs(x_bound))
   plot1 <- ggplot(data = data_long)+
-    coord_flip() +
+    coord_flip(ylim = c(-x_bound, x_bound)) +
     # sina plot:
-    # geom_point(aes(x = variable, y = value, color = stdfvalue)) +
-    geom_sina(aes(x = variable, y = value, color = stdfvalue),
+    ggforce::geom_sina(aes(x = variable, y = value, color = stdfvalue),
               method = "counts", maxwidth = 0.7, alpha = 0.7) +
     # print the mean absolute value:
     geom_text(data = unique(data_long[, c("variable", "mean_value")]),
@@ -136,7 +172,7 @@ plot.shap.summary <- function(data_long, x_bound_given = NULL,
     # annotate("text", x = -Inf, y = -Inf, vjust = -0.2, hjust = 0, size = 3,
     #          label = expression(group("|", bar(SHAP), "|"))) +
     scale_color_gradient(low="#FFCC33", high="#6600CC",
-                         breaks=c(0,1), labels=c("  Low","High   "),
+                         breaks=c(0,1), labels=c(" Low","High "),
                          guide = guide_colorbar(barwidth = 10, barheight = 0.3)) +
     theme_bw() +
     theme(axis.line.y = element_blank(),
@@ -146,7 +182,6 @@ plot.shap.summary <- function(data_long, x_bound_given = NULL,
           legend.text=element_text(size=8),
           axis.title.x= element_text(size = 10)) +
     geom_hline(yintercept = 0) + # the vertical line
-    scale_y_continuous(limits = c(-x_bound, x_bound)) +
     # reverse the order of features
     scale_x_discrete(limits = rev(levels(data_long$variable)))+
     labs(y = "SHAP value (impact on model output)", x = "", color = "Feature value  ")
@@ -157,28 +192,28 @@ plot.shap.summary <- function(data_long, x_bound_given = NULL,
 #' @param model the xgboost model
 #' @param X the dataset of predictors used for the xgboost model
 #' @param top_n how many predictors you want to show in the plot (ranked)
-#' @example example_fit_summary.R
+#'
 #' @export plot.shap.summary.wrap1
-plot.shap.summary.wrap1 <- function(model, X, top_n){
+#' @example example_fit_summary.R
+plot.shap.summary.wrap1 <- function(model, X, top_n, dilute = FALSE){
   if(missing(top_n)) top_n <- dim(X)[2]
   if(!top_n%in%c(1:dim(X)[2])) stop('supply correct top_n')
 
   shap_long <- shap.prep(shap = shap.values(model, X),
                          X_train = X, top_n = top_n)
   # make summary plot
-  plot.shap.summary(data_long = shap_long)
+  plot.shap.summary(data_long = shap_long, dilute = dilute)
 }
 
 #' summary plot using given SHAP values matrix
-#' supply a self-made SHAP values dataset
-#' (e.g. sometimes as output from cross-validation)
+#' @description supply a self-made SHAP values dataset, for example, sometimes as output from cross-validation
 #' @param model the xgboost model
 #' @param X the dataset of predictors used for the xgboost model
 #' @param top_n how many predictors you want to show in the plot (ranked)
 #' @example example_fit_summary.R
 #' @export plot.shap.summary.wrap2
 #'
-plot.shap.summary.wrap2 <- function(shap_score, X, top_n){
+plot.shap.summary.wrap2 <- function(shap_score, X, top_n, dilute = FALSE){
   if(missing(top_n)) top_n <- dim(X)[2]
   if(!top_n%in%c(1:dim(X)[2])) stop('supply correct top_n')
   shap_result <- list(shap_score = shap_score,
@@ -186,7 +221,7 @@ plot.shap.summary.wrap2 <- function(shap_score, X, top_n){
                         colMeans(abs(shap_score))[order(colMeans(abs(shap_score)),
                                                         decreasing = T)])
   shap_long2 <- shap.prep(shap = shap_result, X_train = X, top_n = top_n)
-  plot.shap.summary(shap_long2)
+  plot.shap.summary(shap_long2, dilute = dilute)
 }
 
 
@@ -230,18 +265,6 @@ label.feature <- function(x){
   }
 }
 
-# the basic SHAP core, accept data with only 'show_feature' as variable
-# the core function to plot SHAP for one feature
-#
-plot.shap.core <- function(show_feature, data0){
-
-  plot1 <- ggplot(data = data0, aes(x = rfvalue, y = value))+
-    geom_point(size = 0.1, color = "blue2", alpha = 0.3)+
-    geom_smooth(method = 'loess', color = 'red', size = 0.4, se = F) +
-    theme_bw() +
-    labs(y = "", x = label.feature(show_feature))
-  return(plot1)
-}
 
 # sub-function to revise label for each feature:
 plot.label <- function(plot1, show_feature){
@@ -258,14 +281,35 @@ plot.label <- function(plot1, show_feature){
   plot1
 }
 
+# the basic SHAP core, accept data with only 'show_feature' as variable
+# the core function to plot SHAP for one feature
+#
+plot.shap.core <- function(show_feature, data0){
+
+  plot1 <- ggplot(data = data0, aes(x = rfvalue, y = value))+
+    geom_point(size = 0.1, color = "blue2", alpha = 0.3)+
+    geom_smooth(method = 'loess', color = 'red', size = 0.4, se = F) +
+    theme_bw() +
+    labs(y = "", x = label.feature(show_feature))
+  return(plot1)
+}
+
 #' SHAP dependence plot with marginal histogram
-#' @description This version is not colored by another variable, see `plot.shap.dependence.color`
+#' @description This version is not colored by another variable,
+#' `plot.shap.dependence.color` is the with color version
+#' Dependence plot is very easy to make if you have the SHAP values dataset
+#' It is not necessary to start with the long-format data, but since I used that
+#' for the summary plot, I just continue to use the long dataset
+#' @import data.table
+#' @importFrom ggExtra ggMarginal
+#'
 #' @param show_feature which feature to show
 #' @param data_long the long format SHAP values
 #' @param dilute optional T/F to sample data
 #' @param by100 T/F dilute by 100 or 10
 #' @example example_dependence_force_plot.R
 #' @export plot.shap.dependence
+#' @return ggplot2 object
 plot.shap.dependence <- function(show_feature, data_long,
                                dilute = F, customize_label = F,
                                by100 = F){
@@ -293,28 +337,55 @@ plot.shap.dependence <- function(show_feature, data_long,
 
 
 
-#' SHAP dependence plot with marginal histogram, colored by a selcted feature value
+#' SHAP dependence plot and interaction plot, colored by a selcted feature value
+#' @description
+#' This function makes the dependence plot by default.
+#' Colored by the feature value of \code{y} if \code{color_feature} is not supplied.
+#' You shall choose to plot SHAP values of \code{y} vs. feature values of \code{x}.
+#' If \code{data_int} (the SHAP interaction values dataset) is supplied, it will plot
+#' the interaction effect between \code{y} and \code{x} on the y axis.
+#'
+#' Dependence plot is very easy to make if you have the SHAP values dataset from \code{predict.xgb.Booster}
+#' It is not necessary to start with the long-format data, but since I used that
+#' for the summary plot, I just continue to use the long dataset
+#'
+#' @param data_int the 3-dimention SHAP interaction values array
+#' from \code{predict.xgb.Booster} or \code{\link{shap.prep.interaction}}
 #' @param data_long the long format SHAP values
-#' @param x which feature to show on x axis
-#' @param y_shap which shap values to show on y axis
-#' @param color_feature which feature value to use for coloring
+#' @param x which feature to show on x axis, it will plot the feature value
+#' @param y which shap values to show on y axis, it will plot the SHAP value
+#' @param color_feature which feature value to use for coloring, color by the feature value
+#' @param smooth optional to add loess smooth line, default to T
 #' @example example_dependence_force_plot.R
 #' @export plot.shap.dependence.color
-plot.shap.dependence.color <- function(data_long , x,  y_shap, color_feature){
-  data0 <- data_long[variable == y_shap] # contains the shap value to plot:"value"
+#' @return ggplot2 object
+#'
+#'
+#'
+plot.shap.dependence.color <- function(data_int = NULL,  # if supply, will plot SHAP interaction values
+                                       data_long,
+                                       x,
+                                       y,
+                                       color_feature = NULL,
+                                       smooth = T
+                                       ){
+  if (is.null(color_feature)) color_feature = y # default to color by y
+  data0 <- data_long[variable == y,.(variable, value)] # the shap value to plot for dependence plot
   data0$x_feature <- data_long[variable == x, rfvalue]
   data0$color_value <- data_long[variable == color_feature, rfvalue]
+  if (!is.null(data_int)) data0$int_value <- data_int[, x, y]
   # for dayint, reformat date
   if (x == 'dayint'){
     data0[, x_feature:= as.Date(data0[,x_feature], format = "%Y-%m-%d",
                                 origin = "1970-01-01")]
   }
   plot1 <- ggplot(data = data0,
-                  aes(x = x_feature, y = value, color = color_value))+
+                  aes(x = x_feature,
+                      y = if (is.null(data_int)) value else int_value,
+                      color = color_value))+
     geom_point(size = 0.2, alpha = 0.6)+
     # a loess smoothing line:
-    geom_smooth(method = 'loess', color = 'red', size = 0.4, se = F) +
-    labs(y = paste0("SHAP value for ", label.feature(y_shap)),
+    labs(y = if (is.null(data_int)) paste0("SHAP value for ", label.feature(y)) else paste0("SHAP interaction values for\n", label.feature(x), " and ", label.feature(y)) ,
          x = label.feature(x),
          color = paste0(label.feature(color_feature),"\n","(Feature value)")) +
     scale_color_gradient(low="#FFCC33", high="#6600CC",
@@ -323,17 +394,19 @@ plot.shap.dependence.color <- function(data_long , x,  y_shap, color_feature){
     theme(legend.position="bottom",
           legend.title=element_text(size=10),
           legend.text=element_text(size=8))
+  if(smooth){
+    plot1 <- plot1 + geom_smooth(method = 'loess', color = 'red', size = 0.4, se = F)
+  }
   plot1 <- plot.label(plot1, show_feature = x)
   plot1
 }
-# plot.shap.dependence.color(data_long = shap_long2, x = 'dayint',y_shap = 'dayint', color_feature = 'Column_WV')
 
 
 # stack plot --------------------------------------------------------------
 
-#' SHAPstack plot
-#' shap_contrib is the SHAP value matrix returned from predict, top_n features, option to randomly plot p*100 percent of the data in case the dataset is large
-#' @param shap_contrib the SHAP values dataset
+#' SHAP force plot (stack plot)
+#' @description Make force plot for \code{top_n} features, option to randomly plot p*100 percent of the data in case the dataset is large
+#' @param shap_contrib shap_contrib is the SHAP value data returned from predict.xgb.booster
 #' @param data_percent what percent of data to plot (to speed up), in the range of (0,1]
 #' @param top_n optional to show only top_n features, combine the rest
 #' @example example_dependence_force_plot.R

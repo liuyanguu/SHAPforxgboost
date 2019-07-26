@@ -16,8 +16,15 @@
 
 \item{by100}{T/F dilute by 100 or 10}
 }
+\value{
+ggplot2 object
+}
 \description{
-This version is not colored by another variable, see \code{plot.shap.dependence.color}
+This version is not colored by another variable,
+\code{plot.shap.dependence.color} is the with color version
+Dependence plot is very easy to make if you have the SHAP values dataset
+It is not necessary to start with the long-format data, but since I used that
+for the summary plot, I just continue to use the long dataset
 }
 \examples{
 library(SHAPforxgboost)

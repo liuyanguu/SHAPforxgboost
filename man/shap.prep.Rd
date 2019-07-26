@@ -9,8 +9,13 @@ shap.prep(shap, X_train, top_n)
 \arguments{
 \item{X_train}{the dataset of predictors used for the xgboost model}
 
+\item{top_n}{to choose top_n variables ranked by mean|SHAP|}
+
 \item{shap_result}{is a list contains SHAP values dataset
 and a vector of ranked variables, obtained by shap.values if derived from model}
+}
+\value{
+a long-format data.table
 }
 \description{
 prep SHAP values into long format for plotting
