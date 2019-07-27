@@ -1,6 +1,6 @@
 Package: SHAPforxgboost
 Title: SHAP plots for xgboost
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: c(
     person(given = "Yang", family = "Liu", role = c("aut", "cre"), email = "lyhello@gmail.com",
            comment = c(ORCID = "0000-0001-6557-6439")),

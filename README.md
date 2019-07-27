@@ -1,11 +1,11 @@
 # SHAPforxgboost
 
-** Under further revise **
-
 <!-- badges: start -->
 <!-- badges: end -->
 
 The goal of this SHAPforxgboost **R** package is to create SHAP (SHapley Additive exPlnation) visualization plots for XGBoost in R. 
+
+
 
 Please refer to this blog for more examples and discussion on SHAP values in R, why use SHAP, and compared to Gain: 
 [SHAP visualization for XGBoost in R](https://liuyanguu.github.io/post/2019/07/18/visualization-of-shap-for-xgboost/)
@@ -25,11 +25,42 @@ Code in the next session
 **Summary plot**
 
 ```{r}
-plot.shap.summary(shap_long)
-# or 
-plot.shap.summary.wrap1(mod1, X_data, top_n = 9)
-# or
-plot.shap.summary.wrap2(shap_score = SHAP_values, X_data, top_n = 9)
+# run the model with built-in data
+y_var <-  "diffcwv"
+dataX <- dataXY_df[,-..y_var]
+# hyperparameter tuning results
+param_dart <- list(objective = "reg:linear",  # For regression
+                   nrounds = 366,
+                   eta = 0.018,
+                   max_depth = 10,
+                   gamma = 0.009,
+                   subsample = 0.98,
+                   colsample_bytree = 0.86)
+
+mod <- xgboost.fit(X = as.matrix(dataX), Y = as.matrix(dataXY_df[[y_var]]), 
+                       xgb_param = param_dart)
+                       
+# To return the SHAP values and ranked features by mean|SHAP|
+shap_values <- shap.values(xgb_model = mod, X_train = dataX)
+# The ranked features by mean |SHAP|
+shap_values$mean_shap_score
+
+# To prepare the long-format data:
+shap_long <- shap.prep(xgb_model = mod, X_train = dataX)
+# is the same as: using given shap_contrib
+shap_long <- shap.prep(shap_contrib = shap_values$shap_score, X_train = dataX)
+
+# **SHAP summary plot**
+shap.plot.summary(shap_long)
+shap.plot.summary(shap_long, x_bound  = 1.2, dilute = 10)
+
+# Alternatives options to make the same plot:
+# option 1: from the xgboost model
+shap.plot.summary.wrap1(mod, X = as.matrix(dataX))
+
+# option 2: supply a self-made SHAP values dataset (e.g. sometimes as output from cross-validation)
+shap.plot.summary.wrap2(shap_values$shap_score, as.matrix(dataX))
+
 ```
 
 <p align="center">
@@ -39,18 +70,54 @@ plot.shap.summary.wrap2(shap_score = SHAP_values, X_data, top_n = 9)
 **Dependence plot**
 
 ```{r}
-plot.shap.dependence.color(shap_long, x="Petal.Length",
-                           y_shap = "Petal.Length", color_feature = "Petal.Width")
+# **SHAP dependence plot**
+shap.plot.dependence.color(data_long = shap_long, x= "Column_WV",
+                           y = "AOT_Uncertainty", color_feature = "AOT_Uncertainty")
+                           
+shap.plot.dependence.color(data_long = shap_long, x= "dayint",
+                           y = "Column_WV", color_feature = "Column_WV")                           
+                           
+# without color version but has marginal distribution, just plot SHAP value against feature value:
+shap.plot.dependence(data_long = shap_long, "Column_WV")
+
+```
+
+```{r}
+fig_list = lapply(names(shap_values$mean_shap_score)[1:6], shap.plot.dependence, data_long = shap_long)
+gridExtra::grid.arrange(grobs = fig_list, ncol = 2)
+
 ```
 
 <p align="center">
   <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-11-1.png"/>
 </p>
 
-**Force plot**
+**SHAP interaction plot**
 
 ```{r}
-plot.shap.force_plot(force_plot_data)
+# prepare the data using either: 
+# (this step is slow since it calculates all the combinations of features.)
+data_int <- shap.prep.interaction(xgb_mod = mod, X_train = as.matrix(dataX))
+# or:
+shap_int <- predict(mod, as.matrix(dataX), predinteraction = TRUE)
+
+# **SHAP interaction effect plot **
+shap.plot.dependence.color(data_long = shap_long,
+                           data_int = shap_int,
+                           x= "Column_WV",
+                           y = "AOT_Uncertainty", 
+                           color_feature = "AOT_Uncertainty")
+
+
+```
+
+**SHAP force plot**
+
+```{r}
+plot_data <- shap.prep.stack.data(shap_contrib = shap_values$shap_score, top_n = 4,  n_groups = 6)
+shap.plot.force_plot(plot_data)
+shap.plot.force_plot_bygroup(plot_data)
+
 ```
 
 <p align="center">
@@ -61,49 +128,12 @@ plot.shap.force_plot(force_plot_data)
   <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-7-2.png"/>
 </p>
 
-## Sample code 
-
-```{r}
-# Example use iris
-library(SHAPforxgboost)
-X1 = as.matrix(iris[,-5])
-mod1 = xgboost::xgboost(
-  data = X1, label = iris$Species, gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = F)
-
-# shap.values() has the SHAP data matrix and ranked features by mean|SHAP|
-shap_values <- shap.values(mod1, X1)
-# ranked features:
-shap_values$mean_shap_score
-
-# shap.prep() returns the long-format SHAP data
-shap_long <- shap.prep(shap_values, X1)
-# or
-shap_long <- shap.prep(shap.values(mod1, X1), X1)
-
-# **SHAP summary plot**
-plot.shap.summary(shap_long)
-
-# Alternatives:
-# option 1: from the xgboost model
-plot.shap.summary.wrap1(mod1, X1, top_n = 3)
-
-# option 2: supply a self-made SHAP values dataset (e.g. sometimes as output from cross-validation)
-plot.shap.summary.wrap2(shap_score = shap_values$shap_score, X1, top_n = 3)
-
-# **SHAP dependence plot**
-plot.shap.dependence.color(shap_long, x="Petal.Length",
-                           y_shap = "Petal.Length", color_feature = "Petal.Width")
-
-# **SHAP force plot**
-force_plot_data <- shap.stack.data(shap_contrib = shap_values$shap_score, n_groups = 2)
-plot.shap.force_plot(force_plot_data)
-plot.shap.force_plot_bygroup(force_plot_data)
-```
 
 
 ## Reference
 
 Main references by Slundberg:  
+Corresponding SHAP plots package in Python: [https://github.com/slundberg/shap](https://github.com/slundberg/shap)
 Paper 1. 2017 [A Unified Approach to Interpreting Model Predictions](https://arxiv.org/abs/1705.07874)  
 Paper 2. 2019 [Consistent Individualized Feature Attribution for Tree
 Ensembles](https://arxiv.org/abs/1802.03888)  

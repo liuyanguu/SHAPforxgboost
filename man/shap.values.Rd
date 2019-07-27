@@ -9,7 +9,8 @@ shap.values(xgb_model, X_train)
 \arguments{
 \item{xgb_model}{a xgboost model object}
 
-\item{X_train}{the dataset of predictors used for the xgboost model}
+\item{X_train}{the dataset of predictors used for the xgboost model
+importFrom("stats", "cutree", "dist", "hclust", "median", "predict")}
 }
 \value{
 a list of three elements, the SHAP values as data.table, ranked mean|SHAP|, BIAS
@@ -21,9 +22,11 @@ a list of three elements, the SHAP values as data.table, ranked mean|SHAP|, BIAS
 data("iris")
 X1 = as.matrix(iris[,-5])
 mod1 = xgboost::xgboost(
-  data = X1, label = iris$Species, gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = FALSE)
+  data = X1, label = iris$Species, gamma = 0, eta = 1,
+  lambda = 0,nrounds = 1, verbose = FALSE)
 
-# shap.values(model, X_dataset) returns the SHAP data matrix and ranked features by mean|SHAP|
+# shap.values(model, X_dataset) returns the SHAP data matrix
+# and ranked features by mean|SHAP|
 shap_values <- shap.values(xgb_model = mod1, X_train = X1)
 shap_values$mean_shap_score
 shap_values_iris <- shap_values$shap_score
@@ -34,13 +37,14 @@ shap_long_iris <- shap.prep(xgb_model = mod1, X_train = X1)
 shap_long_iris <- shap.prep(shap_contrib = shap_values_iris, X_train = X1)
 
 # **SHAP summary plot**
-plot.shap.summary(shap_long_iris)
-plot.shap.summary(shap_long_iris, x_bound  = 1.5, dilute = 10)
+shap.plot.summary(shap_long_iris)
+shap.plot.summary(shap_long_iris, x_bound  = 1.5, dilute = 10)
 
 # Alternatives options to make the same plot:
 # option 1: from the xgboost model
-plot.shap.summary.wrap1(mod1, X = as.matrix(iris[,-5]), top_n = 3)
+shap.plot.summary.wrap1(mod1, X = as.matrix(iris[,-5]), top_n = 3)
 
-# option 2: supply a self-made SHAP values dataset (e.g. sometimes as output from cross-validation)
-plot.shap.summary.wrap2(shap_values_iris, X1, top_n = 3)
+# option 2: supply a self-made SHAP values dataset
+# (e.g. sometimes as output from cross-validation)
+shap.plot.summary.wrap2(shap_values_iris, X1, top_n = 3)
 }
