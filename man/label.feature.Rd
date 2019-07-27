@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{label.feature}
 \alias{label.feature}
-\title{helper function to modify variables names}
+\title{helper function to modify variables names.}
 \usage{
 label.feature(x)
 }
@@ -10,5 +10,5 @@ label.feature(x)
 \item{x}{feature names}
 }
 \description{
-helper function to modify variables names
+helper function to modify variables names.
 }

@@ -2,51 +2,35 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{plot.shap.dependence}
 \alias{plot.shap.dependence}
-\title{SHAP dependence plot with marginal histogram}
+\title{SHAP dependence plot with marginal histogram.}
 \usage{
-\method{plot}{shap.dependence}(show_feature, data_long, dilute = F,
-  customize_label = F, by100 = F)
+\method{plot}{shap.dependence}(data_long, show_feature, dilute = FALSE,
+  customize_label = FALSE)
 }
 \arguments{
-\item{show_feature}{which feature to show}
-
 \item{data_long}{the long format SHAP values}
 
-\item{dilute}{optional T/F to sample data}
+\item{show_feature}{which feature to show}
 
-\item{by100}{T/F dilute by 100 or 10}
+\item{dilute}{a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data.
+for example, if dilute = 5 will plot 1/5 of the data.}
 }
 \value{
 ggplot2 object
 }
 \description{
-This version is not colored by another variable,
-\code{plot.shap.dependence.color} is the with color version
+\code{plot.shap.dependence} is not colored by another variable,
+\code{\link{plot.shap.dependence.color}} is the with color version.
 Dependence plot is very easy to make if you have the SHAP values dataset
 It is not necessary to start with the long-format data, but since I used that
 for the summary plot, I just continue to use the long dataset
 }
 \examples{
 library(SHAPforxgboost)
-data("iris")
-X1 = as.matrix(iris[,-5])
-mod1 = xgboost::xgboost(
-  data = X1, label = iris$Species, gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = F)
-
-# shap.values() has the SHAP data matrix and ranked features by mean|SHAP|
-shap_values <- shap.values(mod1, X1)
-shap_values$mean_shap_score
-
-# shap.prep() returns the long-format SHAP data
-shap_long <- shap.prep(shap_values, X1)
-
-
 # **SHAP dependence plot**
-plot.shap.dependence.color(shap_long, x="Petal.Length",
-                           y_shap = "Petal.Length", color_feature = "Petal.Width")
+plot.shap.dependence.color(data_long = shap_long_iris, x="Petal.Length",
+                           y = "Petal.Width", color_feature = "Petal.Width")
+# the without color version, just plot SHAP value against feature value:
+plot.shap.dependence(data_long = shap_long_iris, "Petal.Length")
 
-# **SHAP force plot**
-plot_data <- shap.stack.data(shap_contrib = shap_values$shap_score, n_groups = 2)
-plot.shap.force_plot(plot_data)
-plot.shap.force_plot_bygroup(plot_data)
 }

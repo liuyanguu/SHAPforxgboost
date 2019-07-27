@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{plot.shap.summary.wrap1}
 \alias{plot.shap.summary.wrap1}
-\title{A wraped function to make summary plot from xgb model and X}
+\title{A wraped function to make summary plot from xgb model object and X.}
 \usage{
 \method{plot}{shap.summary.wrap1}(model, X, top_n, dilute = FALSE)
 }
@@ -14,29 +14,32 @@
 \item{top_n}{how many predictors you want to show in the plot (ranked)}
 }
 \description{
-A wraped function to make summary plot from xgb model and X
+wraps up function \code{\link{shap.prep}} and \code{\link{plot.shap.summary}}
 }
 \examples{
-library(SHAPforxgboost)
 data("iris")
 X1 = as.matrix(iris[,-5])
 mod1 = xgboost::xgboost(
-  data = X1, label = iris$Species, gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = F)
+  data = X1, label = iris$Species, gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = FALSE)
 
-# shap.values() has the SHAP data matrix and ranked features by mean|SHAP|
-shap_values <- shap.values(mod1, X1)
+# shap.values(model, X_dataset) returns the SHAP data matrix and ranked features by mean|SHAP|
+shap_values <- shap.values(xgb_model = mod1, X_train = X1)
 shap_values$mean_shap_score
+shap_values_iris <- shap_values$shap_score
 
-# shap.prep() returns the long-format SHAP data
-shap_long <- shap.prep(shap_values, X1)
+# shap.prep() returns the long-format SHAP data from either model or
+shap_long_iris <- shap.prep(xgb_model = mod1, X_train = X1)
+# is the same as: using given shap_contrib
+shap_long_iris <- shap.prep(shap_contrib = shap_values_iris, X_train = X1)
 
 # **SHAP summary plot**
-plot.shap.summary(shap_long)
+plot.shap.summary(shap_long_iris)
+plot.shap.summary(shap_long_iris, x_bound  = 1.5, dilute = 10)
 
-# Alternatives:
+# Alternatives options to make the same plot:
 # option 1: from the xgboost model
-plot.shap.summary.wrap1(mod1, X1, top_n = 3)
+plot.shap.summary.wrap1(mod1, X = as.matrix(iris[,-5]), top_n = 3)
 
 # option 2: supply a self-made SHAP values dataset (e.g. sometimes as output from cross-validation)
-plot.shap.summary.wrap2(shap_score = shap_values$shap_score, X1, top_n = 3)
+plot.shap.summary.wrap2(shap_values_iris, X1, top_n = 3)
 }

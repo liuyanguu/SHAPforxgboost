@@ -2,45 +2,51 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.prep}
 \alias{shap.prep}
-\title{prep SHAP values into long format for plotting}
+\title{prep SHAP values into long format for plotting.}
 \usage{
-shap.prep(shap, X_train, top_n)
+shap.prep(xgb_model = NULL, shap_contrib = NULL, X_train,
+  top_n = NULL)
 }
 \arguments{
+\item{xgb_model}{a xgboost model object}
+
+\item{shap_contrib}{optional to supply SHAP values dataset, default to NULL
+if not NULL, will be taken as SHAP values,}
+
 \item{X_train}{the dataset of predictors used for the xgboost model}
 
-\item{top_n}{to choose top_n variables ranked by mean|SHAP|}
-
-\item{shap_result}{is a list contains SHAP values dataset
-and a vector of ranked variables, obtained by shap.values if derived from model}
+\item{top_n}{to choose top_n variables ranked by mean|SHAP| if needed}
 }
 \value{
 a long-format data.table
 }
 \description{
-prep SHAP values into long format for plotting
+prep SHAP values into long format for plotting.
 }
 \examples{
-library(SHAPforxgboost)
 data("iris")
 X1 = as.matrix(iris[,-5])
 mod1 = xgboost::xgboost(
-  data = X1, label = iris$Species, gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = F)
+  data = X1, label = iris$Species, gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = FALSE)
 
-# shap.values() has the SHAP data matrix and ranked features by mean|SHAP|
-shap_values <- shap.values(mod1, X1)
+# shap.values(model, X_dataset) returns the SHAP data matrix and ranked features by mean|SHAP|
+shap_values <- shap.values(xgb_model = mod1, X_train = X1)
 shap_values$mean_shap_score
+shap_values_iris <- shap_values$shap_score
 
-# shap.prep() returns the long-format SHAP data
-shap_long <- shap.prep(shap_values, X1)
+# shap.prep() returns the long-format SHAP data from either model or
+shap_long_iris <- shap.prep(xgb_model = mod1, X_train = X1)
+# is the same as: using given shap_contrib
+shap_long_iris <- shap.prep(shap_contrib = shap_values_iris, X_train = X1)
 
 # **SHAP summary plot**
-plot.shap.summary(shap_long)
+plot.shap.summary(shap_long_iris)
+plot.shap.summary(shap_long_iris, x_bound  = 1.5, dilute = 10)
 
-# Alternatives:
+# Alternatives options to make the same plot:
 # option 1: from the xgboost model
-plot.shap.summary.wrap1(mod1, X1, top_n = 3)
+plot.shap.summary.wrap1(mod1, X = as.matrix(iris[,-5]), top_n = 3)
 
 # option 2: supply a self-made SHAP values dataset (e.g. sometimes as output from cross-validation)
-plot.shap.summary.wrap2(shap_score = shap_values$shap_score, X1, top_n = 3)
+plot.shap.summary.wrap2(shap_values_iris, X1, top_n = 3)
 }

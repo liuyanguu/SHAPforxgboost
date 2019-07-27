@@ -12,6 +12,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: 
+    R (>= 3.3.0),
     ggplot2 (>= 3.2.0),
     xgboost (>= 0.90.0.0)
 Imports:

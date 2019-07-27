@@ -2,10 +2,10 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.stack.data}
 \alias{shap.stack.data}
-\title{SHAP force plot (stack plot)}
+\title{Prepare data for SHAP force plot (stack plot).}
 \usage{
 shap.stack.data(shap_contrib, top_n = NULL, data_percent = 1,
-  cluster_method = "ward.D", n_groups = 10)
+  cluster_method = "ward.D", n_groups = 10L)
 }
 \arguments{
 \item{shap_contrib}{shap_contrib is the SHAP value data returned from predict.xgb.booster}
@@ -13,31 +13,22 @@ shap.stack.data(shap_contrib, top_n = NULL, data_percent = 1,
 \item{top_n}{optional to show only top_n features, combine the rest}
 
 \item{data_percent}{what percent of data to plot (to speed up), in the range of (0,1]}
+
+\item{cluster_method}{default to ward.D}
+
+\item{n_groups}{a integer, how many groups to plot in \code{\link{plot.shap.force_plot_bygroup}}}
+}
+\value{
+a dataset for stack plot
 }
 \description{
-Make force plot for \code{top_n} features, option to randomly plot p*100 percent of the data in case the dataset is large
+Make force plot for \code{top_n} features, option to randomly
+plot p*100 percent of the data in case the dataset is large.
 }
 \examples{
-library(SHAPforxgboost)
-data("iris")
-X1 = as.matrix(iris[,-5])
-mod1 = xgboost::xgboost(
-  data = X1, label = iris$Species, gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = F)
-
-# shap.values() has the SHAP data matrix and ranked features by mean|SHAP|
-shap_values <- shap.values(mod1, X1)
-shap_values$mean_shap_score
-
-# shap.prep() returns the long-format SHAP data
-shap_long <- shap.prep(shap_values, X1)
-
-
-# **SHAP dependence plot**
-plot.shap.dependence.color(shap_long, x="Petal.Length",
-                           y_shap = "Petal.Length", color_feature = "Petal.Width")
 
 # **SHAP force plot**
-plot_data <- shap.stack.data(shap_contrib = shap_values$shap_score, n_groups = 2)
+plot_data <- shap.stack.data(shap_contrib = shap_values_iris, n_groups = 2)
 plot.shap.force_plot(plot_data)
 plot.shap.force_plot_bygroup(plot_data)
 }

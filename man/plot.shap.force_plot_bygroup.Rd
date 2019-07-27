@@ -2,37 +2,18 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{plot.shap.force_plot_bygroup}
 \alias{plot.shap.force_plot_bygroup}
-\title{make the stack plot, optional to zoom in at certain x or certain cluster
-zoomed in plot: one plot of each cluster}
+\title{make the stack plot, optional to zoom in at certain x or certain cluster.}
 \usage{
 \method{plot}{shap.force_plot_bygroup}(shapobs, id = "id",
   y_parent_limit = NULL)
 }
 \description{
-make the stack plot, optional to zoom in at certain x or certain cluster
-zoomed in plot: one plot of each cluster
+Zoomed in plot: one plot of every group of clustered observations.
 }
 \examples{
-library(SHAPforxgboost)
-data("iris")
-X1 = as.matrix(iris[,-5])
-mod1 = xgboost::xgboost(
-  data = X1, label = iris$Species, gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = F)
-
-# shap.values() has the SHAP data matrix and ranked features by mean|SHAP|
-shap_values <- shap.values(mod1, X1)
-shap_values$mean_shap_score
-
-# shap.prep() returns the long-format SHAP data
-shap_long <- shap.prep(shap_values, X1)
-
-
-# **SHAP dependence plot**
-plot.shap.dependence.color(shap_long, x="Petal.Length",
-                           y_shap = "Petal.Length", color_feature = "Petal.Width")
 
 # **SHAP force plot**
-plot_data <- shap.stack.data(shap_contrib = shap_values$shap_score, n_groups = 2)
+plot_data <- shap.stack.data(shap_contrib = shap_values_iris, n_groups = 2)
 plot.shap.force_plot(plot_data)
 plot.shap.force_plot_bygroup(plot_data)
 }
