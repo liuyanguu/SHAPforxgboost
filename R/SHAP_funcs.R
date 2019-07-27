@@ -4,7 +4,9 @@
 # Further explained on my research blog: https://liuyanguu.github.io/post/2019/07/18/visualization-of-shap-for-xgboost/
 # Please cite http://doi.org/10.5281/zenodo.3334713
 
+
 if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
+
 
 # data preparation functions ----------------------------------------------
 #' return SHAP contribution from.
@@ -19,6 +21,7 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
 #' @import xgboost
 #'
 #' @export shap.values
+#'
 #' @return a list of three elements, the SHAP values as data.table, ranked mean|SHAP|, BIAS
 #'
 #' @example R/example/example_fit_summary.R
@@ -157,9 +160,10 @@ xgboost.fit <- function(X, Y, xgb_param){
 
 #' SHAP summary plot core function using the long-format SHAP values.
 #'
-#' The summary plot (sina plot) using a long-format data of SHAP values.
-#' If you want to start with xgbmodel and data_X, use \code{\link{shap.plot.summary.wrap1}}.
-#' If you want to use self-derived SHAP matrix, use \code{\link{shap.plot.summary.wrap2}}.
+#' The summary plot (sina plot) using a long-format data of SHAP values. The long-format data
+#' could be obtained from either xgbmodel or a SHAP matrix using \code{\link{shap.values}}.
+#' If you want to start with xgbmodel and data_X, use \code{\link{plot.shap.summary.wrap1}}.
+#' If you want to use self-derived SHAP matrix, use \code{\link{plot.shap.summary.wrap2}}.
 #'
 #' @param data_long a long format data of SHAP values
 #' @param x_bound in case need to limit x_axis_limit
