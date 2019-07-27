@@ -5,7 +5,12 @@
 # Please cite http://doi.org/10.5281/zenodo.3334713
 
 
-if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
+if(getRversion() >= "2.15.1")  {
+  utils::globalVariables(c(".", "rfvalue", "value","variable","stdfvalue",
+                           "x_feature", "mean_value",
+                           "int_value", "color_value",
+                           "group", "rest_variables", "clusterid", "id", "BIAS"))
+  }
 
 
 # data preparation functions ----------------------------------------------
@@ -15,10 +20,10 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
 #'
 #' @param xgb_model a xgboost model object
 #' @param X_train the dataset of predictors used for the xgboost model
-#' importFrom("stats", "cutree", "dist", "hclust", "median", "predict")
 #'
 #' @import data.table
 #' @import xgboost
+#' @importFrom stats cutree dist hclust predict
 #'
 #' @export shap.values
 #'
@@ -28,7 +33,7 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
 #'
 shap.values <- function(xgb_model,
                         X_train){
-  shap_contrib <- xgboost::predict.xgb.Booster(
+  shap_contrib <- predict(
                           xgb_model,
                           as.matrix(X_train),
                           predcontrib = TRUE,
@@ -120,7 +125,7 @@ shap.prep <- function(xgb_model = NULL,
 #' @return a 3-dimention array: #obs x #features x #features
 #' @example R/example/example_interaction_plot.R
 shap.prep.interaction <- function(xgb_model, X_train){
-  shap_int <- xgboost::predict.xgb.Booster(xgb_model, as.matrix(X_train), predinteraction = TRUE)
+  shap_int <- predict(xgb_model, as.matrix(X_train), predinteraction = TRUE)
   return(shap_int)
 }
 
@@ -162,8 +167,8 @@ xgboost.fit <- function(X, Y, xgb_param){
 #'
 #' The summary plot (sina plot) using a long-format data of SHAP values. The long-format data
 #' could be obtained from either xgbmodel or a SHAP matrix using \code{\link{shap.values}}.
-#' If you want to start with xgbmodel and data_X, use \code{\link{plot.shap.summary.wrap1}}.
-#' If you want to use self-derived SHAP matrix, use \code{\link{plot.shap.summary.wrap2}}.
+#' If you want to start with xgbmodel and data_X, use \code{\link{shap.plot.summary.wrap1}}.
+#' If you want to use self-derived SHAP matrix, use \code{\link{shap.plot.summary.wrap2}}.
 #'
 #' @param data_long a long format data of SHAP values
 #' @param x_bound in case need to limit x_axis_limit
@@ -587,7 +592,7 @@ shap.plot.force_plot <- function(shapobs, id = 'id',
   } else if (zoom_in){
     cat("Data has N:", shapobs[,.N],"| zoom in at cluster",zoom_in_group,"with N:",shapobs[group ==zoom_in_group,.N], "\n")
     p <- p +
-      ggforce::facet_zoom(x = zoom_in_group,
+      ggforce::facet_zoom(x = group == zoom_in_group,
                  ylim = y_zoomin_limit, horizontal = F,
                  zoom.size = 0.6
       ) +

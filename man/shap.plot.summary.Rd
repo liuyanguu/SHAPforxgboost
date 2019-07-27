@@ -20,7 +20,8 @@ If you put dilute too high, at least 10 points per feature would be kept, unless
 \item{scientific}{default to F, show the mean|SHAP| in scientific format or not}
 }
 \description{
-The summary plot (sina plot) using a long-format data of SHAP values.
+The summary plot (sina plot) using a long-format data of SHAP values. The long-format data
+could be obtained from either xgbmodel or a SHAP matrix using \code{\link{shap.values}}.
 If you want to start with xgbmodel and data_X, use \code{\link{shap.plot.summary.wrap1}}.
 If you want to use self-derived SHAP matrix, use \code{\link{shap.plot.summary.wrap2}}.
 }
@@ -31,8 +32,9 @@ mod1 = xgboost::xgboost(
   data = X1, label = iris$Species, gamma = 0, eta = 1,
   lambda = 0,nrounds = 1, verbose = FALSE)
 
-# shap.values(model, X_dataset) returns the SHAP data matrix
-# and ranked features by mean|SHAP|
+
+# shap.values(model, X_dataset) returns the SHAP
+# data matrix and ranked features by mean|SHAP|
 shap_values <- shap.values(xgb_model = mod1, X_train = X1)
 shap_values$mean_shap_score
 shap_values_iris <- shap_values$shap_score

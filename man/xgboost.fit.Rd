@@ -23,8 +23,9 @@ mod1 = xgboost::xgboost(
   data = X1, label = iris$Species, gamma = 0, eta = 1,
   lambda = 0,nrounds = 1, verbose = FALSE)
 
-# shap.values(model, X_dataset) returns the SHAP data matrix
-# and ranked features by mean|SHAP|
+
+# shap.values(model, X_dataset) returns the SHAP
+# data matrix and ranked features by mean|SHAP|
 shap_values <- shap.values(xgb_model = mod1, X_train = X1)
 shap_values$mean_shap_score
 shap_values_iris <- shap_values$shap_score
