@@ -7,9 +7,9 @@
 xgboost.fit(X, Y, xgb_param)
 }
 \arguments{
-\item{X}{predictors, \strong{should NOT contains Y}}
+\item{X}{predictors, Notice that \strong{should NOT contains Y}.}
 
-\item{Y}{dependent variable Y}
+\item{Y}{dependent variable Y.}
 
 \item{xgb_param}{a list of hyperparameters selected}
 }

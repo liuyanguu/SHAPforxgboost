@@ -40,7 +40,7 @@ shap.values <- function(xgb_model,
                           predcontrib = TRUE,
                           approxcontrib = FALSE)
   shap_contrib <- as.data.table(shap_contrib)
-  BIAS0 <- shap_contrib[,ncol(shap_contrib)][1]
+  BIAS0 <- shap_contrib[,ncol(shap_contrib), with = FALSE][1]
   shap_contrib[, BIAS := NULL] # BIAS is an extra column produced by `predict`
   # make SHAP score in decreasing order:
   mean_shap_score <- colMeans(abs(shap_contrib))[order(colMeans(abs(shap_contrib)), decreasing = T)]
@@ -134,8 +134,9 @@ shap.prep.interaction <- function(xgb_model, X_train){
 # modelling functions --------------------------------------------------------
 
 #' A wrapped function to run xgboost model.
-#' @param X predictors, **should NOT contains Y**
-#' @param Y dependent variable Y
+#'
+#' @param X predictors, Notice that **should NOT contains Y**.
+#' @param Y dependent variable Y.
 #' @param xgb_param a list of hyperparameters selected
 #'
 #' @importFrom  xgboost xgboost
@@ -150,11 +151,11 @@ xgboost.fit <- function(X, Y, xgb_param){
     else if (Sys.info()["nodename"] == "coco") 22 # 48 cores
     else parallel::detectCores()) - 2
 
-  message("* Notes, Be careful X should not contains Y.\n")
+  # ("* Notes, Be careful X should not contains Y.\n")
   if (!is.null(xgb_param$seed)) set.seed(xgb_param$seed) else set.seed(1234)
   xgbmod <- xgboost::xgboost(data = as.matrix(X), label = as.matrix(Y),
                     params = xgb_param, nrounds = xgb_param$nrounds,
-                    nthread = xgb_threads,
+                    nthread = xgb_threads, verbose = FALSE,
                     early_stopping_rounds = 8)
   return(xgbmod)
 }
