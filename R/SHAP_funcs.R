@@ -4,6 +4,7 @@
 # Further explained on my research blog: https://liuyanguu.github.io/post/2019/07/18/visualization-of-shap-for-xgboost/
 # Please cite http://doi.org/10.5281/zenodo.3334713
 
+# global package
 
 # data preparation functions ----------------------------------------------
 #' return SHAP contribution from.
@@ -17,6 +18,7 @@
 #' @import xgboost
 #'
 #' @export shap.values
+#'
 #' @return a list of three elements, the SHAP values as data.table, ranked mean|SHAP|, BIAS
 #'
 #' @example example/example_fit_summary.R
@@ -152,7 +154,8 @@ xgboost.fit <- function(X, Y, xgb_param, verbose = FALSE,...){
 
 #' SHAP summary plot core function using the long-format SHAP values.
 #'
-#' The summary plot (sina plot) using a long-format data of SHAP values.
+#' The summary plot (sina plot) using a long-format data of SHAP values. The long-format data
+#' could be obtained from either xgbmodel or a SHAP matrix using \code{\link{shap.values}}.
 #' If you want to start with xgbmodel and data_X, use \code{\link{plot.shap.summary.wrap1}}.
 #' If you want to use self-derived SHAP matrix, use \code{\link{plot.shap.summary.wrap2}}.
 #'
