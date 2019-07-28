@@ -61,7 +61,7 @@ shap.plot.summary.wrap2(shap_values$shap_score, as.matrix(dataX))
 ```
 
 <p align="center">
-  <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-8-1.png"/>
+  <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-9-1.png"/>
 </p>
 
 **Dependence plot**
@@ -89,6 +89,7 @@ gridExtra::grid.arrange(grobs = fig_list, ncol = 2)
   <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-11-1.png"/>
 </p>
 
+
 **SHAP interaction plot**
 
 ```{r}
@@ -108,6 +109,12 @@ shap.plot.dependence.color(data_long = shap_long,
 
 ```
 
+<p align="center">
+  <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-15-1.png"/>
+</p>
+
+
+
 **SHAP force plot**
 
 ```{r}
@@ -118,11 +125,11 @@ shap.plot.force_plot_bygroup(plot_data)
 ```
 
 <p align="center">
-  <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-7-1.png"/>
+  <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-16-1.png"/>
 </p>
 
 <p align="center">  
-  <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-7-2.png"/>
+  <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-16-2.png"/>
 </p>
 
 

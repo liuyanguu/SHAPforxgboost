@@ -389,7 +389,7 @@ shap.plot.dependence <- function(data_long,
                alpha = if(nrow(data0)<1000L) 1 else 0.6)+
     geom_smooth(method = 'loess', color = 'red', size = 0.4, se = F) +
     theme_bw() +
-    labs(y = "", x = label.feature(show_feature))
+    labs(y = "SHAP", x = label.feature(show_feature))
 
   # customize labels (for cwv, put dayint on 3-year interval)
   if (customize_label){
