@@ -118,8 +118,11 @@ shap.plot.dependence.color(data_long = shap_long,
 **SHAP force plot**
 
 ```{r}
+# choose to show top 4 features by setting `top_n = 4`, set 6 clustering groups.  
 plot_data <- shap.prep.stack.data(shap_contrib = shap_values$shap_score, top_n = 4, n_groups = 6)
-shap.plot.force_plot(plot_data)
+# choose to zoom in at location 500, set y-axis limit using `y_parent_limit`  
+# it is also possible to set y-axis limit for zoom-in part alone using `y_zoomin_limit`  
+shap.plot.force_plot(plot_data, zoom_in_location = 500, y_parent_limit = c(-1,1))
 shap.plot.force_plot_bygroup(plot_data)
 
 ```
