@@ -61,7 +61,7 @@ shap.plot.summary.wrap2(shap_values$shap_score, as.matrix(dataX))
 ```
 
 <p align="center">
-  <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-9-1.png" width="500" height="500"/>
+  <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-9-1.png" width="500" height="400"/>
 </p>
 
 **Dependence plot**
