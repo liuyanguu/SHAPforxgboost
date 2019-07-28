@@ -1,8 +1,5 @@
 # SHAPforxgboost
 
-<!-- badges: start -->
-<!-- badges: end -->
-
 The goal of this SHAPforxgboost **R** package is to create SHAP (SHapley Additive exPlnation) visualization plots for XGBoost in R. 
 
 
@@ -114,7 +111,7 @@ shap.plot.dependence.color(data_long = shap_long,
 **SHAP force plot**
 
 ```{r}
-plot_data <- shap.prep.stack.data(shap_contrib = shap_values$shap_score, top_n = 4,  n_groups = 6)
+plot_data <- shap.prep.stack.data(shap_contrib = shap_values$shap_score, top_n = 4, n_groups = 6)
 shap.plot.force_plot(plot_data)
 shap.plot.force_plot_bygroup(plot_data)
 
@@ -132,8 +129,11 @@ shap.plot.force_plot_bygroup(plot_data)
 
 ## Reference
 
-Main references by Slundberg:  
+Recent submitted paper from my lab that applies these figures:
+[Gradient Boosting Machine Learning to Improve Satellite-Derived Column Water Vapor Measurement Error](http://doi.org/10.5281/zenodo.3334713)
+
 Corresponding SHAP plots package in Python: [https://github.com/slundberg/shap](https://github.com/slundberg/shap)
+
 Paper 1. 2017 [A Unified Approach to Interpreting Model Predictions](https://arxiv.org/abs/1705.07874)  
 Paper 2. 2019 [Consistent Individualized Feature Attribution for Tree
 Ensembles](https://arxiv.org/abs/1802.03888)  

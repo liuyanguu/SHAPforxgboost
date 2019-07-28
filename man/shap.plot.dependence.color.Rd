@@ -5,21 +5,23 @@
 \title{SHAP dependence plot and interaction plot, colored by a selcted feature value}
 \usage{
 shap.plot.dependence.color(data_long, data_int = NULL, x, y,
-  color_feature = NULL, smooth = T)
+  color_feature = NULL, smooth = T, size0 = NULL)
 }
 \arguments{
-\item{data_long}{the long format SHAP values}
+\item{data_long}{the long format SHAP values.}
 
-\item{data_int}{the 3-dimention SHAP interaction values array
-from \code{predict.xgb.Booster} or \code{\link{shap.prep.interaction}}}
+\item{data_int}{the 3-dimention SHAP interaction values array.
+from \code{predict.xgb.Booster} or \code{\link{shap.prep.interaction}}.}
 
-\item{x}{which feature to show on x axis, it will plot the feature value}
+\item{x}{which feature to show on x axis, it will plot the feature value.}
 
-\item{y}{which shap values to show on y axis, it will plot the SHAP value}
+\item{y}{which shap values to show on y axis, it will plot the SHAP value.}
 
-\item{color_feature}{which feature value to use for coloring, color by the feature value}
+\item{color_feature}{which feature value to use for coloring, color by the feature value.}
 
-\item{smooth}{optional to add loess smooth line, default to T}
+\item{smooth}{optional to add loess smooth line, default to TRUE.}
+
+\item{size0}{point size, default to 1 of nobs<1000, 0.4 if nobs>1000.}
 }
 \value{
 ggplot2 object

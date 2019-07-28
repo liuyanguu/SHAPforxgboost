@@ -340,22 +340,6 @@ plot.label <- function(plot1, show_feature){
   plot1
 }
 
-#' the basic SHAP core, accept data with only 'show_feature' as variable.
-#'
-#' the core function to plot SHAP for one feature.
-#' @param show_feature the feature to plot
-#' @param data0 part of the data_long that contains the feature
-#'
-#'
-shap.plot.core <- function(show_feature, data0){
-
-  plot1 <- ggplot(data = data0, aes_string(x = "rfvalue", y = "value"))+
-    geom_point(size = 0.1, color = "blue2", alpha = 0.3)+
-    geom_smooth(method = 'loess', color = 'red', size = 0.4, se = F) +
-    theme_bw() +
-    labs(y = "", x = label.feature(show_feature))
-  return(plot1)
-}
 
 #' SHAP dependence plot with marginal histogram.
 #'
@@ -371,6 +355,7 @@ shap.plot.core <- function(show_feature, data0){
 #' @param show_feature which feature to show
 #' @param dilute a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data. For example, if dilute = 5 will plot 1/5 of the data.
 #' @param customize_label optional to customize label using \code{\link{label.feature}} function.
+#' @param size0 point size, default to 1 of nobs<1000, 0.4 if nobs>1000.
 #'
 #' @export shap.plot.dependence
 #' @return ggplot2 object
@@ -380,7 +365,8 @@ shap.plot.core <- function(show_feature, data0){
 shap.plot.dependence <- function(data_long,
                                  show_feature,
                                  dilute = FALSE,
-                                 customize_label = FALSE
+                                 customize_label = FALSE,
+                                 size0 = NULL
                                ){
   data0 <- data_long[show_feature,]
 
@@ -397,7 +383,14 @@ shap.plot.dependence <- function(data_long,
     data0[, rfvalue:= as.Date(rfvalue, format = "%Y-%m-%d", origin = "1970-01-01")]
   }
   # make core plot
-  plot1 <- shap.plot.core(show_feature, data0 = data0)
+  if (is.null(size0)) size0 <- if(nrow(data0)<1000L) 1 else 0.4
+  plot1 <- ggplot(data = data0, aes_string(x = "rfvalue", y = "value"))+
+    geom_point(size = size0, color = "blue2",
+               alpha = if(nrow(data0)<1000L) 1 else 0.6)+
+    geom_smooth(method = 'loess', color = 'red', size = 0.4, se = F) +
+    theme_bw() +
+    labs(y = "", x = label.feature(show_feature))
+
   # customize labels (for cwv, put dayint on 3-year interval)
   if (customize_label){
     plot1 <- plot.label(plot1, show_feature = show_feature)
@@ -422,13 +415,14 @@ shap.plot.dependence <- function(data_long,
 #' It is not necessary to start with the long-format data, but since I used that
 #' for the summary plot, I just continue to use the long dataset
 #'
-#' @param data_long the long format SHAP values
-#' @param data_int the 3-dimention SHAP interaction values array
-#' from \code{predict.xgb.Booster} or \code{\link{shap.prep.interaction}}
-#' @param x which feature to show on x axis, it will plot the feature value
-#' @param y which shap values to show on y axis, it will plot the SHAP value
-#' @param color_feature which feature value to use for coloring, color by the feature value
-#' @param smooth optional to add loess smooth line, default to T
+#' @param data_long the long format SHAP values.
+#' @param data_int the 3-dimention SHAP interaction values array.
+#' from \code{predict.xgb.Booster} or \code{\link{shap.prep.interaction}}.
+#' @param x which feature to show on x axis, it will plot the feature value.
+#' @param y which shap values to show on y axis, it will plot the SHAP value.
+#' @param color_feature which feature value to use for coloring, color by the feature value.
+#' @param smooth optional to add loess smooth line, default to TRUE.
+#' @param size0 point size, default to 1 of nobs<1000, 0.4 if nobs>1000.
 #'
 #' @export shap.plot.dependence.color
 #'
@@ -441,7 +435,8 @@ shap.plot.dependence.color <- function(data_long,
                                        x,
                                        y,
                                        color_feature = NULL,
-                                       smooth = T
+                                       smooth = T,
+                                       size0 = NULL
                                        ){
   if (is.null(color_feature)) color_feature = y # default to color by y
   data0 <- data_long[variable == y,.(variable, value)] # the shap value to plot for dependence plot
@@ -453,11 +448,12 @@ shap.plot.dependence.color <- function(data_long,
     data0[, x_feature:= as.Date(data0[,x_feature], format = "%Y-%m-%d",
                                 origin = "1970-01-01")]
   }
+  if (is.null(size0)) size0 <- if(nrow(data0)<1000L) 1 else 0.4
   plot1 <- ggplot(data = data0,
                   aes(x = x_feature,
                       y = if (is.null(data_int)) value else int_value,
                       color = color_value))+
-    geom_point(size = 0.2, alpha = 0.6)+
+    geom_point(size = size0, alpha = if(nrow(data0)<1000L) 1 else 0.6)+
     # a loess smoothing line:
     labs(y = if (is.null(data_int)) paste0("SHAP value for ", label.feature(y)) else paste0("SHAP interaction values for\n", label.feature(x), " and ", label.feature(y)) ,
          x = label.feature(x),
