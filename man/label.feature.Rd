@@ -4,7 +4,7 @@
 \alias{label.feature}
 \title{helper function to modify variables names.}
 \usage{
-label.feature(x)
+label.feature(x, labs)
 }
 \arguments{
 \item{x}{feature names}

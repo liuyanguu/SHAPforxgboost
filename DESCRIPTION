@@ -1,5 +1,5 @@
 Package: SHAPforxgboost
-Title: SHAP for 'XGBoost'
+Title: SHAP Plots for 'XGBoost'
 Version: 0.0.1
 Authors@R: c(
     person(given = "Yang", family = "Liu", role = c("aut", "cre"), email = "lyhello@gmail.com",
@@ -7,9 +7,9 @@ Authors@R: c(
     person(given = "Allan", family = "Just", role = c("ctb"), email = "allan.just@mssm.edu",
            comment = c(ORCID = "0000-0003-4312-5957"))
     )
-Description: 'SHAPforxgboost' creates SHAP (SHapley Additive exPlanation) visualization plots
- for 'XGBoost' in R. 'SHAPforxgboost' provides summary plot, dependence plot, interaction plot,
- and force plot. It relies on 'xgboost' package to produce SHAP values.
+Description: This package creates SHAP (SHapley Additive exPlanation) visualization plots
+ for 'XGBoost' in R. It provides summary plot, dependence plot, interaction plot,
+ and force plot. It relies on the 'dmlc/xgboost' package to produce SHAP values.
  Please refer to 'slundberg/shap' for the original implementation of SHAP in Python. 
 License: MIT + file LICENSE
 URL: https://github.com/liuyanguu/SHAPforxgboost
