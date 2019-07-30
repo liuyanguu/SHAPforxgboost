@@ -4,11 +4,12 @@
 \alias{label.feature}
 \title{helper function to modify variables names.}
 \usage{
-label.feature(x, labs)
+label.feature(x)
 }
 \arguments{
 \item{x}{feature names}
 }
 \description{
-helper function to modify variables names.
+if a global list \strong{new_labels} is provided, it will use that list to replace
+labels.
 }

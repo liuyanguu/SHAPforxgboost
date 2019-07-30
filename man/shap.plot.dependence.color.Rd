@@ -24,7 +24,7 @@ from \code{predict.xgb.Booster} or \code{\link{shap.prep.interaction}}.}
 \item{size0}{point size, default to 1 of nobs<1000, 0.4 if nobs>1000.}
 }
 \value{
-ggplot2 object
+returns a ggplot2 object, based on which you could add more geom layers.
 }
 \description{
 This function makes the dependence plot by default.

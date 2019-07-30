@@ -19,6 +19,9 @@ If you put dilute too high, at least 10 points per feature would be kept, unless
 
 \item{scientific}{default to F, show the mean|SHAP| in scientific format or not}
 }
+\value{
+returns a ggplot2 object, could add further layers.
+}
 \description{
 The summary plot (sina plot) using a long-format data of SHAP values. The long-format data
 could be obtained from either xgbmodel or a SHAP matrix using \code{\link{shap.values}}.

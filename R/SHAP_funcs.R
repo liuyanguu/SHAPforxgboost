@@ -9,7 +9,7 @@
 if(getRversion() >= "2.15.1")  {
   utils::globalVariables(c(".", "rfvalue", "value","variable","stdfvalue",
                            "x_feature", "mean_value",
-                           "int_value", "color_value",
+                           "int_value", "color_value", "new_labels",
                            "group", "rest_variables", "clusterid", "id", "BIAS"))
   }
 
@@ -183,6 +183,7 @@ xgboost.fit <- function(X, Y, xgb_param){
 #' @import ggplot2
 #' @importFrom ggforce geom_sina
 #' @export shap.plot.summary
+#' @return returns a ggplot2 object, could add further layers.
 #'
 #' @example R/example/example_fit_summary.R
 #'
@@ -280,36 +281,48 @@ shap.plot.summary.wrap2 <- function(shap_score, X, top_n, dilute = FALSE){
 
 #' helper function to modify variables names.
 #'
+#' if a global list **new_labels** is provided, it will use that list to replace
+#' labels.
+#'
 #' @param x feature names
 #'
 label.feature <- function(x){
   labs = list(diffcwv = "Diff CWV (cm)",
-    dayint = "Time trend",
-    date = "",
-    Column_WV = "MAIAC CWV (cm)",
-    AOT_Uncertainty = "Blue band uncertainty",
-    elev = "Elevation (m)",
-    aod = "Aerosol optical depth",
-    RelAZ = "Relative azimuth angle",
-    DevAll_P1km = expression(paste("Proportion developed area in 1",km^2)),
-    # newly added
-    dist_water_km = "Distance to water (km)",
-    forestProp_1km = expression(paste("Proportion of forest in 1",km^2)),
+              dayint = "Time trend",
+              date = "",
+              Column_WV = "MAIAC CWV (cm)",
+              AOT_Uncertainty = "Blue band uncertainty",
+              elev = "Elevation (m)",
+              aod = "Aerosol optical depth",
+              RelAZ = "Relative azimuth angle",
+              DevAll_P1km = expression(paste("Proportion developed area in 1",km^2)),
+              # newly added
+              dist_water_km = "Distance to water (km)",
+              forestProp_1km = expression(paste("Proportion of forest in 1",km^2)),
 
-    # `diff440 = Aer_optical_depth (DSCOVR MAIAC) -  aer_aod440 (AERONET)`
-    Aer_optical_depth = "DSCOVR EPIC MAIAC AOD400nm",
-    aer_aod440 = "AERONET AOD440nm",
-    aer_aod500 = "AERONET AOD500nm",
-    diff440 = "DSCOVR MAIAC - AERONET AOD",
-    diff440_pred = "Predicted Error",
-    aer_aod440_hat = "Predicted AERONET AOD440nm",
+              # `diff440 = Aer_optical_depth (DSCOVR MAIAC) -  aer_aod440 (AERONET)`
+              Aer_optical_depth = "DSCOVR EPIC MAIAC AOD400nm",
+              aer_aod440 = "AERONET AOD440nm",
+              aer_aod500 = "AERONET AOD500nm",
+              diff440 = "DSCOVR MAIAC - AERONET AOD",
+              diff440_pred = "Predicted Error",
+              aer_aod440_hat = "Predicted AERONET AOD440nm",
 
-    # New MCD19
-    AOD_470nm = "AERONET AOD470nm",
-    Optical_Depth_047_t = "MAIAC AOD470nm (Terra)",
-    Optical_Depth_047_a = "MAIAC AOD470nm (Aqua)"
+              # New MCD19
+              AOD_470nm = "AERONET AOD470nm",
+              Optical_Depth_047_t = "MAIAC AOD470nm (Terra)",
+              Optical_Depth_047_a = "MAIAC AOD470nm (Aqua)"
 
   )
+
+  if (!is.null(new_labels)) {
+    if(!is.list(new_labels)) {
+      message("new_labels should be a list, for example,`list(var0 = 'VariableA')`.\n")
+      }  else {
+      message("Plot will use user-defined labels.\n")
+      labs = new_labels}
+  }
+
   if (is.null(labs[[x]])){
     return(x)
   }else{
@@ -318,13 +331,14 @@ label.feature <- function(x){
 }
 
 
-#' sub-function to revise label for each feature.
+#' internal-function to revise label for each feature.
 #'
 #' This function further fine-tune the format of each feature
 #'
 #' @param plot1 ggplot2 object
 #' @param show_feature feature to plot
 #'
+#' @return returns ggplot2 object with further mordified layers based on the feature
 
 plot.label <- function(plot1, show_feature){
   if (show_feature == 'dayint'){
@@ -354,19 +368,22 @@ plot.label <- function(plot1, show_feature){
 #' @param data_long the long format SHAP values
 #' @param show_feature which feature to show
 #' @param dilute a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data. For example, if dilute = 5 will plot 1/5 of the data.
-#' @param customize_label optional to customize label using \code{\link{label.feature}} function.
 #' @param size0 point size, default to 1 of nobs<1000, 0.4 if nobs>1000.
+#' @param add_hist weather to add histogram using \code{ggMarginal}, default to TRUE.
+#' But notice the plot after adding histogram it is \code{ggExtraPlot} object, cannot
+#' add geom to that anymore. If wish to add more layers, turn the histogram off, or
+#' maybe use the \code{\link{shap.plot.dependence}}.
 #'
 #' @export shap.plot.dependence
-#' @return ggplot2 object
+#' @return returns a ggplot2 object, could add further layers.
 #'
 #' @example R/example/example_dependence_plot.R
 #'
 shap.plot.dependence <- function(data_long,
                                  show_feature,
                                  dilute = FALSE,
-                                 customize_label = FALSE,
-                                 size0 = NULL
+                                 size0 = NULL,
+                                 add_hist = T
                                ){
   data0 <- data_long[show_feature,]
 
@@ -392,12 +409,12 @@ shap.plot.dependence <- function(data_long,
     labs(y = "SHAP", x = label.feature(show_feature))
 
   # customize labels (for cwv, put dayint on 3-year interval)
-  if (customize_label){
-    plot1 <- plot.label(plot1, show_feature = show_feature)
+  plot1 <- plot.label(plot1, show_feature = show_feature)
+
+  if(add_hist){
+    plot1 <- ggExtra::ggMarginal(plot1, type = "histogram", bins = 50, size = 10, color="white")
   }
-  # add histogram
-  plot2 <- ggExtra::ggMarginal(plot1, type = "histogram", bins = 50, size = 10, color="white")
-  plot2
+  return(plot1)
 }
 # shap.plot.dependence('dayint', shap_long2)
 
@@ -426,7 +443,7 @@ shap.plot.dependence <- function(data_long,
 #'
 #' @export shap.plot.dependence.color
 #'
-#' @return ggplot2 object
+#' @return returns a ggplot2 object, based on which you could add more geom layers.
 #'
 #' @example R/example/example_dependence_plot.R
 #'

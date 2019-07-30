@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{plot.label}
 \alias{plot.label}
-\title{sub-function to revise label for each feature.}
+\title{internal-function to revise label for each feature.}
 \usage{
 \method{plot}{label}(plot1, show_feature)
 }
@@ -10,6 +10,9 @@
 \item{plot1}{ggplot2 object}
 
 \item{show_feature}{feature to plot}
+}
+\value{
+returns ggplot2 object with further mordified layers based on the feature
 }
 \description{
 This function further fine-tune the format of each feature

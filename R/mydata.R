@@ -1,5 +1,22 @@
 # These are the datasets loaded so all the example could run directly
 
+#' labels_within_package: Some labels package auther defined to make his plot, mainly serve the paper publication
+#'
+#' It contains a list that match each feature to its labels.
+#'
+#'
+#' @docType data
+#' @references \url{http://doi.org/10.5281/zenodo.3334713}
+#' @keywords Labels
+"labels_within_package"
+
+
+#'new_labels: a place holder, if supplied as a list, it offers user to rename labels
+#'
+#' @docType data
+#' @keywords Labels
+"new_labels"
+
 
 #' Terra satellite data (X,Y) for running the xgboost model .
 #'

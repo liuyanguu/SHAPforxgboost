@@ -1,7 +1,11 @@
 # SHAPforxgboost
 
-The goal of this SHAPforxgboost **R** package is to create SHAP (SHapley Additive exPlnation) visualization plots for XGBoost in R. 
+This package creates SHAP (SHapley Additive exPlanation) visualization plots
+ for 'XGBoost' in R. It provides summary plot, dependence plot, interaction plot,
+ and force plot. It relies on the 'dmlc/xgboost' package to produce SHAP values.
+ Please refer to 'slundberg/shap' for the original implementation of SHAP in Python. 
 
+The purpose is to create some conveniences for making these plot in R. But I understand 'ggplot' is highly flexible so people always need to fine-tune here and there. But the problem is adding more flexibility overcomplicates the functions. But since all the functions except force plot return ggplot object, it is possible to add more layers. The dependence plot without color `shap.plot.dependence` returns ggplot object if turns off the histogram using `add_hist = F`.
 
 
 Please refer to this blog for more examples and discussion on SHAP values in R, why use SHAP, and compared to Gain: 
@@ -139,7 +143,7 @@ shap.plot.force_plot_bygroup(plot_data)
 
 ## Reference
 
-Recent submitted paper from my lab that applies these figures:
+Recently submitted paper from my lab that applies these figures:
 [Gradient Boosting Machine Learning to Improve Satellite-Derived Column Water Vapor Measurement Error](http://doi.org/10.5281/zenodo.3334713)
 
 Corresponding SHAP plots package in Python: [https://github.com/slundberg/shap](https://github.com/slundberg/shap)

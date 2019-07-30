@@ -5,7 +5,7 @@
 \title{SHAP dependence plot with marginal histogram.}
 \usage{
 shap.plot.dependence(data_long, show_feature, dilute = FALSE,
-  customize_label = FALSE, size0 = NULL)
+  size0 = NULL, add_hist = T)
 }
 \arguments{
 \item{data_long}{the long format SHAP values}
@@ -14,12 +14,15 @@ shap.plot.dependence(data_long, show_feature, dilute = FALSE,
 
 \item{dilute}{a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data. For example, if dilute = 5 will plot 1/5 of the data.}
 
-\item{customize_label}{optional to customize label using \code{\link{label.feature}} function.}
-
 \item{size0}{point size, default to 1 of nobs<1000, 0.4 if nobs>1000.}
+
+\item{add_hist}{weather to add histogram using \code{ggMarginal}, default to TRUE.
+But notice the plot after adding histogram it is \code{ggExtraPlot} object, cannot
+add geom to that anymore. If wish to add more layers, turn the histogram off, or
+maybe use the \code{\link{shap.plot.dependence}}.}
 }
 \value{
-ggplot2 object
+returns a ggplot2 object, could add further layers.
 }
 \description{
 \code{shap.plot.dependence} is not colored by another variable,
