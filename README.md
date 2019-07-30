@@ -26,7 +26,8 @@ Code in the next session
 **Summary plot**
 
 ```{r}
-# run the model with built-in data
+# run the model with built-in data, these codes can run directly if package installed  
+library("SHAPforxgboost")
 y_var <-  "diffcwv"
 dataX <- dataXY_df[,-..y_var]
 # hyperparameter tuning results
