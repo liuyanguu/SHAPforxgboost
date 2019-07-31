@@ -5,7 +5,7 @@
 \title{SHAP summary plot core function using the long-format SHAP values.}
 \usage{
 shap.plot.summary(data_long, x_bound = NULL, dilute = FALSE,
-  scientific = F)
+  scientific = FALSE)
 }
 \arguments{
 \item{data_long}{a long format data of SHAP values}

@@ -5,8 +5,9 @@ This package creates SHAP (SHapley Additive exPlanation) visualization plots
  and force plot. It relies on the 'dmlc/xgboost' package to produce SHAP values.
  Please refer to 'slundberg/shap' for the original implementation of SHAP in Python. 
 
-The purpose is to create some conveniences for making these plot in R. But I understand 'ggplot' is highly flexible so people always need to fine-tune here and there. But the problem is adding more flexibility overcomplicates the functions. But since all the functions except force plot return ggplot object, it is possible to add more layers. The dependence plot without color `shap.plot.dependence` returns ggplot object if turns off the histogram using `add_hist = F`.
+The purpose is to create some conveniences for making these plot in R. I understand 'ggplot' is highly flexible so people always need to fine-tune here and there. But adding more flexibility just over-complicates the wrapped functions. I am trying to find a balance. All the functions except force plot return ggplot object, it is possible to add more layers. The dependence plot without color `shap.plot.dependence` returns ggplot object if turns off the histogram using `add_hist = F`.
 
+I have built in some default labels for feature names, you could also supply features labels as a list named `new_labels`, the functions will use this list and plot accordingly. Another option is you can always overwrite the labels later by adding `labs` layer to the ggplot object. 
 
 Please refer to this blog for more examples and discussion on SHAP values in R, why use SHAP, and compared to Gain: 
 [SHAP visualization for XGBoost in R](https://liuyanguu.github.io/post/2019/07/18/visualization-of-shap-for-xgboost/)
@@ -51,6 +52,7 @@ shap_values$mean_shap_score
 shap_long <- shap.prep(xgb_model = mod, X_train = dataX)
 # is the same as: using given shap_contrib
 shap_long <- shap.prep(shap_contrib = shap_values$shap_score, X_train = dataX)
+# (There will be a data.table warning from `melt.data.table` due to `dayint` coerced from integer to double)
 
 # **SHAP summary plot**
 shap.plot.summary(shap_long)

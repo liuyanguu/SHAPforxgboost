@@ -9,7 +9,8 @@
 if(getRversion() >= "2.15.1")  {
   utils::globalVariables(c(".", "rfvalue", "value","variable","stdfvalue",
                            "x_feature", "mean_value",
-                           "int_value", "color_value", "new_labels",
+                           "int_value", "color_value",
+                           "new_labels","labels_within_package",
                            "group", "rest_variables", "clusterid", "id", "BIAS"))
   }
 
@@ -189,7 +190,7 @@ xgboost.fit <- function(X, Y, xgb_param){
 #'
 shap.plot.summary <- function(data_long,
                               x_bound = NULL,
-                              dilute = FALSE, scientific = F){
+                              dilute = FALSE, scientific = FALSE){
 
   if (scientific){label_format = "%.1e"} else {label_format = "%.3f"}
   # check number of observations
@@ -220,7 +221,7 @@ shap.plot.summary <- function(data_long,
     #          label = expression(group("|", bar(SHAP), "|"))) +
     scale_color_gradient(low="#FFCC33", high="#6600CC",
                          breaks=c(0,1), labels=c(" Low","High "),
-                         guide = guide_colorbar(barwidth = 10, barheight = 0.3)) +
+                         guide = guide_colorbar(barwidth = 12, barheight = 0.3)) +
     theme_bw() +
     theme(axis.line.y = element_blank(),
           axis.ticks.y = element_blank(), # remove axis line
@@ -229,8 +230,10 @@ shap.plot.summary <- function(data_long,
           legend.text=element_text(size=8),
           axis.title.x= element_text(size = 10)) +
     geom_hline(yintercept = 0) + # the vertical line
-    # reverse the order of features
-    scale_x_discrete(limits = rev(levels(data_long$variable)))+
+    # reverse the order of features, from high to low
+    # also relabel the feature using `label.feature`
+    scale_x_discrete(limits = rev(levels(data_long$variable)),
+                     labels = label.feature(rev(levels(data_long$variable))))+
     labs(y = "SHAP value (impact on model output)", x = "", color = "Feature value  ")
   return(plot1)
 }
@@ -279,42 +282,19 @@ shap.plot.summary.wrap2 <- function(shap_score, X, top_n, dilute = FALSE){
 
 # dependence plot  --------------------------------------------------------
 
-#' helper function to modify variables names.
+#' helper function to modify labels for features under plotting.
 #'
-#' if a global list **new_labels** is provided, it will use that list to replace
-#' labels.
+#' if a global list named **new_labels** is provided (\code{!is.null(new_labels}),
+#' the plots will use that list to replace default labels \code{labels_within_package}.
 #'
-#' @param x feature names
+#' @param x variable names
+#'
+#' @return a character, e.g. "date", "Time Trend", etc.
 #'
 label.feature <- function(x){
-  labs = list(diffcwv = "Diff CWV (cm)",
-              dayint = "Time trend",
-              date = "",
-              Column_WV = "MAIAC CWV (cm)",
-              AOT_Uncertainty = "Blue band uncertainty",
-              elev = "Elevation (m)",
-              aod = "Aerosol optical depth",
-              RelAZ = "Relative azimuth angle",
-              DevAll_P1km = expression(paste("Proportion developed area in 1",km^2)),
-              # newly added
-              dist_water_km = "Distance to water (km)",
-              forestProp_1km = expression(paste("Proportion of forest in 1",km^2)),
-
-              # `diff440 = Aer_optical_depth (DSCOVR MAIAC) -  aer_aod440 (AERONET)`
-              Aer_optical_depth = "DSCOVR EPIC MAIAC AOD400nm",
-              aer_aod440 = "AERONET AOD440nm",
-              aer_aod500 = "AERONET AOD500nm",
-              diff440 = "DSCOVR MAIAC - AERONET AOD",
-              diff440_pred = "Predicted Error",
-              aer_aod440_hat = "Predicted AERONET AOD440nm",
-
-              # New MCD19
-              AOD_470nm = "AERONET AOD470nm",
-              Optical_Depth_047_t = "MAIAC AOD470nm (Terra)",
-              Optical_Depth_047_a = "MAIAC AOD470nm (Aqua)"
-
-  )
-
+  labs = labels_within_package # a saved list of some feature names that I am using
+  # but if you supply your own `new_labels`, it will print your feature names
+  # must provide a list.
   if (!is.null(new_labels)) {
     if(!is.list(new_labels)) {
       message("new_labels should be a list, for example,`list(var0 = 'VariableA')`.\n")
@@ -322,12 +302,15 @@ label.feature <- function(x){
       message("Plot will use user-defined labels.\n")
       labs = new_labels}
   }
-
-  if (is.null(labs[[x]])){
-    return(x)
-  }else{
-    return(labs[[x]])
+  out <- rep(NA, length(x))
+  for (i in 1:length(x)){
+    if (is.null(labs[[ x[i] ]])){
+      out[i] <- x[i]
+    }else{
+      out[i] <- labs[[ x[i] ]]
+    }
   }
+  out
 }
 
 

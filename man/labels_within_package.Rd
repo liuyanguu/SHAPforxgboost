@@ -3,13 +3,13 @@
 \docType{data}
 \name{labels_within_package}
 \alias{labels_within_package}
-\title{labels_within_package: Some labels package auther defined to make his plot, mainly serve the paper publication}
+\title{labels_within_package: Some labels package auther defined to make his plot, mainly serve the paper publication.}
 \format{An object of class \code{list} of length 20.}
 \usage{
 labels_within_package
 }
 \description{
-It contains a list that match each feature to its labels.
+It contains a list that match each feature to its labels. It is used in the function \code{\link{plot.label}}.
 }
 \references{
 \url{http://doi.org/10.5281/zenodo.3334713}

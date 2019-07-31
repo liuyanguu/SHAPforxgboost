@@ -2,14 +2,17 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{label.feature}
 \alias{label.feature}
-\title{helper function to modify variables names.}
+\title{helper function to modify labels for features under plotting.}
 \usage{
 label.feature(x)
 }
 \arguments{
-\item{x}{feature names}
+\item{x}{variable names}
+}
+\value{
+a character, e.g. "date", "Time Trend", etc.
 }
 \description{
-if a global list \strong{new_labels} is provided, it will use that list to replace
-labels.
+if a global list named \strong{new_labels} is provided (\code{!is.null(new_labels}),
+the plots will use that list to replace default labels \code{labels_within_package}.
 }

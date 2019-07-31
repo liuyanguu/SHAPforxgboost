@@ -1,8 +1,8 @@
 # These are the datasets loaded so all the example could run directly
 
-#' labels_within_package: Some labels package auther defined to make his plot, mainly serve the paper publication
+#' labels_within_package: Some labels package auther defined to make his plot, mainly serve the paper publication.
 #'
-#' It contains a list that match each feature to its labels.
+#' It contains a list that match each feature to its labels. It is used in the function \code{\link{plot.label}}.
 #'
 #'
 #' @docType data
@@ -11,7 +11,9 @@
 "labels_within_package"
 
 
-#'new_labels: a place holder, if supplied as a list, it offers user to rename labels
+#'new_labels: a place holder default to NULL.
+#'
+#'if supplied as a list, it offers user to rename labels
 #'
 #' @docType data
 #' @keywords Labels

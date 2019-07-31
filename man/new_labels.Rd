@@ -3,12 +3,12 @@
 \docType{data}
 \name{new_labels}
 \alias{new_labels}
-\title{new_labels: a place holder, if supplied as a list, it offers user to rename labels}
+\title{new_labels: a place holder default to NULL.}
 \format{An object of class \code{NULL} of length 0.}
 \usage{
 new_labels
 }
 \description{
-new_labels: a place holder, if supplied as a list, it offers user to rename labels
+if supplied as a list, it offers user to rename labels
 }
 \keyword{Labels}
