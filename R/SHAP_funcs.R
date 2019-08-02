@@ -87,8 +87,10 @@ shap.prep <- function(xgb_model = NULL,
 
   # choose top n features
   if (is.null(top_n)) top_n <- dim(X_train)[2] # by default, use all features
-  if (!top_n%in%c(1:dim(X_train)[2])) {message ('supply correct top_n')
-  top_n <- dim(X_train)[2]
+  top_n <- as.integer(top_n)
+  if (!top_n%in%c(1:dim(X_train)[2])) {
+    message ('Please supply correct top_n, by default use all features.\n')
+    top_n <- dim(X_train)[2]
   }
 
   # descending order
@@ -130,39 +132,6 @@ shap.prep.interaction <- function(xgb_model, X_train){
   shap_int <- predict(xgb_model, as.matrix(X_train), predinteraction = TRUE)
   return(shap_int)
 }
-
-
-# modelling functions --------------------------------------------------------
-
-#' A wrapped function to run xgboost model.
-#'
-#' @param X predictors, Notice that **should NOT contains Y**.
-#' @param Y dependent variable Y.
-#' @param xgb_param a list of hyperparameters selected
-#'
-#' @importFrom  xgboost xgboost
-#' @importFrom parallel detectCores
-#' @export xgboost.fit
-#'
-#' @example R/example/example_fit_summary.R
-#'
-xgboost.fit <- function(X, Y, xgb_param){
-  xgb_threads  <-  (
-    if (Sys.info()["nodename"] == "belle") 14 # 32 cores
-    else if (Sys.info()["nodename"] == "coco") 22 # 48 cores
-    else parallel::detectCores()) - 2
-
-  # ("* Notes, Be careful X should not contains Y.\n")
-  if (!is.null(xgb_param$seed)) set.seed(xgb_param$seed) else set.seed(1234)
-  xgbmod <- xgboost::xgboost(data = as.matrix(X), label = as.matrix(Y),
-                    params = xgb_param, nrounds = xgb_param$nrounds,
-                    nthread = xgb_threads, verbose = FALSE,
-                    early_stopping_rounds = 8)
-  return(xgbmod)
-}
-
-
-
 
 # SHAP summary plot ----------------------------------------------------------
 
@@ -481,7 +450,7 @@ shap.plot.dependence.color <- function(data_long,
 #'
 #' @param shap_contrib shap_contrib is the SHAP value data returned from predict.xgb.booster
 #' @param data_percent what percent of data to plot (to speed up), in the range of (0,1]
-#' @param top_n optional to show only top_n features, combine the rest
+#' @param top_n integer, optional to show only top_n features, combine the rest
 #' @param cluster_method default to ward.D
 #' @param n_groups a integer, how many groups to plot in \code{\link{shap.plot.force_plot_bygroup}}
 #'
@@ -503,19 +472,21 @@ shap.prep.stack.data <- function(shap_contrib,
   if (data_percent>1|data_percent<=0) data_percent <- 1
   shap_contrib2 <- shap_contrib2[sample(.N, .N * data_percent)]
 
-  # select columns into `shapobs`
-  if(is.null(top_n))top_n <- length(ranked_col) # by default, show all variables
-  if (top_n < length(ranked_col)){
+  # select columns into `shapobs`, default to all columns
+  if(is.null(top_n)) top_n <- length(ranked_col)
+  top_n <- as.integer(top_n)
+  if(!top_n%in%c(1:length(ranked_col))) top_n <- length(ranked_col)
+  if(top_n < length(ranked_col)){
     top_ranked_col <- ranked_col[1:top_n]
     bottom_col <- ranked_col[-(1:top_n)]
     shap_contrib2[, rest_variables:= rowSums(.SD), .SDcol = bottom_col]
     # dataset with desired variables for plot
     shapobs <- shap_contrib2[, c(top_ranked_col, "rest_variables"), with = F]
-    cat(paste("The SHAP values of the Rest", length(ranked_col) - top_n, "variables were summed into variable 'rest_variables'.\n"))
-  } else if (top_n == length(ranked_col)) {
+    message("The SHAP values of the Rest ", length(ranked_col) - top_n, " features were summed into variable 'rest_variables'.\n")
+  } else {
     shapobs <- shap_contrib2
-  } else {stop(paste("top_n should not above", length(ranked_col)))}
-
+    message("All the features will be used.\n")
+  }
 
   # sort by cluster
   clusters <- hclust(dist(scale(shapobs)), method = cluster_method)
@@ -576,11 +547,13 @@ shap.plot.force_plot <- function(shapobs, id = 'id',
   }
 
   # how to zoom in
-  if (!is.null(y_parent_limit)&!is.null(y_zoomin_limit)) cat("Just notice that when parent limit is set, the zoom in axis limit won't work, it seems to be a problem of ggforce.\n")
+  if (!is.null(y_parent_limit)&!is.null(y_zoomin_limit)) {
+    warning("Just notice that when parent limit is set, the zoom in axis limit won't work, it seems to be a problem of ggforce.\n")
+    }
   if(zoom_in&is.null(zoom_in_group)){
     x_mid <- if (is.null(zoom_in_location)) shapobs[,.N]*0.6 else zoom_in_location
     x_interval <- stats::median(c(50, 150, floor(shapobs[,.N]*0.1)))
-    cat("Data has N:", shapobs[,.N],"| zoom in length is", x_interval, "at location",x_mid, "\n")
+    message("Data has N = ", shapobs[,.N]," | zoom in length is ", x_interval, " at location ",x_mid, ".\n")
     p <- p +
       ggforce::facet_zoom(xlim = c(x_mid, x_mid + x_interval),
                  ylim = y_zoomin_limit, horizontal = F,
@@ -588,7 +561,8 @@ shap.plot.force_plot <- function(shapobs, id = 'id',
       ) +
       theme(zoom.y = element_blank(), validate = FALSE) # zoom in using this line
   } else if (zoom_in){
-    cat("Data has N:", shapobs[,.N],"| zoom in at cluster",zoom_in_group,"with N:",shapobs[group ==zoom_in_group,.N], "\n")
+
+    message("Data has N = ", shapobs[,.N]," | zoom in at cluster ",zoom_in_group," with N = ",shapobs[group ==zoom_in_group,.N], ".\n")
     p <- p +
       ggforce::facet_zoom(x = group == zoom_in_group,
                  ylim = y_zoomin_limit, horizontal = F,
@@ -597,7 +571,7 @@ shap.plot.force_plot <- function(shapobs, id = 'id',
       theme(zoom.y = element_blank(), validate = FALSE) # zoom in using this line
   }
   else{
-    cat("Data has N:", shapobs[,.N],"| no zoom in\n")
+    message("Data has N = ", shapobs[,.N]," | no zoom in.\n")
   }
   return(p)
 }

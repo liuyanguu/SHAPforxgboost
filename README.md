@@ -40,8 +40,10 @@ param_dart <- list(objective = "reg:linear",  # For regression
                    subsample = 0.98,
                    colsample_bytree = 0.86)
 
-mod <- xgboost.fit(X = as.matrix(dataX), Y = as.matrix(dataXY_df[[y_var]]), 
-                       xgb_param = param_dart)
+mod <- xgboost::xgboost(data = as.matrix(dataX), label = as.matrix(dataXY_df[[y_var]]), 
+                       xgb_param = param_dart, nrounds = param_dart$nrounds,
+                       verbose = FALSE, nthread = parallel::detectCores() - 2,
+                       early_stopping_rounds = 8)
                        
 # To return the SHAP values and ranked features by mean|SHAP|
 shap_values <- shap.values(xgb_model = mod, X_train = dataX)

@@ -10,7 +10,7 @@ shap.prep.stack.data(shap_contrib, top_n = NULL, data_percent = 1,
 \arguments{
 \item{shap_contrib}{shap_contrib is the SHAP value data returned from predict.xgb.booster}
 
-\item{top_n}{optional to show only top_n features, combine the rest}
+\item{top_n}{integer, optional to show only top_n features, combine the rest}
 
 \item{data_percent}{what percent of data to plot (to speed up), in the range of (0,1]}
 
