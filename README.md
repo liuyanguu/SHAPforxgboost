@@ -20,9 +20,13 @@ Please install from github:
 devtools::install_github("liuyanguu/SHAPforxgboost")
 ```
 
-## Examples
+You can also install the released version of plotthis from [CRAN](https://CRAN.R-project.org) with:
 
-Code in the next session
+``` r
+install.packages("SHAPforxgboost")
+```
+
+## Examples
 
 **Summary plot**
 
