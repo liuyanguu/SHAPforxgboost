@@ -71,9 +71,9 @@ scatter.plot.diagonal <- function(data, x, y, dilute = F, add_abline = F, add_hi
 
   if(add_abline){
     plot1 <- plot1 + geom_abline(intercept =0 , slope = 1, color = "grey")
-
   }
-  cat("R2 is", summary(lm(data[[y]]~data[[x]], na.action = na.omit))$r.squared,"\n")
+
+  print(paste("R2 is", summary(lm(data[[y]]~data[[x]], na.action = na.omit))$r.squared,"."))
   # customize labels
   if(add_hist){
     plot1 <- ggExtra::ggMarginal(plot1, type = "histogram", bins = 50, size = 10, color="white")
