@@ -12,7 +12,10 @@ shap.plot.dependence(data_long, show_feature, dilute = FALSE,
 
 \item{show_feature}{which feature to show}
 
-\item{dilute}{a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data. For example, if dilute = 5 will plot 1/5 of the data.}
+\item{dilute}{a number or logical, dafault to TRUE,
+will plot \code{nrow(data_long)/dilute} data.
+For example, if dilute = 5 will plot 1/5 of the data.
+As long as dilute != FALSE, will plot at most half the data.}
 
 \item{size0}{point size, default to 1 of nobs<1000, 0.4 if nobs>1000.}
 

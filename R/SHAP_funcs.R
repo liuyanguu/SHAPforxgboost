@@ -146,7 +146,7 @@ shap.prep.interaction <- function(xgb_model, X_train){
 #' @param x_bound in case need to limit x_axis_limit
 #' @param dilute a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data.
 #' for example, if dilute = 5 will plot 1/5 of the data.
-#' If dilute = TRUE or a number, we will plot at most 1,500 points per feature, so the plot won't be too slow.
+#' If dilute = TRUE or a number, we will plot at most half points per feature, so the plot won't be too slow.
 #' If you put dilute too high, at least 10 points per feature would be kept, unless the dataset is very small.
 #' @param scientific default to F, show the mean|SHAP| in scientific format or not
 #'
@@ -170,7 +170,8 @@ shap.plot.summary <- function(data_long,
     # if nrow_X <= 10, no dilute happens
     dilute <- ceiling(min(nrow_X/10, abs(as.numeric(dilute)))) # not allowed to dilute to fewer than 10 obs/feature
     set.seed(1234)
-    data_long <- data_long[sample(nrow(data_long), min(nrow(data_long)/dilute, N_features*1500))] # dilute
+    data_long <- data_long[sample(nrow(data_long),
+                                  min(nrow(data_long)/dilute, nrow(data_long)/2))] # dilute
   }
 
   x_bound <- if (is.null(x_bound)) max(abs(data_long$value))*1.1 else as.numeric(abs(x_bound))
@@ -319,7 +320,10 @@ plot.label <- function(plot1, show_feature){
 #'
 #' @param data_long the long format SHAP values
 #' @param show_feature which feature to show
-#' @param dilute a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data. For example, if dilute = 5 will plot 1/5 of the data.
+#' @param dilute a number or logical, dafault to TRUE,
+#' will plot \code{nrow(data_long)/dilute} data.
+#' For example, if dilute = 5 will plot 1/5 of the data.
+#' As long as dilute != FALSE, will plot at most half the data.
 #' @param size0 point size, default to 1 of nobs<1000, 0.4 if nobs>1000.
 #' @param add_hist weather to add histogram using \code{ggMarginal}, default to TRUE.
 #' But notice the plot after adding histogram it is \code{ggExtraPlot} object, cannot
@@ -342,9 +346,10 @@ shap.plot.dependence <- function(data_long,
   nrow_X <- nrow(data0)
   if (is.null(dilute)) dilute = FALSE
   if (dilute!=0){
-    dilute <- ceiling(min(nrow(data0)/10, abs(as.numeric(dilute)))) # not allowed to dilute to fewer than 10 obs/feature
+    dilute <- ceiling(min(nrow(data0)/10, abs(as.numeric(dilute))))
+    # not allowed to dilute to fewer than 10 obs/feature
     set.seed(1234)
-    data0 <- data0[sample(nrow(data0), min(nrow(data0)/dilute, 1500))] # dilute
+    data0 <- data0[sample(nrow(data0), min(nrow(data0)/dilute, nrow(data0)/2))] # dilute
   }
 
   # for dayint, reformat date

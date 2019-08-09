@@ -11,6 +11,7 @@
 #' @param dilute a number or logical, dafault to TRUE,
 #'  will plot \code{nrow(data_long)/dilute} data. For example,
 #'  if dilute = 5 will plot 1/5 of the data.
+#'  if dilute = TRUE will plot half of the data.
 #' @param add_hist optional to add marginal histogram
 #' using `ggExtra::ggMarginal` but notice
 #' if add histogram, what is returned is no longer a ggplot2 object
@@ -21,7 +22,7 @@
 #'
 #' @export scatter.plot.simple
 #'
-scatter.plot.simple <-  function(data, x, y, size0 = 0.1, alpha0 = 0.3,
+scatter.plot.simple <-  function(data, x, y, size0 = 0.2, alpha0 = 0.3,
                                  dilute = FALSE,
                                  add_hist = TRUE){
   set.seed(1234)
@@ -30,9 +31,9 @@ scatter.plot.simple <-  function(data, x, y, size0 = 0.1, alpha0 = 0.3,
     dilute <- ceiling(min(nrow(data)/10, abs(as.numeric(dilute))))
     # not allowed to dilute to fewer than 10 obs/feature
     set.seed(1234)
-    data <- data[sample(nrow(data), min(nrow(data)/dilute, 1500))]
+    data <- data[sample(nrow(data), min(nrow(data)/dilute, nrow(data)/2))]
   }
-  if (is.null(size0)) size0 <- if(nrow(data)<1000L) 1 else 0.4
+  if (is.null(size0)) size0 <- if(nrow(data)<1000L) 1 else 0.2
 
   plot0 <- ggplot(data = data, aes(x = data[[x]], y = data[[y]]))+
     geom_point(size = size0, alpha = alpha0) +
@@ -53,14 +54,8 @@ scatter.plot.simple <-  function(data, x, y, size0 = 0.1, alpha0 = 0.3,
 #' @import data.table
 #' @importFrom BBmisc capitalizeStrings
 #'
-#' @param data dataset
-#' @param x x
-#' @param y y
-#' @param dilute a number or logical, dafault to TRUE, will
-#' plot \code{nrow(data_long)/dilute} data. For example,
-#' if dilute = 5 will plot 1/5 of the data.
+#' @inheritParams scatter.plot.simple
 #' @param add_abline default to FALSE, add a diagonal line
-#' @param add_hist optional to add marginal histogram using
 #' `ggExtra::ggMarginal` but notice
 #' if add histogram, what is returned is no longer a ggplot2 object
 #' @return ggplot2 object if `add_hist = FALSE`
@@ -70,6 +65,7 @@ scatter.plot.simple <-  function(data, x, y, size0 = 0.1, alpha0 = 0.3,
 #' @export scatter.plot.diagonal
 #'
 scatter.plot.diagonal <- function(data, x, y,
+                                  size0 = 0.2, alpha0 = 0.3,
                                   dilute = FALSE,
                                   add_abline = FALSE,
                                   add_hist = TRUE){
@@ -79,11 +75,12 @@ scatter.plot.diagonal <- function(data, x, y,
     dilute <- ceiling(min(nrow(data)/10, abs(as.numeric(dilute))))
     # not allowed to dilute to fewer than 10 obs/feature
     set.seed(1234)
-    data <- data[sample(nrow(data), min(nrow(data)/dilute, 1500))]
+    data <- data[sample(nrow(data), min(nrow(data)/dilute, nrow(data)/2))]
   }
+  if (is.null(size0)) size0 <- if(nrow(data)<1000L) 1 else 0.2
 
   plot1 <-  ggplot(data = data, aes(x = data[[x]], y = data[[y]]))+
-    geom_point(size = 0.1, alpha = 0.3) +
+    geom_point(size = size0, alpha = alpha0) +
     theme_bw() +
     geom_smooth(method = 'lm') +
     labs(x = BBmisc::capitalizeStrings(x), y = BBmisc::capitalizeStrings(y)) +

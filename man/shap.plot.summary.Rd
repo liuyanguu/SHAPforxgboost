@@ -14,7 +14,7 @@ shap.plot.summary(data_long, x_bound = NULL, dilute = FALSE,
 
 \item{dilute}{a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data.
 for example, if dilute = 5 will plot 1/5 of the data.
-If dilute = TRUE or a number, we will plot at most 1,500 points per feature, so the plot won't be too slow.
+If dilute = TRUE or a number, we will plot at most half points per feature, so the plot won't be too slow.
 If you put dilute too high, at least 10 points per feature would be kept, unless the dataset is very small.}
 
 \item{scientific}{default to F, show the mean|SHAP| in scientific format or not}
