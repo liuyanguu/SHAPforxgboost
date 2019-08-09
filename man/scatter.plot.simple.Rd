@@ -18,9 +18,12 @@ scatter.plot.simple(data, x, y, size0 = 0.1, alpha0 = 0.3,
 
 \item{alpha0}{alpha of point}
 
-\item{dilute}{a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data. For example, if dilute = 5 will plot 1/5 of the data.}
+\item{dilute}{a number or logical, dafault to TRUE,
+will plot \code{nrow(data_long)/dilute} data. For example,
+if dilute = 5 will plot 1/5 of the data.}
 
-\item{add_hist}{optional to add marginal histogram using \code{ggExtra::ggMarginal} but notice
+\item{add_hist}{optional to add marginal histogram
+using \code{ggExtra::ggMarginal} but notice
 if add histogram, what is returned is no longer a ggplot2 object}
 }
 \value{

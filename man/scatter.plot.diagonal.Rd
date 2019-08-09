@@ -4,8 +4,8 @@
 \alias{scatter.plot.diagonal}
 \title{make customized scatter plot with diagonal line and R2 printed.}
 \usage{
-scatter.plot.diagonal(data, x, y, dilute = F, add_abline = F,
-  add_hist = T)
+scatter.plot.diagonal(data, x, y, dilute = FALSE, add_abline = FALSE,
+  add_hist = TRUE)
 }
 \arguments{
 \item{data}{dataset}
@@ -14,11 +14,14 @@ scatter.plot.diagonal(data, x, y, dilute = F, add_abline = F,
 
 \item{y}{y}
 
-\item{dilute}{a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data. For example, if dilute = 5 will plot 1/5 of the data.}
+\item{dilute}{a number or logical, dafault to TRUE, will
+plot \code{nrow(data_long)/dilute} data. For example,
+if dilute = 5 will plot 1/5 of the data.}
 
 \item{add_abline}{default to FALSE, add a diagonal line}
 
-\item{add_hist}{optional to add marginal histogram using \code{ggExtra::ggMarginal} but notice
+\item{add_hist}{optional to add marginal histogram using
+\code{ggExtra::ggMarginal} but notice
 if add histogram, what is returned is no longer a ggplot2 object}
 }
 \value{
