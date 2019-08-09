@@ -26,7 +26,9 @@ Imports:
     ggforce (>= 0.2.1.9000),
     ggExtra (>= 0.8),
     RColorBrewer (>= 1.1.2),
-    parallel
+    parallel,
+    ggpubr,
+    BBmisc
 Suggests:
     gridExtra (>= 2.3),
     here

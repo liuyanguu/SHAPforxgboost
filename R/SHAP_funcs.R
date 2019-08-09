@@ -25,7 +25,7 @@ if(getRversion() >= "2.15.1")  {
 #'
 #' @import data.table
 #' @import xgboost
-#' @importFrom stats cutree dist hclust predict
+#' @importFrom stats cutree dist hclust predict lm na.omit
 #'
 #' @export shap.values
 #'
