@@ -26,11 +26,11 @@ Imports:
     ggforce (>= 0.2.1.9000),
     ggExtra (>= 0.8),
     RColorBrewer (>= 1.1.2),
-    parallel,
     ggpubr,
     BBmisc
 Suggests:
     gridExtra (>= 2.3),
-    here
+    here,
+    parallel
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1.9000

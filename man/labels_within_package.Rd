@@ -13,8 +13,8 @@ It contains a list that match each feature to its labels. It is used in the func
 }
 \details{
 labels_within_package <- list(
-diffcwv = "ΔCWV (cm)",
 dayint = "Time trend",
+diffcwv = "delta CWV (cm)",
 date = "",
 Column_WV = "MAIAC CWV (cm)",
 AOT_Uncertainty = "Blue band uncertainty",
