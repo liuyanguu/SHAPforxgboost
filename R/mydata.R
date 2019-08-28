@@ -9,8 +9,8 @@
 #' @references \url{http://doi.org/10.5281/zenodo.3334713}
 #' @keywords Labels
 #' @details labels_within_package <- list(
-#'    diffcwv = "ΔCWV (cm)",
 #'    dayint = "Time trend",
+#'    diffcwv = "delta CWV (cm)",
 #'    date = "",
 #'    Column_WV = "MAIAC CWV (cm)",
 #'    AOT_Uncertainty = "Blue band uncertainty",
