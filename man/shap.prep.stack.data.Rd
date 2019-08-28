@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.prep.stack.data}
 \alias{shap.prep.stack.data}
-\title{Prepare data for SHAP force plot (stack plot).}
+\title{Prepare data for SHAP force plot (stack plot)}
 \usage{
 shap.prep.stack.data(shap_contrib, top_n = NULL, data_percent = 1,
   cluster_method = "ward.D", n_groups = 10L)
@@ -23,7 +23,7 @@ a dataset for stack plot
 }
 \description{
 Make force plot for \code{top_n} features, option to randomly
-plot p*100 percent of the data in case the dataset is large.
+plot certain portion of the data in case the dataset is large.
 }
 \examples{
 

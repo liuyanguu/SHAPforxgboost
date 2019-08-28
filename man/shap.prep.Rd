@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.prep}
 \alias{shap.prep}
-\title{prep SHAP values into long format for plotting.}
+\title{prep SHAP values into long format for plotting}
 \usage{
 shap.prep(xgb_model = NULL, shap_contrib = NULL, X_train,
   top_n = NULL)
@@ -18,10 +18,10 @@ if not NULL, will be taken as SHAP values,}
 \item{top_n}{to choose top_n variables ranked by mean|SHAP| if needed}
 }
 \value{
-a long-format data.table
+a long-format data.table, named as \code{shap_long} in other functions
 }
 \description{
-prep SHAP values into long format for plotting.
+prep SHAP values into long format for plotting
 }
 \examples{
 data("iris")
@@ -43,7 +43,7 @@ shap_long_iris <- shap.prep(xgb_model = mod1, X_train = X1)
 shap_long_iris <- shap.prep(shap_contrib = shap_values_iris, X_train = X1)
 
 # **SHAP summary plot**
-shap.plot.summary(shap_long_iris)
+shap.plot.summary(shap_long_iris, scientific = TRUE)
 shap.plot.summary(shap_long_iris, x_bound  = 1.5, dilute = 10)
 
 # Alternatives options to make the same plot:

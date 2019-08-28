@@ -2,31 +2,38 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.plot.summary}
 \alias{shap.plot.summary}
-\title{SHAP summary plot core function using the long-format SHAP values.}
+\title{SHAP summary plot core function using the long-format SHAP values}
 \usage{
 shap.plot.summary(data_long, x_bound = NULL, dilute = FALSE,
-  scientific = FALSE)
+  scientific = FALSE, my_format = NULL)
 }
 \arguments{
-\item{data_long}{a long format data of SHAP values}
+\item{data_long}{a long format data of SHAP values from \code{\link{shap.prep}}}
 
 \item{x_bound}{in case need to limit x_axis_limit}
 
 \item{dilute}{a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data.
 for example, if dilute = 5 will plot 1/5 of the data.
 If dilute = TRUE or a number, we will plot at most half points per feature, so the plot won't be too slow.
-If you put dilute too high, at least 10 points per feature would be kept, unless the dataset is very small.}
+If you put dilute too high, at least 10 points per feature would be kept.
+If the dataset is even smaller than that, will just plot all the data.}
 
-\item{scientific}{default to F, show the mean|SHAP| in scientific format or not}
+\item{scientific}{show the mean|SHAP| in scientific format or not
+default to F, label format is 0.000,
+If true, label format is 0.0E-0,}
+
+\item{my_format}{supply your own number format if you really want to do so}
 }
 \value{
 returns a ggplot2 object, could add further layers.
 }
 \description{
-The summary plot (sina plot) using a long-format data of SHAP values. The long-format data
-could be obtained from either xgbmodel or a SHAP matrix using \code{\link{shap.values}}.
+The summary plot (sina plot) uses a long-format data of SHAP values. The long-format data
+could be obtained from either xgboost model or a SHAP matrix using \code{\link{shap.values}}.
 If you want to start with xgbmodel and data_X, use \code{\link{shap.plot.summary.wrap1}}.
 If you want to use self-derived SHAP matrix, use \code{\link{shap.plot.summary.wrap2}}.
+If a global list named \strong{new_labels} is provided (\code{!is.null(new_labels}),
+the plots will use that list to replace default labels \code{\link{labels_within_package}}.
 }
 \examples{
 data("iris")
@@ -48,7 +55,7 @@ shap_long_iris <- shap.prep(xgb_model = mod1, X_train = X1)
 shap_long_iris <- shap.prep(shap_contrib = shap_values_iris, X_train = X1)
 
 # **SHAP summary plot**
-shap.plot.summary(shap_long_iris)
+shap.plot.summary(shap_long_iris, scientific = TRUE)
 shap.plot.summary(shap_long_iris, x_bound  = 1.5, dilute = 10)
 
 # Alternatives options to make the same plot:

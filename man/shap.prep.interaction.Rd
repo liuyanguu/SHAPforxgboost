@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.prep.interaction}
 \alias{shap.prep.interaction}
-\title{prepare the interaction SHAP values from predict.xgb.Booster.}
+\title{prepare the interaction SHAP values from predict.xgb.Booster}
 \usage{
 shap.prep.interaction(xgb_model, X_train)
 }
@@ -15,7 +15,7 @@ shap.prep.interaction(xgb_model, X_train)
 a 3-dimention array: #obs x #features x #features
 }
 \description{
-This just runs just run \code{shap_int <- predict(xgb_mod, as.matrix(X_train), predinteraction = TRUE)}, may not be necessary,
+This function just runs \code{shap_int <- predict(xgb_mod, as.matrix(X_train), predinteraction = TRUE)}, may not be necessary,
 maybe just use xgboost::predict.xgb.Booster directly,
 }
 \examples{
@@ -32,7 +32,7 @@ shap_int <- predict(mod1, as.matrix(iris[,-5]),
                     predinteraction = TRUE)
 
 # **SHAP interaction effect plot **
-shap.plot.dependence.color(data_long = shap_long_iris,
+shap.plot.dependence(data_long = shap_long_iris,
                            data_int = shap_int_iris,
                            x="Petal.Length",
                            y = "Petal.Width",

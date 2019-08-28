@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{plot.label}
 \alias{plot.label}
-\title{internal-function to revise label for each feature.}
+\title{internal-function to revise axis label for each feature}
 \usage{
 \method{plot}{label}(plot1, show_feature)
 }

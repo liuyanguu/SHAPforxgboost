@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.plot.summary.wrap1}
 \alias{shap.plot.summary.wrap1}
-\title{A wraped function to make summary plot from xgb model object and X.}
+\title{A wrapped function to make summary plot from xgb model object and predictors}
 \usage{
 shap.plot.summary.wrap1(model, X, top_n, dilute = FALSE)
 }
@@ -16,10 +16,13 @@ shap.plot.summary.wrap1(model, X, top_n, dilute = FALSE)
 \item{dilute}{a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data.
 for example, if dilute = 5 will plot 1/5 of the data.
 If dilute = TRUE or a number, we will plot at most half points per feature, so the plot won't be too slow.
-If you put dilute too high, at least 10 points per feature would be kept, unless the dataset is very small.}
+If you put dilute too high, at least 10 points per feature would be kept.
+If the dataset is even smaller than that, will just plot all the data.}
 }
 \description{
 wraps up function \code{\link{shap.prep}} and \code{\link{shap.plot.summary}}
+If a global list named \strong{new_labels} is provided (\code{!is.null(new_labels}),
+the plots will use that list to replace default labels \code{\link{labels_within_package}}.
 }
 \examples{
 data("iris")
@@ -41,7 +44,7 @@ shap_long_iris <- shap.prep(xgb_model = mod1, X_train = X1)
 shap_long_iris <- shap.prep(shap_contrib = shap_values_iris, X_train = X1)
 
 # **SHAP summary plot**
-shap.plot.summary(shap_long_iris)
+shap.plot.summary(shap_long_iris, scientific = TRUE)
 shap.plot.summary(shap_long_iris, x_bound  = 1.5, dilute = 10)
 
 # Alternatives options to make the same plot:

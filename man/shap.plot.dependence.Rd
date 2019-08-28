@@ -2,43 +2,99 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.plot.dependence}
 \alias{shap.plot.dependence}
-\title{SHAP dependence plot with marginal histogram.}
+\title{SHAP dependence plot and interaction plot, optional to be colored by a
+selected feature}
 \usage{
-shap.plot.dependence(data_long, show_feature, dilute = FALSE,
-  size0 = NULL, add_hist = T)
+shap.plot.dependence(data_long, x, y = NULL, color_feature = NULL,
+  data_int = NULL, dilute = FALSE, smooth = TRUE, size0 = NULL,
+  add_hist = FALSE)
 }
 \arguments{
-\item{data_long}{the long format SHAP values}
+\item{data_long}{the long format SHAP values from \code{\link{shap.prep}}}
 
-\item{show_feature}{which feature to show}
+\item{x}{which feature to show on x axis, it will plot the feature value.}
+
+\item{y}{which shap values to show on y axis, it will plot the SHAP value of that feature.
+y is default to x, if y is not provided, just plot the SHAP values of x on the y axis}
+
+\item{color_feature}{which feature value to use for coloring, color by the feature value.}
+
+\item{data_int}{the 3-dimention SHAP interaction values array.
+if \code{data_int} is supplied, y axis will plot the interaction values of y (vs. x)}
 
 \item{dilute}{a number or logical, dafault to TRUE,
 will plot \code{nrow(data_long)/dilute} data.
-For example, if dilute = 5 will plot 1/5 of the data.
-As long as dilute != FALSE, will plot at most half the data.}
+For example, if dilute = 5 will plot 20% of the data.
+As long as dilute != FALSE, will plot at most half the data.
+
+from \code{predict.xgb.Booster} or \code{\link{shap.prep.interaction}}.}
+
+\item{smooth}{optional to add \emph{loess} smooth line, default to TRUE.}
 
 \item{size0}{point size, default to 1 of nobs<1000, 0.4 if nobs>1000.}
 
-\item{add_hist}{weather to add histogram using \code{ggMarginal}, default to TRUE.
+\item{add_hist}{whether to add histogram using \code{ggMarginal}, default to TRUE.
 But notice the plot after adding histogram it is \code{ggExtraPlot} object, cannot
-add geom to that anymore. If wish to add more layers, turn the histogram off, or
-maybe use the \code{\link{shap.plot.dependence}}.}
+add geom to that anymore. If wish to add more ggplot layers, turn the histogram off}
 }
 \value{
-returns a ggplot2 object, could add further layers.
+returns a ggplot2 object, based on which you could add more geom layers.
 }
 \description{
-\code{shap.plot.dependence} is not colored by another variable,
-\code{\link{shap.plot.dependence.color}} is the with color version.
-Dependence plot is very easy to make if you have the SHAP values dataset
+This function makes the simple dependence plot with SHAP values on the y axis, optional to add color
+by another feature, optional to use a different y variable for SHAP values
+Not colored if \code{color_feature} is not supplied.
+If \code{data_int} (the SHAP interaction values dataset) is supplied, it will plot
+the interaction effect between \code{y} and \code{x} on the y axis.
+}
+\details{
+Dependence plot is very easy to make if you have the SHAP values dataset from \code{predict.xgb.Booster}
 It is not necessary to start with the long-format data, but since I used that
 for the summary plot, I just continue to use the long dataset
 }
 \examples{
 # **SHAP dependence plot**
-shap.plot.dependence.color(data_long = shap_long_iris, x="Petal.Length",
-                           y = "Petal.Width", color_feature = "Petal.Width")
-# the without color version, just plot SHAP value against feature value:
-shap.plot.dependence(data_long = shap_long_iris, "Petal.Length")
 
+# 1. simple dependence plot with SHAP values of x on the y axis
+shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length", add_hist = TRUE)
+
+# 2. can choose a different SHAP values on the y axis
+shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length",
+                           y = "Petal.Width")
+
+# 3. color by another feature's feature values
+shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length",
+                           color_feature = "Petal.Width")
+
+# 4. choose 3 different variables for x, y, and color
+shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length",
+                           y = "Petal.Width", color_feature = "Petal.Width")
+
+# Optional to add hist or remove smooth line, optional to plot fewer data (make plot quicker)
+shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length",
+                     y = "Petal.Width", color_feature = "Petal.Width",
+                     add_hist = TRUE, smooth = FALSE, dilute = 3)
+
+# to make a list of plot
+plot_list <- lapply(names(iris)[2:3], shap.plot.dependence, data_long = shap_long_iris)
+
+# **SHAP interaction effect plot **
+
+# To get the interaction SHAP dataset for plotting, need to get `shap_int` first:
+mod1 = xgboost::xgboost(
+  data = as.matrix(iris[,-5]), label = iris$Species,
+  gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = FALSE)
+# Use either:
+data_int <- shap.prep.interaction(xgb_mod = mod1,
+                                  X_train = as.matrix(iris[,-5]))
+# or:
+shap_int <- predict(mod1, as.matrix(iris[,-5]),
+                    predinteraction = TRUE)
+
+# if data_int is supplied, y axis will plot the interaction values of y (vs. x)
+shap.plot.dependence(data_long = shap_long_iris,
+                           data_int = shap_int_iris,
+                           x="Petal.Length",
+                           y = "Petal.Width",
+                           color_feature = "Petal.Width")
 }

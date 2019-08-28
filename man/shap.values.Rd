@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.values}
 \alias{shap.values}
-\title{return SHAP contribution from.}
+\title{return SHAP contribution from xgboost model}
 \usage{
 shap.values(xgb_model, X_train)
 }
@@ -15,7 +15,8 @@ shap.values(xgb_model, X_train)
 a list of three elements, the SHAP values as data.table, ranked mean|SHAP|, BIAS
 }
 \description{
-\code{shap.values} return from xgboost model the matrix of shap score and ranked variable list.
+\code{shap.values} returns from xgboost model a list of 1.the matrix of shap score and
+2. the ranked variable vector by each variable's mean absolute SHAP value
 }
 \examples{
 data("iris")
@@ -37,7 +38,7 @@ shap_long_iris <- shap.prep(xgb_model = mod1, X_train = X1)
 shap_long_iris <- shap.prep(shap_contrib = shap_values_iris, X_train = X1)
 
 # **SHAP summary plot**
-shap.plot.summary(shap_long_iris)
+shap.plot.summary(shap_long_iris, scientific = TRUE)
 shap.plot.summary(shap_long_iris, x_bound  = 1.5, dilute = 10)
 
 # Alternatives options to make the same plot:

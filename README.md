@@ -5,11 +5,11 @@ This package creates SHAP (SHapley Additive exPlanation) visualization plots
  and force plot. It relies on the 'dmlc/xgboost' package to produce SHAP values.
  Please refer to 'slundberg/shap' for the original implementation of SHAP in Python. 
 
-The purpose is to create some conveniences for making these plot in R. I understand 'ggplot' is highly flexible so people always need to fine-tune here and there. But adding more flexibility just over-complicates the wrapped functions. I am trying to find a balance. All the functions except force plot return ggplot object, it is possible to add more layers. The dependence plot without color `shap.plot.dependence` returns ggplot object if turns off the histogram using `add_hist = F`.
+The purpose is to create some conveniences for making these plot in R. I understand 'ggplot' is highly flexible so people always need to fine-tune here and there. But adding more flexibility just over-complicates the wrapped functions. I tried to find a balance. All the functions except force plot return ggplot object, it is possible to add more layers. The dependence plot `shap.plot.dependence` returns ggplot object if without the marginal histogram by default.
 
-I have built in some default labels for feature names, you could also supply features labels as a list named `new_labels`, the functions will use this list and plot accordingly. Another option is you can always overwrite the labels later by adding `labs` layer to the ggplot object. 
+I have built in some default labels for feature names, you could also supply features labels as a list named `new_labels`, the functions will use this list and label accordingly. Another option is you can always overwrite the labels on the ggplot by adding `labs` layer to the ggplot object. 
 
-Please refer to this blog for more examples and discussion on SHAP values in R, why use SHAP, and compared to Gain: 
+Please refer to this blog for more examples and discussion on SHAP values in R, why use SHAP, and comparison to Gain: 
 [SHAP visualization for XGBoost in R](https://liuyanguu.github.io/post/2019/07/18/visualization-of-shap-for-xgboost/)
 
 
@@ -58,14 +58,16 @@ shap_values$mean_shap_score
 shap_long <- shap.prep(xgb_model = mod, X_train = dataX)
 # is the same as: using given shap_contrib
 shap_long <- shap.prep(shap_contrib = shap_values$shap_score, X_train = dataX)
-# (There will be a data.table warning from `melt.data.table` due to `dayint` coerced from integer to double)
+# (Notice that there will be a data.table warning from `melt.data.table` due to `dayint` coerced from integer to double)
 
 # **SHAP summary plot**
 shap.plot.summary(shap_long)
+
+# sometimes for a preview, you want to plot less data to make it faster using `dilute`
 shap.plot.summary(shap_long, x_bound  = 1.2, dilute = 10)
 
 # Alternatives options to make the same plot:
-# option 1: from the xgboost model
+# option 1: start with the xgboost model
 shap.plot.summary.wrap1(mod, X = as.matrix(dataX))
 
 # option 2: supply a self-made SHAP values dataset (e.g. sometimes as output from cross-validation)
@@ -81,20 +83,16 @@ shap.plot.summary.wrap2(shap_values$shap_score, as.matrix(dataX))
 
 ```{r}
 # **SHAP dependence plot**
-shap.plot.dependence.color(data_long = shap_long, x= "Column_WV",
-                           y = "AOT_Uncertainty", color_feature = "AOT_Uncertainty")
-                           
-shap.plot.dependence.color(data_long = shap_long, x= "dayint",
-                           y = "Column_WV", color_feature = "Column_WV")                           
-                           
-# without color version but has marginal distribution, just plot SHAP value against feature value:
-shap.plot.dependence(data_long = shap_long, "Column_WV")
+# if without y, will just plot SHAP values of x vs. x
+shap.plot.dependence(data_long = shap_long, x = "dayint")
 
-```
 
-```{r}
-fig_list = lapply(names(shap_values$mean_shap_score)[1:6], shap.plot.dependence, data_long = shap_long)
-gridExtra::grid.arrange(grobs = fig_list, ncol = 2)
+# optional to color the plot by assigning `color_feature` (Fig.A)
+shap.plot.dependence(data_long = shap_long, x= "dayint",
+                           color_feature = "Column_WV")
+                           
+# optional to put a different SHAP values on the y axis to view some interaction (Fig.B)                shap.plot.dependence(data_long = shap_long, x= "dayint",
+                           y = "Column_WV", color_feature = "Column_WV")                          
 
 ```
 
@@ -103,17 +101,25 @@ gridExtra::grid.arrange(grobs = fig_list, ncol = 2)
 </p>
 
 
+```{r}
+# To make plots for a group of features:
+fig_list = lapply(names(shap_values$mean_shap_score)[1:6], shap.plot.dependence, 
+                  data_long = shap_long, dilute = 5)
+gridExtra::grid.arrange(grobs = fig_list, ncol = 2)
+
+```
+
 **SHAP interaction plot**
 
 ```{r}
 # prepare the data using either: 
-# (this step is slow since it calculates all the combinations of features.)
+# (this step is slow since it calculates all the combinations of features. This example takes 10s.)
 data_int <- shap.prep.interaction(xgb_mod = mod, X_train = as.matrix(dataX))
 # or:
 shap_int <- predict(mod, as.matrix(dataX), predinteraction = TRUE)
 
 # **SHAP interaction effect plot **
-shap.plot.dependence.color(data_long = shap_long,
+shap.plot.dependence(data_long = shap_long,
                            data_int = shap_int,
                            x= "Column_WV",
                            y = "AOT_Uncertainty", 

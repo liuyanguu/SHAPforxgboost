@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.plot.force_plot_bygroup}
 \alias{shap.plot.force_plot_bygroup}
-\title{make the stack plot, optional to zoom in at certain x or certain cluster.}
+\title{make the stack plot, optional to zoom in at certain x or certain cluster}
 \usage{
 shap.plot.force_plot_bygroup(shapobs, id = "id", y_parent_limit = NULL)
 }

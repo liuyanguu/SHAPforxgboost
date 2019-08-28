@@ -11,7 +11,7 @@ shap_int <- predict(mod1, as.matrix(iris[,-5]),
                     predinteraction = TRUE)
 
 # **SHAP interaction effect plot **
-shap.plot.dependence.color(data_long = shap_long_iris,
+shap.plot.dependence(data_long = shap_long_iris,
                            data_int = shap_int_iris,
                            x="Petal.Length",
                            y = "Petal.Width",

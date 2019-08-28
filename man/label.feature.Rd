@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{label.feature}
 \alias{label.feature}
-\title{helper function to modify labels for features under plotting.}
+\title{helper function to modify labels for features under plotting}
 \usage{
 label.feature(x)
 }
@@ -13,6 +13,6 @@ label.feature(x)
 a character, e.g. "date", "Time Trend", etc.
 }
 \description{
-if a global list named \strong{new_labels} is provided (\code{!is.null(new_labels}),
-the plots will use that list to replace default labels \code{labels_within_package}.
+If a list is created in the environment named \strong{new_labels} (\code{!is.null(new_labels}),
+the plots will use that list to replace default list of labels \code{\link{labels_within_package}}.
 }

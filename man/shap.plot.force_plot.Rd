@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.plot.force_plot}
 \alias{shap.plot.force_plot}
-\title{make the SHAP force plot.}
+\title{make the SHAP force plot}
 \usage{
 shap.plot.force_plot(shapobs, id = "id", zoom_in_location = NULL,
   y_parent_limit = NULL, y_zoomin_limit = NULL, zoom_in = TRUE,

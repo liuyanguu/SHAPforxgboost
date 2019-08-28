@@ -17,7 +17,7 @@ shap_long_iris <- shap.prep(xgb_model = mod1, X_train = X1)
 shap_long_iris <- shap.prep(shap_contrib = shap_values_iris, X_train = X1)
 
 # **SHAP summary plot**
-shap.plot.summary(shap_long_iris)
+shap.plot.summary(shap_long_iris, scientific = TRUE)
 shap.plot.summary(shap_long_iris, x_bound  = 1.5, dilute = 10)
 
 # Alternatives options to make the same plot:
