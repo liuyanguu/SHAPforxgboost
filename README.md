@@ -89,10 +89,11 @@ shap.plot.dependence(data_long = shap_long, x = "dayint")
 
 # optional to color the plot by assigning `color_feature` (Fig.A)
 shap.plot.dependence(data_long = shap_long, x= "dayint",
-                           color_feature = "Column_WV")
+                     color_feature = "Column_WV")
                            
-# optional to put a different SHAP values on the y axis to view some interaction (Fig.B)                shap.plot.dependence(data_long = shap_long, x= "dayint",
-                           y = "Column_WV", color_feature = "Column_WV")                          
+# optional to put a different SHAP values on the y axis to view some interaction (Fig.B)      
+shap.plot.dependence(data_long = shap_long, x= "dayint",
+                     y = "Column_WV", color_feature = "Column_WV")                          
 
 ```
 
@@ -106,14 +107,13 @@ shap.plot.dependence(data_long = shap_long, x= "dayint",
 fig_list = lapply(names(shap_values$mean_shap_score)[1:6], shap.plot.dependence, 
                   data_long = shap_long, dilute = 5)
 gridExtra::grid.arrange(grobs = fig_list, ncol = 2)
-
 ```
 
 **SHAP interaction plot**
 
 ```{r}
 # prepare the data using either: 
-# (this step is slow since it calculates all the combinations of features. This example takes 10s.)
+# (this step is slow since it calculates all the combinations of features. This example spends 10s.)
 data_int <- shap.prep.interaction(xgb_mod = mod, X_train = as.matrix(dataX))
 # or:
 shap_int <- predict(mod, as.matrix(dataX), predinteraction = TRUE)
@@ -124,8 +124,6 @@ shap.plot.dependence(data_long = shap_long,
                            x= "Column_WV",
                            y = "AOT_Uncertainty", 
                            color_feature = "AOT_Uncertainty")
-
-
 ```
 
 <p align="center">
@@ -139,9 +137,12 @@ shap.plot.dependence(data_long = shap_long,
 ```{r}
 # choose to show top 4 features by setting `top_n = 4`, set 6 clustering groups.  
 plot_data <- shap.prep.stack.data(shap_contrib = shap_values$shap_score, top_n = 4, n_groups = 6)
+
 # choose to zoom in at location 500, set y-axis limit using `y_parent_limit`  
 # it is also possible to set y-axis limit for zoom-in part alone using `y_zoomin_limit`  
 shap.plot.force_plot(plot_data, zoom_in_location = 500, y_parent_limit = c(-1,1))
+
+# plot by each cluster
 shap.plot.force_plot_bygroup(plot_data)
 
 ```
