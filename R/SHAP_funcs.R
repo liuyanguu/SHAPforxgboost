@@ -183,8 +183,9 @@ shap.plot.summary <- function(data_long,
   }
 
   x_bound <- if (is.null(x_bound)) max(abs(data_long$value))*1.1 else as.numeric(abs(x_bound))
-  plot1 <- ggplot(data = data_long)+
+  plot1 <- ggplot(data = data_long) +
     coord_flip(ylim = c(-x_bound, x_bound)) +
+    geom_hline(yintercept = 0) + # the y axis beneath
     # sina plot:
     ggforce::geom_sina(aes(x = variable, y = value, color = stdfvalue),
               method = "counts", maxwidth = 0.7, alpha = 0.7) +
@@ -207,7 +208,6 @@ shap.plot.summary <- function(data_long,
           legend.title=element_text(size=10),
           legend.text=element_text(size=8),
           axis.title.x= element_text(size = 10)) +
-    geom_hline(yintercept = 0) + # the vertical line
     # reverse the order of features, from high to low
     # also relabel the feature using `label.feature`
     scale_x_discrete(limits = rev(levels(data_long$variable)),
