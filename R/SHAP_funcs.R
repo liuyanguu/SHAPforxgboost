@@ -364,7 +364,6 @@ shap.plot.dependence <- function(data_long,
                                        color_feature = NULL,
                                        data_int = NULL,  # if supply, will plot SHAP interaction values
                                        dilute = FALSE,
-
                                        smooth = TRUE,
                                        size0 = NULL,
                                        add_hist = FALSE
@@ -396,7 +395,6 @@ shap.plot.dependence <- function(data_long,
                       y = if (is.null(data_int)) value else int_value,
                       color = if (!is.null(color_feature)) color_value else NULL))+
     geom_point(size = size0, alpha = if(nrow(data0)<1000L) 1 else 0.6)+
-    # a loess smoothing line:
     labs(y = if (is.null(data_int)) paste0("SHAP value for ", label.feature(y)) else
       paste0("SHAP interaction values for\n", label.feature(x), " and ", label.feature(y)) ,
          x = label.feature(x),
@@ -408,6 +406,7 @@ shap.plot.dependence <- function(data_long,
     theme(legend.position="bottom",
           legend.title=element_text(size=10),
           legend.text=element_text(size=8))
+    # a loess smoothing line:
   if(smooth){
     plot1 <- plot1 + geom_smooth(method = 'loess', color = 'red', size = 0.4, se = F)
   }
