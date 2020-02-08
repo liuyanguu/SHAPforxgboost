@@ -4,8 +4,13 @@
 \alias{shap.prep.stack.data}
 \title{Prepare data for SHAP force plot (stack plot)}
 \usage{
-shap.prep.stack.data(shap_contrib, top_n = NULL, data_percent = 1,
-  cluster_method = "ward.D", n_groups = 10L)
+shap.prep.stack.data(
+  shap_contrib,
+  top_n = NULL,
+  data_percent = 1,
+  cluster_method = "ward.D",
+  n_groups = 10L
+)
 }
 \arguments{
 \item{shap_contrib}{shap_contrib is the SHAP value data returned from predict.xgb.booster}

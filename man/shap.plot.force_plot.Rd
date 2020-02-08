@@ -4,9 +4,15 @@
 \alias{shap.plot.force_plot}
 \title{make the SHAP force plot}
 \usage{
-shap.plot.force_plot(shapobs, id = "id", zoom_in_location = NULL,
-  y_parent_limit = NULL, y_zoomin_limit = NULL, zoom_in = TRUE,
-  zoom_in_group = NULL)
+shap.plot.force_plot(
+  shapobs,
+  id = "id",
+  zoom_in_location = NULL,
+  y_parent_limit = NULL,
+  y_zoomin_limit = NULL,
+  zoom_in = TRUE,
+  zoom_in_group = NULL
+)
 }
 \arguments{
 \item{shapobs}{The dataset obtained by \code{shap.prep.stack.data}.}

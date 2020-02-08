@@ -23,8 +23,7 @@ data("iris")
 X1 = as.matrix(iris[,-5])
 mod1 = xgboost::xgboost(
   data = X1, label = iris$Species, gamma = 0, eta = 1,
-  lambda = 0,nrounds = 1, verbose = FALSE)
-
+  lambda = 0, nrounds = 1, verbose = FALSE)
 
 # shap.values(model, X_dataset) returns the SHAP
 # data matrix and ranked features by mean|SHAP|
@@ -47,5 +46,5 @@ shap.plot.summary.wrap1(mod1, X = as.matrix(iris[,-5]), top_n = 3)
 
 # option 2: supply a self-made SHAP values dataset
 # (e.g. sometimes as output from cross-validation)
-shap.plot.summary.wrap2(shap_values_iris, X1, top_n = 3)
+shap.plot.summary.wrap2(shap_score = shap_values_iris, X = X1, top_n = 3)
 }

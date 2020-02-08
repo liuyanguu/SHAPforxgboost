@@ -32,6 +32,6 @@ Suggests:
     gridExtra (>= 2.3),
     here,
     parallel
-Published: 	2019-08-28
+Published: 2019-08-28
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.1.9000
+RoxygenNote: 7.0.2

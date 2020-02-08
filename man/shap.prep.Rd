@@ -4,18 +4,26 @@
 \alias{shap.prep}
 \title{prep SHAP values into long format for plotting}
 \usage{
-shap.prep(xgb_model = NULL, shap_contrib = NULL, X_train,
-  top_n = NULL)
+shap.prep(
+  xgb_model = NULL,
+  shap_contrib = NULL,
+  X_train,
+  top_n = NULL,
+  var_cat = NULL
+)
 }
 \arguments{
-\item{xgb_model}{a xgboost model object}
+\item{xgb_model}{a xgboost model object, will derive the SHAP values from it}
 
-\item{shap_contrib}{optional to supply SHAP values dataset, default to NULL}
+\item{shap_contrib}{optional to directly supply a SHAP values dataset. If
+supplied, it will overwrite the xgb_model (if also supplied)}
 
-\item{X_train}{the dataset of predictors used for the xgboost model
-if not NULL, will be taken as SHAP values,}
+\item{X_train}{the dataset of predictors used for the xgboost model if not
+NULL, will be taken as SHAP values,}
 
 \item{top_n}{to choose top_n variables ranked by mean|SHAP| if needed}
+
+\item{var_cat}{if supplied, will provide long-format data, grouped by this categorical variable}
 }
 \value{
 a long-format data.table, named as \code{shap_long} in other functions
@@ -28,8 +36,7 @@ data("iris")
 X1 = as.matrix(iris[,-5])
 mod1 = xgboost::xgboost(
   data = X1, label = iris$Species, gamma = 0, eta = 1,
-  lambda = 0,nrounds = 1, verbose = FALSE)
-
+  lambda = 0, nrounds = 1, verbose = FALSE)
 
 # shap.values(model, X_dataset) returns the SHAP
 # data matrix and ranked features by mean|SHAP|
@@ -52,5 +59,5 @@ shap.plot.summary.wrap1(mod1, X = as.matrix(iris[,-5]), top_n = 3)
 
 # option 2: supply a self-made SHAP values dataset
 # (e.g. sometimes as output from cross-validation)
-shap.plot.summary.wrap2(shap_values_iris, X1, top_n = 3)
+shap.plot.summary.wrap2(shap_score = shap_values_iris, X = X1, top_n = 3)
 }

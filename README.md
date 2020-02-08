@@ -7,7 +7,7 @@ This package creates SHAP (SHapley Additive exPlanation) visualization plots
 
 The purpose is to create some conveniences for making these plot in R. I understand 'ggplot' is highly flexible so people always need to fine-tune here and there. But adding more flexibility just over-complicates the wrapped functions. I tried to find a balance. All the functions except force plot return ggplot object, it is possible to add more layers. The dependence plot `shap.plot.dependence` returns ggplot object if without the marginal histogram by default.
 
-I have built in some default labels for feature names, you could also supply features labels as a list named `new_labels`, the functions will use this list and label accordingly. Another option is you can always overwrite the labels on the ggplot by adding `labs` layer to the ggplot object. 
+I have built in some default labels for feature names, you could also supply features labels as a list named `new_labels`, the functions will use this list and label accordingly. `new_labels` is an object default to `NULL`. Another option is you can always overwrite the labels on the ggplot by adding `labs` layer to the ggplot object. 
 
 Please refer to this blog for more examples and discussion on SHAP values in R, why use SHAP, and comparison to Gain: 
 [SHAP visualization for XGBoost in R](https://liuyanguu.github.io/post/2019/07/18/visualization-of-shap-for-xgboost/)
@@ -155,7 +155,24 @@ shap.plot.force_plot_bygroup(plot_data)
   <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-16-2.png"/>
 </p>
 
+## Citation
+The citation could be seen obtained using `citation("SHAPforxgboost")`
+```{r}
+To cite package ‘SHAPforxgboost’ in publications use:
 
+  Yang Liu and Allan Just (2019). SHAPforxgboost: SHAP Plots for 'XGBoost'. R package version 0.0.3.
+  https://github.com/liuyanguu/SHAPforxgboost
+
+A BibTeX entry for LaTeX users is
+
+  @Manual{,
+    title = {SHAPforxgboost: SHAP Plots for 'XGBoost'},
+    author = {Yang Liu and Allan Just},
+    year = {2019},
+    note = {R package version 0.0.3},
+    url = {https://github.com/liuyanguu/SHAPforxgboost},
+  }
+```
 
 ## Reference
 

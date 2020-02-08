@@ -4,8 +4,16 @@
 \alias{scatter.plot.diagonal}
 \title{make customized scatter plot with diagonal line and R2 printed.}
 \usage{
-scatter.plot.diagonal(data, x, y, size0 = 0.2, alpha0 = 0.3,
-  dilute = FALSE, add_abline = FALSE, add_hist = TRUE)
+scatter.plot.diagonal(
+  data,
+  x,
+  y,
+  size0 = 0.2,
+  alpha0 = 0.3,
+  dilute = FALSE,
+  add_abline = FALSE,
+  add_hist = TRUE
+)
 }
 \arguments{
 \item{data}{dataset}

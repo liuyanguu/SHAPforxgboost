@@ -5,9 +5,17 @@
 \title{SHAP dependence plot and interaction plot, optional to be colored by a
 selected feature}
 \usage{
-shap.plot.dependence(data_long, x, y = NULL, color_feature = NULL,
-  data_int = NULL, dilute = FALSE, smooth = TRUE, size0 = NULL,
-  add_hist = FALSE)
+shap.plot.dependence(
+  data_long,
+  x,
+  y = NULL,
+  color_feature = NULL,
+  data_int = NULL,
+  dilute = FALSE,
+  smooth = TRUE,
+  size0 = NULL,
+  add_hist = FALSE
+)
 }
 \arguments{
 \item{data_long}{the long format SHAP values from \code{\link{shap.prep}}}
@@ -24,7 +32,7 @@ if \code{data_int} is supplied, y axis will plot the interaction values of y (vs
 
 \item{dilute}{a number or logical, dafault to TRUE,
 will plot \code{nrow(data_long)/dilute} data.
-For example, if dilute = 5 will plot 20% of the data.
+For example, if dilute = 5 will plot 20\% of the data.
 As long as dilute != FALSE, will plot at most half the data.
 
 from \code{predict.xgb.Booster} or \code{\link{shap.prep.interaction}}.}

@@ -11,6 +11,7 @@ if(getRversion() >= "2.15.1")  {
                            "x_feature", "mean_value",
                            "int_value", "color_value",
                            "new_labels","labels_within_package",
+                           "..var_cat",
                            "group", "rest_variables", "clusterid", "id", "BIAS"))
   }
 
@@ -55,11 +56,13 @@ shap.values <- function(xgb_model,
 
 #' prep SHAP values into long format for plotting
 #'
-#' @param xgb_model a xgboost model object
-#' @param shap_contrib optional to supply SHAP values dataset, default to NULL
-#' @param X_train the dataset of predictors used for the xgboost model
-#' if not NULL, will be taken as SHAP values,
+#' @param xgb_model a xgboost model object, will derive the SHAP values from it
+#' @param shap_contrib optional to directly supply a SHAP values dataset. If
+#'   supplied, it will overwrite the xgb_model (if also supplied)
+#' @param X_train the dataset of predictors used for the xgboost model if not
+#'   NULL, will be taken as SHAP values,
 #' @param top_n to choose top_n variables ranked by mean|SHAP| if needed
+#' @param var_cat if supplied, will provide long-format data, grouped by this categorical variable
 #'
 #' @import data.table
 #' @export shap.prep
@@ -71,18 +74,21 @@ shap.values <- function(xgb_model,
 shap.prep <- function(xgb_model = NULL,
                       shap_contrib = NULL, # optional to supply SHAP values
                       X_train,
-                      top_n = NULL){
+                      top_n = NULL,
+                      var_cat = NULL
+                      ){
+  if (is.null(xgb_model) & is.null(shap_contrib)) stop("Please provide either `xgb_model` or `shap_contrib`")
   if (!is.null(shap_contrib)){
     if(paste0(dim(shap_contrib), collapse = " ") != paste0(dim(X_train), collapse = " ")) stop("supply correct shap_contrib, remove BIAS column.\n")
   }
   # prep long-data
   shap <- if (is.null(shap_contrib)) shap.values(xgb_model, X_train) else list(
     shap_score = shap_contrib,
-    mean_shap_score = colMeans(abs(shap_contrib))[order(colMeans(abs(shap_contrib)), decreasing = T)]
+    mean_shap_score = colMeans(abs(shap_contrib))[order(colMeans(abs(shap_contrib)), decreasing = TRUE)]
   )
 
   std1 <- function(x){
-    return ((x - min(x, na.rm = T))/(max(x, na.rm = T) - min(x, na.rm = T)))
+    return ((x - min(x, na.rm = TRUE))/(max(x, na.rm = TRUE) - min(x, na.rm = TRUE)))
   }
 
   # choose top n features
@@ -94,21 +100,35 @@ shap.prep <- function(xgb_model = NULL,
   }
 
   # descending order
-  shap_score_sub <- setDT(shap$shap_score)[, names(shap$mean_shap_score)[1:top_n], with = F]
-  shap_score_long <- melt.data.table(shap_score_sub, measure.vars = colnames(shap_score_sub))
-
-  # feature values: the values in the original dataset
+  shap_score_sub <- setDT(shap$shap_score)[, names(shap$mean_shap_score)[1:top_n], with = FALSE]
+  # fv: feature values: the values in the original dataset
   # dayint is int, will throw a warning here
   fv_sub <- as.data.table(X_train)[, names(shap$mean_shap_score)[1:top_n], with = F]
-  # standardize feature values
-  fv_sub_long <- melt.data.table(fv_sub, measure.vars = colnames(fv_sub))
 
-  fv_sub_long[, stdfvalue := std1(value), by = "variable"]
+  if(is.null(var_cat)){
+    shap_score_long <- melt.data.table(shap_score_sub, measure.vars = colnames(shap_score_sub))
+    vars_wanted <- colnames(fv_sub)
+  } else if (var_cat%in%colnames(X_train)) {
+    # exclude var_cat as it is used as a categorical group
+    shap_score_long <- melt.data.table(shap_score_sub[,-..var_cat], measure.vars = colnames(shap_score_sub[,-..var_cat]))
+    vars_wanted <- colnames(fv_sub)[colnames(fv_sub) != var_cat]
+  } else {
+    stop("Please provide a correct var_cat variable, a categorical variable that
+         exists in the dataset.")
+  }
+  # standardize feature values
+  fv_sub_long <- melt.data.table(fv_sub, measure.vars = vars_wanted,
+                                 value.name = "rfvalue")
+  fv_sub_long[, stdfvalue := std1(rfvalue), by = "variable"]
   # SHAP value: value
   # raw feature value: rfvalue;
   # standarized: stdfvalue
-  names(fv_sub_long) <- c("variable", "rfvalue", "stdfvalue" )
-  shap_long2 <- cbind(shap_score_long, fv_sub_long[,c('rfvalue','stdfvalue')])
+  if(is.null(var_cat)){
+    shap_long2 <- cbind(shap_score_long, fv_sub_long[,c('rfvalue','stdfvalue')])
+  } else {
+    shap_long2 <- cbind(shap_score_long, fv_sub_long[,c('rfvalue','stdfvalue', var_cat), with = FALSE])
+  }
+  # mean_value: mean abs SHAP values by variable, used as label in `geom_text`
   shap_long2[, mean_value := mean(abs(value)), by = variable]
   setkey(shap_long2, variable)
   return(shap_long2)
@@ -267,15 +287,17 @@ shap.plot.summary.wrap2 <- function(shap_score, X, top_n, dilute = FALSE){
 
 #' helper function to modify labels for features under plotting
 #'
-#' If a list is created in the environment named **new_labels** (\code{!is.null(new_labels}),
-#' the plots will use that list to replace default list of labels \code{\link{labels_within_package}}.
+#' If a list is created in the global environment named **new_labels**
+#' (\code{!is.null(new_labels}), the plots will use that list to replace default
+#' list of labels \code{\link{labels_within_package}}.
 #'
 #' @param x variable names
 #'
 #' @return a character, e.g. "date", "Time Trend", etc.
 #'
 label.feature <- function(x){
-  labs = labels_within_package # a saved list of some feature names that I am using
+  # a saved list of some feature names that I am using
+  labs <- SHAPforxgboost::labels_within_package
   # but if you supply your own `new_labels`, it will print your feature names
   # must provide a list.
   if (!is.null(new_labels)) {
@@ -283,7 +305,8 @@ label.feature <- function(x){
       message("new_labels should be a list, for example,`list(var0 = 'VariableA')`.\n")
       }  else {
       message("Plot will use user-defined labels.\n")
-      labs = new_labels}
+      labs = new_labels
+      }
   }
   out <- rep(NA, length(x))
   for (i in 1:length(x)){

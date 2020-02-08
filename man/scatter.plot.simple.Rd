@@ -4,8 +4,15 @@
 \alias{scatter.plot.simple}
 \title{simple scatter plot, adding marginal histogram by default.}
 \usage{
-scatter.plot.simple(data, x, y, size0 = 0.2, alpha0 = 0.3,
-  dilute = FALSE, add_hist = TRUE)
+scatter.plot.simple(
+  data,
+  x,
+  y,
+  size0 = 0.2,
+  alpha0 = 0.3,
+  dilute = FALSE,
+  add_hist = TRUE
+)
 }
 \arguments{
 \item{data}{dataset}
