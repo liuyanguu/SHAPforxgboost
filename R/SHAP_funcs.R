@@ -70,6 +70,7 @@ shap.values <- function(xgb_model,
 #' @return a long-format data.table, named as `shap_long` in other functions
 #'
 #' @example R/example/example_fit_summary.R
+#' @example R/example/example_categorical.R
 #'
 shap.prep <- function(xgb_model = NULL,
                       shap_contrib = NULL, # optional to supply SHAP values
