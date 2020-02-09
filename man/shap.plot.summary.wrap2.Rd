@@ -7,25 +7,22 @@
 shap.plot.summary.wrap2(shap_score, X, top_n, dilute = FALSE)
 }
 \arguments{
-\item{shap_score}{the SHAP values dataset, could be obtained by \code{shap.prep}.}
+\item{shap_score}{the SHAP values dataset, could be obtained by \code{shap.prep}}
 
 \item{X}{the dataset of predictors used for the xgboost model}
 
 \item{top_n}{how many predictors you want to show in the plot (ranked)}
 
-\item{dilute}{a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data.
-for example, if dilute = 5 will plot 1/5 of the data.
-If dilute = TRUE or a number, we will plot at most half points per feature, so the plot won't be too slow.
-If you put dilute too high, at least 10 points per feature would be kept.
-If the dataset is even smaller than that, will just plot all the data.}
+\item{dilute}{a number or logical, aim to make the test plot for large amount
+of data faster. If dilute = 5 will plot 1/5 of the data. If dilute = TRUE
+or a number, will plot at most half points per feature, so the plotting
+won't be too slow. If you put dilute too high, at least 10 points per
+feature would be kept. If the dataset is too small after dilution, will
+just plot all the data}
 }
 \description{
 Sometimes the SHAP matrix is returned from cross-validation.
 This function wraps up function \code{\link{shap.prep}} and \code{\link{shap.plot.summary}}.
-}
-\details{
-If a global list named \strong{new_labels} is provided (\code{!is.null(new_labels}),
-the plots will use that list to replace default labels \code{\link{labels_within_package}}.
 }
 \examples{
 data("iris")

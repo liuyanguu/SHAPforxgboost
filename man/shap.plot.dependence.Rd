@@ -20,45 +20,49 @@ shap.plot.dependence(
 \arguments{
 \item{data_long}{the long format SHAP values from \code{\link{shap.prep}}}
 
-\item{x}{which feature to show on x axis, it will plot the feature value.}
+\item{x}{which feature to show on x-axis, it will plot the feature value}
 
-\item{y}{which shap values to show on y axis, it will plot the SHAP value of that feature.
-y is default to x, if y is not provided, just plot the SHAP values of x on the y axis}
+\item{y}{which shap values to show on y-axis, it will plot the SHAP value of
+that feature. y is default to x, if y is not provided, just plot the SHAP
+values of x on the y-axis}
 
-\item{color_feature}{which feature value to use for coloring, color by the feature value.}
+\item{color_feature}{which feature value to use for coloring, color by the
+feature value}
 
-\item{data_int}{the 3-dimention SHAP interaction values array.
-if \code{data_int} is supplied, y axis will plot the interaction values of y (vs. x)}
+\item{data_int}{the 3-dimention SHAP interaction values array. if \code{data_int}
+is supplied, y-axis will plot the interaction values of y (vs. x).
+\code{data_int} is obtained from either \code{predict.xgb.Booster} or
+\code{\link{shap.prep.interaction}}}
 
-\item{dilute}{a number or logical, dafault to TRUE,
-will plot \code{nrow(data_long)/dilute} data.
-For example, if dilute = 5 will plot 20\% of the data.
-As long as dilute != FALSE, will plot at most half the data.
+\item{dilute}{a number or logical, dafault to TRUE, will plot
+\code{nrow(data_long)/dilute} data. For example, if dilute = 5 will plot
+20\% of the data. As long as dilute != FALSE, will plot at most half the
+data}
 
-from \code{predict.xgb.Booster} or \code{\link{shap.prep.interaction}}.}
+\item{smooth}{optional to add a \emph{loess} smooth line, default to TRUE.}
 
-\item{smooth}{optional to add \emph{loess} smooth line, default to TRUE.}
+\item{size0}{point size, default to 1 of nobs<1000, 0.4 if nobs>1000}
 
-\item{size0}{point size, default to 1 of nobs<1000, 0.4 if nobs>1000.}
-
-\item{add_hist}{whether to add histogram using \code{ggMarginal}, default to TRUE.
-But notice the plot after adding histogram it is \code{ggExtraPlot} object, cannot
-add geom to that anymore. If wish to add more ggplot layers, turn the histogram off}
+\item{add_hist}{whether to add histogram using \code{ggMarginal}, default to
+TRUE. But notice the plot after adding histogram is a \code{ggExtraPlot} object
+instead of \code{ggplot2} so cannot add \code{geom} to that anymore. Turn the
+histogram off if you wish to add more \code{ggplot2} geoms}
 }
 \value{
-returns a ggplot2 object, based on which you could add more geom layers.
+be default a \code{ggplot2} object, based on which you could add more geom
+layers.
 }
 \description{
-This function makes the simple dependence plot with SHAP values on the y axis, optional to add color
-by another feature, optional to use a different y variable for SHAP values
-Not colored if \code{color_feature} is not supplied.
-If \code{data_int} (the SHAP interaction values dataset) is supplied, it will plot
-the interaction effect between \code{y} and \code{x} on the y axis.
-}
-\details{
-Dependence plot is very easy to make if you have the SHAP values dataset from \code{predict.xgb.Booster}
-It is not necessary to start with the long-format data, but since I used that
-for the summary plot, I just continue to use the long dataset
+This function by default makes a simple dependence plot with feature values
+on the x-axis and SHAP values on the y-axis, optional to color by another
+feature. It is optional to use a different variable for SHAP values on the
+y-axis, and color the points by the feature value of a designated variable.
+Not colored if \code{color_feature} is not supplied. If \code{data_int} (the
+SHAP interaction values dataset) is supplied, it will plot the interaction
+effect between \code{y} and \code{x} on the y-axis. Dependence plot is easy
+to make if you have the SHAP values dataset from \code{predict.xgb.Booster}.
+It is not necessary to start with the long format data, but since that is
+used for the summary plot, we just continue to use it here.
 }
 \examples{
 # **SHAP dependence plot**

@@ -8,13 +8,12 @@
 #' @param y y
 #' @param size0 point size, default to 1 of nobs<1000, 0.4 if nobs>1000
 #' @param alpha0 alpha of point
-#' @param dilute a number or logical, dafault to TRUE,
-#'  will plot \code{nrow(data_long)/dilute} data. For example,
-#'  if dilute = 5 will plot 1/5 of the data.
-#'  if dilute = TRUE will plot half of the data.
-#' @param add_hist optional to add marginal histogram
-#' using `ggExtra::ggMarginal` but notice
-#' if add histogram, what is returned is no longer a ggplot2 object
+#' @param dilute a number or logical, dafault to TRUE, will plot
+#'   \code{nrow(data_long)/dilute} data. For example, if dilute = 5 will plot
+#'   1/5 of the data. if dilute = TRUE will plot half of the data.
+#' @param add_hist optional to add marginal histogram using
+#'   `ggExtra::ggMarginal` but notice if add histogram, what is returned is no
+#'   longer a ggplot2 object
 #'
 #' @return ggplot2 object if `add_hist = FALSE`
 #' @examples
@@ -55,9 +54,8 @@ scatter.plot.simple <-  function(data, x, y, size0 = 0.2, alpha0 = 0.3,
 #' @importFrom BBmisc capitalizeStrings
 #'
 #' @inheritParams scatter.plot.simple
-#' @param add_abline default to FALSE, add a diagonal line
-#' `ggExtra::ggMarginal` but notice
-#' if add histogram, what is returned is no longer a ggplot2 object
+#' @param add_abline default to FALSE, add a diagonal line `ggExtra::ggMarginal`
+#'   but notice if add histogram, what is returned is no longer a ggplot2 object
 #' @return ggplot2 object if `add_hist = FALSE`
 #' @examples
 #' scatter.plot.diagonal(data = iris, x = "Sepal.Length", y = "Petal.Length")

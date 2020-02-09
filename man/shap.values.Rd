@@ -9,14 +9,20 @@ shap.values(xgb_model, X_train)
 \arguments{
 \item{xgb_model}{a xgboost model object}
 
-\item{X_train}{the dataset of predictors used for the xgboost model}
+\item{X_train}{the dataset of predictors (independent variables) used for the
+xgboost model}
 }
 \value{
-a list of three elements, the SHAP values as data.table, ranked mean|SHAP|, BIAS
+a list of three elements: the SHAP values as data.table, ranked
+mean|SHAP|, and BIAS
 }
 \description{
-\code{shap.values} returns from xgboost model a list of 1.the matrix of shap score and
-2. the ranked variable vector by each variable's mean absolute SHAP value
+The \code{shap.values} returns a list of three objects from xgboost model: 1.
+a dataset (data.table) of SHAP scores. It has the same dimension as the
+X_train); 2. the ranked variable vector by each variable's mean absolute SHAP
+value, it ranks the predictors by their importance in the model; and 3. The
+BIAS, which is like an intercept. The rowsum of SHAP values including the
+BIAS would equal to the predicted value (y_hat).
 }
 \examples{
 data("iris")

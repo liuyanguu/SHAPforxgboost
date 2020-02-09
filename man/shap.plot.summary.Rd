@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.plot.summary}
 \alias{shap.plot.summary}
-\title{SHAP summary plot core function using the long-format SHAP values}
+\title{SHAP summary plot core function using the long format SHAP values}
 \usage{
 shap.plot.summary(
   data_long,
@@ -13,32 +13,38 @@ shap.plot.summary(
 )
 }
 \arguments{
-\item{data_long}{a long format data of SHAP values from \code{\link{shap.prep}}}
+\item{data_long}{a long format data of SHAP values from
+\code{\link{shap.prep}}}
 
-\item{x_bound}{in case need to limit x_axis_limit}
+\item{x_bound}{to set horizontal axis limit in the plot}
 
-\item{dilute}{a number or logical, dafault to TRUE, will plot \code{nrow(data_long)/dilute} data.
-for example, if dilute = 5 will plot 1/5 of the data.
-If dilute = TRUE or a number, we will plot at most half points per feature, so the plot won't be too slow.
-If you put dilute too high, at least 10 points per feature would be kept.
-If the dataset is even smaller than that, will just plot all the data.}
+\item{dilute}{a number or logical, aim to make the test plot for large amount
+of data faster. If dilute = 5 will plot 1/5 of the data. If dilute = TRUE
+or a number, will plot at most half points per feature, so the plotting
+won't be too slow. If you put dilute too high, at least 10 points per
+feature would be kept. If the dataset is too small after dilution, will
+just plot all the data}
 
-\item{scientific}{show the mean|SHAP| in scientific format or not
-default to F, label format is 0.000,
-If true, label format is 0.0E-0,}
+\item{scientific}{show the mean|SHAP| in scientific format. If TRUE, label
+format is 0.0E-0, default to FALSE, whose format is 0.000}
 
-\item{my_format}{supply your own number format if you really want to do so}
+\item{my_format}{supply your own number format if you really want}
 }
 \value{
 returns a ggplot2 object, could add further layers.
 }
 \description{
-The summary plot (sina plot) uses a long-format data of SHAP values. The long-format data
-could be obtained from either xgboost model or a SHAP matrix using \code{\link{shap.values}}.
-If you want to start with xgbmodel and data_X, use \code{\link{shap.plot.summary.wrap1}}.
-If you want to use self-derived SHAP matrix, use \code{\link{shap.plot.summary.wrap2}}.
-If a global list named \strong{new_labels} is provided (\code{!is.null(new_labels}),
-the plots will use that list to replace default labels \code{\link{labels_within_package}}.
+The summary plot (a sina plot) uses a long format data of SHAP values. The
+SHAP values could be obtained from either an xgboost model or a SHAP value
+matrix using \code{\link{shap.values}}. So this summary plot function
+normally follows the long format dataset obtained using \code{shap.values}. If you
+want to start with a xgboost model and data_X, use
+\code{\link{shap.plot.summary.wrap1}}. If you want to use a self-derived
+dataset of SHAP values, use \code{\link{shap.plot.summary.wrap2}}. If a list
+named \strong{new_labels} is provided in the environment (\code{new_labels} is
+pre-loaded by the package as \code{NULL}), the plots will use that list to
+label the variables, here is an example of such a list (the default labels):
+\code{\link{labels_within_package}}.
 }
 \examples{
 data("iris")

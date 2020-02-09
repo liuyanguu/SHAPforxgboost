@@ -6,7 +6,7 @@
 \usage{
 shap.plot.force_plot(
   shapobs,
-  id = "id",
+  id = "sorted_id",
   zoom_in_location = NULL,
   y_parent_limit = NULL,
   y_zoomin_limit = NULL,
@@ -19,9 +19,10 @@ shap.plot.force_plot(
 
 \item{id}{the id variable.}
 
-\item{zoom_in_location}{where to zoom in, default at place of 60 percent of the data.}
+\item{zoom_in_location}{where to zoom in, default at place of 60 percent of
+the data.}
 
-\item{y_parent_limit}{set y axis limits.}
+\item{y_parent_limit}{set y-axis limits.}
 
 \item{y_zoomin_limit}{\code{c(a,b)} to limit the y-axis in zoom-in.}
 
@@ -30,7 +31,8 @@ shap.plot.force_plot(
 \item{zoom_in_group}{optional to zoom in certain cluster.}
 }
 \description{
-The force/stack plot, optional to zoom in at certain x or certain cluster.
+The force/stack plot, optional to zoom in at certain x-axis location or zoom
+in a specific cluster of observations.
 }
 \examples{
 

@@ -13,22 +13,30 @@ shap.prep.stack.data(
 )
 }
 \arguments{
-\item{shap_contrib}{shap_contrib is the SHAP value data returned from predict.xgb.booster}
+\item{shap_contrib}{shap_contrib is the SHAP value data returned from
+predict.xgb.booster, here an ID variable is added for each observation in
+the \code{shap_contrib} dataset for better tracking, it is created in the
+begining as \code{1:nrow(shap_contrib)}. The ID matches the output from
+\code{\link{shap.prep}}}
 
 \item{top_n}{integer, optional to show only top_n features, combine the rest}
 
-\item{data_percent}{what percent of data to plot (to speed up), in the range of (0,1]}
+\item{data_percent}{what percent of data to plot (to speed up the testing
+plot). The accepted input range is (0,1], if observations left is too few,
+there will be an error from the clustering function}
 
-\item{cluster_method}{default to ward.D}
+\item{cluster_method}{default to ward.D, please refer to \code{stats::hclust} for
+details}
 
-\item{n_groups}{a integer, how many groups to plot in \code{\link{shap.plot.force_plot_bygroup}}}
+\item{n_groups}{a integer, how many groups to plot in
+\code{\link{shap.plot.force_plot_bygroup}}}
 }
 \value{
 a dataset for stack plot
 }
 \description{
-Make force plot for \code{top_n} features, option to randomly
-plot certain portion of the data in case the dataset is large.
+Make force plot for \code{top_n} features, optional to randomly plot certain
+portion of the data in case the dataset is large.
 }
 \examples{
 

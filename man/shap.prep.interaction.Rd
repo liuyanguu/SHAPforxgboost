@@ -15,8 +15,8 @@ shap.prep.interaction(xgb_model, X_train)
 a 3-dimention array: #obs x #features x #features
 }
 \description{
-This function just runs \code{shap_int <- predict(xgb_mod, as.matrix(X_train), predinteraction = TRUE)}, may not be necessary,
-maybe just use xgboost::predict.xgb.Booster directly,
+This function just runs \code{shap_int <- predict(xgb_mod, as.matrix(X_train), predinteraction = TRUE)}, thus it may not be necessary.
+Read more about the xgboost predict function at \code{xgboost::predict.xgb.Booster}.
 }
 \examples{
 # To get the interaction SHAP dataset for plotting:

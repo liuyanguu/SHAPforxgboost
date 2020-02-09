@@ -4,17 +4,18 @@
 \alias{shap.plot.force_plot_bygroup}
 \title{make the stack plot, optional to zoom in at certain x or certain cluster}
 \usage{
-shap.plot.force_plot_bygroup(shapobs, id = "id", y_parent_limit = NULL)
+shap.plot.force_plot_bygroup(shapobs, id = "sorted_id", y_parent_limit = NULL)
 }
 \arguments{
 \item{shapobs}{The dataset obtained by \code{shap.prep.stack.data}.}
 
 \item{id}{the id variable.}
 
-\item{y_parent_limit}{set y axis limits.}
+\item{y_parent_limit}{set y-axis limits.}
 }
 \description{
-A collective display of zoom in plot: one plot of every group of clustered observations.
+A collective display of zoom-in plots: one plot for every group of the
+clustered observations.
 }
 \examples{
 

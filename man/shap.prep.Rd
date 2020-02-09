@@ -16,20 +16,30 @@ shap.prep(
 \item{xgb_model}{a xgboost model object, will derive the SHAP values from it}
 
 \item{shap_contrib}{optional to directly supply a SHAP values dataset. If
-supplied, it will overwrite the xgb_model (if also supplied)}
+supplied, it will overwrite the \code{xgb_model} if \code{xgb_model} is also supplied}
 
-\item{X_train}{the dataset of predictors used for the xgboost model if not
-NULL, will be taken as SHAP values,}
+\item{X_train}{the dataset of predictors used for the xgboost model, it
+provides feature values to the plot, must be supplied}
 
 \item{top_n}{to choose top_n variables ranked by mean|SHAP| if needed}
 
-\item{var_cat}{if supplied, will provide long-format data, grouped by this categorical variable}
+\item{var_cat}{if supplied, will provide long format data, grouped by this
+categorical variable}
 }
 \value{
-a long-format data.table, named as \code{shap_long} in other functions
+a long format data.table, named as \code{shap_long}
 }
 \description{
-prep SHAP values into long format for plotting
+Produce a dataset of 6 columns: ID of each observation, variable name, SHAP
+value, variable values (feature value), deviation of the feature value for
+each observation (for coloring the point), and the mean SHAP values for each
+variable. You can view this example dataset included in the package:
+\code{\link{shap_long_iris}}
+}
+\details{
+The ID variable is added for each observation in the \code{shap_contrib} dataset
+for better tracking, it is created as \code{1:nrow(shap_contrib)} before melting
+\code{shap_contrib} into long format.
 }
 \examples{
 data("iris")
