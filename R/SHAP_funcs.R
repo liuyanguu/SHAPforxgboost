@@ -409,6 +409,7 @@ plot.label <- function(plot1, show_feature){
 #'   TRUE. But notice the plot after adding histogram is a `ggExtraPlot` object
 #'   instead of `ggplot2` so cannot add `geom` to that anymore. Turn the
 #'   histogram off if you wish to add more `ggplot2` geoms
+#' @param add_stat_cor add correlation and p-value from `ggpubr::stat_cor`
 #'
 #' @export shap.plot.dependence
 #'
@@ -426,7 +427,8 @@ shap.plot.dependence <- function(
   dilute = FALSE,
   smooth = TRUE,
   size0 = NULL,
-  add_hist = FALSE
+  add_hist = FALSE,
+  add_stat_cor = FALSE
   ){
   if (is.null(y)) y <- x
   data0 <- data_long[variable == y,.(variable, value)] # the shap value to plot for dependence plot
@@ -470,9 +472,16 @@ shap.plot.dependence <- function(
     plot1 <- plot1 + geom_smooth(method = 'loess', color = 'red', size = 0.4, se = F)
   }
   plot1 <- plot.label(plot1, show_feature = x)
+  # add correlation
+  if(add_stat_cor){
+    plot1 <- plot1 + ggpubr::stat_cor(method = "pearson")
+  }
+
+  # add histogram
   if(add_hist){
     plot1 <- ggExtra::ggMarginal(plot1, type = "histogram", bins = 50, size = 10, color="white")
   }
+
   plot1
 }
 

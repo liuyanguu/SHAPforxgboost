@@ -6,6 +6,7 @@ data("iris")
 set.seed(123)
 iris$Group <- 0
 iris[sample(1:nrow(iris), nrow(iris)/2), "Group"] <- 1
+
 data.table::setDT(iris)
 X_train = as.matrix(iris[,c(colnames(iris)[1:4], "Group"), with = FALSE])
 mod1 = xgboost::xgboost(

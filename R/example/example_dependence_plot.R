@@ -1,7 +1,8 @@
 # **SHAP dependence plot**
 
 # 1. simple dependence plot with SHAP values of x on the y axis
-shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length", add_hist = TRUE)
+shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length",
+                     add_hist = TRUE, add_stat_cor = TRUE)
 
 # 2. can choose a different SHAP values on the y axis
 shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length",

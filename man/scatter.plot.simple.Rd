@@ -11,7 +11,8 @@ scatter.plot.simple(
   size0 = 0.2,
   alpha0 = 0.3,
   dilute = FALSE,
-  add_hist = TRUE
+  add_hist = TRUE,
+  add_stat_cor = FALSE
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ scatter.plot.simple(
 \item{add_hist}{optional to add marginal histogram using
 \code{ggExtra::ggMarginal} but notice if add histogram, what is returned is no
 longer a ggplot2 object}
+
+\item{add_stat_cor}{add correlation and p-value from \code{ggpubr::stat_cor}}
 }
 \value{
 ggplot2 object if \code{add_hist = FALSE}
@@ -40,6 +43,6 @@ ggplot2 object if \code{add_hist = FALSE}
 simple scatter plot, adding marginal histogram by default.
 }
 \examples{
-scatter.plot.simple(data = shap_score, x = "dayint", y = "AOT_Uncertainty")
+scatter.plot.simple(data = iris, x = "Sepal.Length", y = "Petal.Length")
 
 }

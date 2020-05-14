@@ -12,7 +12,8 @@ scatter.plot.diagonal(
   alpha0 = 0.3,
   dilute = FALSE,
   add_abline = FALSE,
-  add_hist = TRUE
+  add_hist = TRUE,
+  add_stat_cor = TRUE
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ but notice if add histogram, what is returned is no longer a ggplot2 object}
 \item{add_hist}{optional to add marginal histogram using
 \code{ggExtra::ggMarginal} but notice if add histogram, what is returned is no
 longer a ggplot2 object}
+
+\item{add_stat_cor}{add correlation and p-value from \code{ggpubr::stat_cor}}
 }
 \value{
 ggplot2 object if \code{add_hist = FALSE}

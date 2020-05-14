@@ -14,16 +14,18 @@
 #' @param add_hist optional to add marginal histogram using
 #'   `ggExtra::ggMarginal` but notice if add histogram, what is returned is no
 #'   longer a ggplot2 object
+#' @param add_stat_cor add correlation and p-value from `ggpubr::stat_cor`
 #'
 #' @return ggplot2 object if `add_hist = FALSE`
 #' @examples
-#' scatter.plot.simple(data = shap_score, x = "dayint", y = "AOT_Uncertainty")
+#' scatter.plot.simple(data = iris, x = "Sepal.Length", y = "Petal.Length")
 #'
 #' @export scatter.plot.simple
 #'
 scatter.plot.simple <-  function(data, x, y, size0 = 0.2, alpha0 = 0.3,
                                  dilute = FALSE,
-                                 add_hist = TRUE){
+                                 add_hist = TRUE,
+                                 add_stat_cor = FALSE){
   set.seed(1234)
   if (is.null(dilute)) dilute = FALSE
   if (dilute!=0){
@@ -34,12 +36,16 @@ scatter.plot.simple <-  function(data, x, y, size0 = 0.2, alpha0 = 0.3,
   }
   if (is.null(size0)) size0 <- if(nrow(data)<1000L) 1 else 0.2
 
-  plot0 <- ggplot(data = data, aes(x = data[[x]], y = data[[y]]))+
+  plot0 <- ggplot(data = data, aes_string(x = x, y = y))+
     geom_point(size = size0, alpha = alpha0) +
     # geom_density_2d(aes(fill = ..level..), geom = "polygon") +
     labs(x = x, y = y) +
     theme_bw()
 
+  # add correlation
+  if(add_stat_cor){
+    plot0 <- plot0 + ggpubr::stat_cor(method = "pearson")
+  }
   # add histogram by default
   if(add_hist){
     plot0 <- ggExtra::ggMarginal(plot0, type = "histogram",
@@ -66,7 +72,8 @@ scatter.plot.diagonal <- function(data, x, y,
                                   size0 = 0.2, alpha0 = 0.3,
                                   dilute = FALSE,
                                   add_abline = FALSE,
-                                  add_hist = TRUE){
+                                  add_hist = TRUE,
+                                  add_stat_cor = TRUE){
   set.seed(1234)
   if (is.null(dilute)) dilute = FALSE
   if (dilute!=0){
@@ -77,14 +84,16 @@ scatter.plot.diagonal <- function(data, x, y,
   }
   if (is.null(size0)) size0 <- if(nrow(data)<1000L) 1 else 0.2
 
-  plot1 <-  ggplot(data = data, aes(x = data[[x]], y = data[[y]]))+
+  plot1 <-  ggplot(data = data, aes_string(x = x, y = y))+
     geom_point(size = size0, alpha = alpha0) +
     theme_bw() +
     geom_smooth(method = 'lm') +
-    labs(x = BBmisc::capitalizeStrings(x), y = BBmisc::capitalizeStrings(y)) +
-    ggpubr::stat_cor(method = "pearson")
+    labs(x = BBmisc::capitalizeStrings(x), y = BBmisc::capitalizeStrings(y))
 
 
+  if(add_stat_cor){
+    plot1 <- plot1 + ggpubr::stat_cor(method = "pearson")
+  }
 
   if(add_abline){
     plot1 <- plot1 + geom_abline(intercept =0 , slope = 1, color = "grey")

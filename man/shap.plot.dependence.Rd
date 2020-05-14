@@ -14,7 +14,8 @@ shap.plot.dependence(
   dilute = FALSE,
   smooth = TRUE,
   size0 = NULL,
-  add_hist = FALSE
+  add_hist = FALSE,
+  add_stat_cor = FALSE
 )
 }
 \arguments{
@@ -47,6 +48,8 @@ data}
 TRUE. But notice the plot after adding histogram is a \code{ggExtraPlot} object
 instead of \code{ggplot2} so cannot add \code{geom} to that anymore. Turn the
 histogram off if you wish to add more \code{ggplot2} geoms}
+
+\item{add_stat_cor}{add correlation and p-value from \code{ggpubr::stat_cor}}
 }
 \value{
 be default a \code{ggplot2} object, based on which you could add more geom
@@ -68,7 +71,8 @@ used for the summary plot, we just continue to use it here.
 # **SHAP dependence plot**
 
 # 1. simple dependence plot with SHAP values of x on the y axis
-shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length", add_hist = TRUE)
+shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length",
+                     add_hist = TRUE, add_stat_cor = TRUE)
 
 # 2. can choose a different SHAP values on the y axis
 shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length",
