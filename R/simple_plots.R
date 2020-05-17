@@ -36,7 +36,7 @@ scatter.plot.simple <-  function(data, x, y, size0 = 0.2, alpha0 = 0.3,
   }
   if (is.null(size0)) size0 <- if(nrow(data)<1000L) 1 else 0.2
 
-  plot0 <- ggplot(data = data, aes_string(x = x, y = y))+
+  plot0 <- ggplot(data = data, aes(x = get(x), y = get(y)))+
     geom_point(size = size0, alpha = alpha0) +
     # geom_density_2d(aes(fill = ..level..), geom = "polygon") +
     labs(x = x, y = y) +
@@ -84,7 +84,7 @@ scatter.plot.diagonal <- function(data, x, y,
   }
   if (is.null(size0)) size0 <- if(nrow(data)<1000L) 1 else 0.2
 
-  plot1 <-  ggplot(data = data, aes_string(x = x, y = y))+
+  plot1 <-  ggplot(data = data, aes(x = get(x), y = get(y)))+
     geom_point(size = size0, alpha = alpha0) +
     theme_bw() +
     geom_smooth(method = 'lm') +
