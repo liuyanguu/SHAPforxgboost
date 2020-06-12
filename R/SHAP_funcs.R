@@ -31,7 +31,7 @@ if(getRversion() >= "2.15.1")  {
 #'
 #' @param xgb_model a xgboost model object
 #' @param X_train the dataset of predictors (independent variables) used for the
-#'   xgboost model
+#'   xgboost model, it should be a matrix
 #'
 #' @import data.table
 #' @import xgboost
@@ -48,7 +48,7 @@ shap.values <- function(xgb_model,
                         X_train){
   shap_contrib <- predict(
                           xgb_model,
-                          as.matrix(X_train),
+                          (X_train),
                           predcontrib = TRUE,
                           approxcontrib = FALSE)
   shap_contrib <- as.data.table(shap_contrib)
@@ -163,7 +163,7 @@ shap.prep <- function(xgb_model = NULL,
 
 #' prepare the interaction SHAP values from predict.xgb.Booster
 #'
-#' This function just runs \code{shap_int <- predict(xgb_mod, as.matrix(X_train), predinteraction = TRUE)}, thus it may not be necessary.
+#' This function just runs \code{shap_int <- predict(xgb_mod, (X_train), predinteraction = TRUE)}, thus it may not be necessary.
 #' Read more about the xgboost predict function at `xgboost::predict.xgb.Booster`.
 #'
 #' @param xgb_model a xgboost model object
@@ -175,7 +175,7 @@ shap.prep <- function(xgb_model = NULL,
 #' @return a 3-dimention array: #obs x #features x #features
 #' @example R/example/example_interaction_plot.R
 shap.prep.interaction <- function(xgb_model, X_train){
-  shap_int <- predict(xgb_model, as.matrix(X_train), predinteraction = TRUE)
+  shap_int <- predict(xgb_model, (X_train), predinteraction = TRUE)
   return(shap_int)
 }
 

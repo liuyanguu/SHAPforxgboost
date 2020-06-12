@@ -4,7 +4,9 @@
 \name{shap_long_iris}
 \alias{shap_long_iris}
 \title{The long-format SHAP values example using iris dataset.}
-\format{An object of class \code{data.table} (inherits from \code{data.frame}) with 600 rows and 6 columns.}
+\format{
+An object of class \code{data.table} (inherits from \code{data.frame}) with 600 rows and 6 columns.
+}
 \usage{
 shap_long_iris
 }

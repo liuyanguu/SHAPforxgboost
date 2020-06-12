@@ -4,7 +4,9 @@
 \name{dataXY_df}
 \alias{dataXY_df}
 \title{Terra satellite data (X,Y) for running the xgboost model .}
-\format{An object of class \code{data.table} (inherits from \code{data.frame}) with 10148 rows and 10 columns.}
+\format{
+An object of class \code{data.table} (inherits from \code{data.frame}) with 10148 rows and 10 columns.
+}
 \usage{
 dataXY_df
 }

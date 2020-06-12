@@ -4,7 +4,9 @@
 \name{shap_int_iris}
 \alias{shap_int_iris}
 \title{The interaction effect SHAP values example using iris dataset.}
-\format{An object of class \code{array} of dimension 150 x 5 x 5.}
+\format{
+An object of class \code{array} of dimension 150 x 5 x 5.
+}
 \usage{
 shap_int_iris
 }

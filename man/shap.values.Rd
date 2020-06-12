@@ -10,7 +10,7 @@ shap.values(xgb_model, X_train)
 \item{xgb_model}{a xgboost model object}
 
 \item{X_train}{the dataset of predictors (independent variables) used for the
-xgboost model}
+xgboost model, it should be a matrix}
 }
 \value{
 a list of three elements: the SHAP values as data.table, ranked

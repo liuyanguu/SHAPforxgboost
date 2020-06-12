@@ -4,7 +4,9 @@
 \name{shap_values_iris}
 \alias{shap_values_iris}
 \title{SHAP values example using iris dataset.}
-\format{An object of class \code{data.table} (inherits from \code{data.frame}) with 150 rows and 4 columns.}
+\format{
+An object of class \code{data.table} (inherits from \code{data.frame}) with 150 rows and 4 columns.
+}
 \usage{
 shap_values_iris
 }

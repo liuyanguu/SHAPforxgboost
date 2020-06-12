@@ -4,7 +4,9 @@
 \name{new_labels}
 \alias{new_labels}
 \title{new_labels: a place holder default to NULL.}
-\format{An object of class \code{NULL} of length 0.}
+\format{
+An object of class \code{NULL} of length 0.
+}
 \usage{
 new_labels
 }

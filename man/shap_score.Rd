@@ -4,7 +4,9 @@
 \name{shap_score}
 \alias{shap_score}
 \title{SHAP values example from dataXY_df .}
-\format{An object of class \code{data.table} (inherits from \code{data.frame}) with 10148 rows and 9 columns.}
+\format{
+An object of class \code{data.table} (inherits from \code{data.frame}) with 10148 rows and 9 columns.
+}
 \usage{
 shap_score
 }
