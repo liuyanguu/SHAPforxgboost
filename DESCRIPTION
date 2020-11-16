@@ -7,7 +7,7 @@ Authors@R: c(
     person(given = "Allan", family = "Just", role = c("aut", "ctb"), email = "allan.just@mssm.edu",
            comment = c(ORCID = "0000-0003-4312-5957"))
     )
-Description: The aim of 'SHAPforxgboost' is to aid in visual data investigations
+Description: Aid in visual data investigations
  using SHAP (SHapley Additive exPlanation) visualization plots for 'XGBoost'. 
  It provides summary plot, dependence plot, interaction plot, and force plot. 
  It relies on the 'dmlc/xgboost' package to produce SHAP values.

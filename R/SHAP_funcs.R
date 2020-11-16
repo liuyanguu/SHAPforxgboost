@@ -2,7 +2,7 @@
 # wrapped functions for
 # summary plot, dependence plot, force plot, and interaction effect plot
 # Further explained on my research blog: https://liuyanguu.github.io/post/2019/07/18/visualization-of-shap-for-xgboost/
-# The package was applied in paper http://doi.org/10.5281/zenodo.3334713
+# The package was applied in paper \doi{https://doi.org/10.5281/zenodo.3568449}
 #
 # Please cite if this is useful.
 #

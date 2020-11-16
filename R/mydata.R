@@ -6,7 +6,7 @@
 #'
 #'
 #' @docType data
-#' @references \url{http://doi.org/10.5281/zenodo.3334713}
+#' @references \doi{https://doi.org/10.5281/zenodo.3568449}
 #' @keywords Labels
 #' @details labels_within_package <- list(
 #'    dayint = "Time trend",
@@ -47,7 +47,7 @@
 #' Data.table, contains 9 features, and about 10,000 observations
 #'
 #' @docType data
-#' @references \url{http://doi.org/10.5281/zenodo.3334713}
+#' @references \doi{https://doi.org/10.5281/zenodo.3568449}
 #' @keywords Terra
 "dataXY_df"
 
@@ -55,7 +55,7 @@
 #' SHAP values example from dataXY_df .
 #'
 #' @docType data
-#' @references \url{http://doi.org/10.5281/zenodo.3334713}
+#' @references \doi{https://doi.org/10.5281/zenodo.3568449}
 #' @keywords Terra
 "shap_score"
 

@@ -161,7 +161,7 @@ The citation could be seen obtained using `citation("SHAPforxgboost")`
 To cite package ‘SHAPforxgboost’ in publications use:
 
   Yang Liu and Allan Just (2019). SHAPforxgboost: SHAP Plots for 'XGBoost'. R package version 0.0.3.
-  https://github.com/liuyanguu/SHAPforxgboost
+  https://github.com/liuyanguu/SHAPforxgboost/
 
 A BibTeX entry for LaTeX users is
 
@@ -170,7 +170,7 @@ A BibTeX entry for LaTeX users is
     author = {Yang Liu and Allan Just},
     year = {2019},
     note = {R package version 0.0.3},
-    url = {https://github.com/liuyanguu/SHAPforxgboost},
+    url = {https://github.com/liuyanguu/SHAPforxgboost/},
   }
 ```
 

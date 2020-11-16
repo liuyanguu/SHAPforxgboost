@@ -14,6 +14,6 @@ shap_score
 SHAP values example from dataXY_df .
 }
 \references{
-\url{http://doi.org/10.5281/zenodo.3334713}
+\doi{https://doi.org/10.5281/zenodo.3568449}
 }
 \keyword{Terra}
