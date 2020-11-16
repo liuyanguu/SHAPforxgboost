@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.values}
 \alias{shap.values}
-\title{return SHAP contribution from xgboost model}
+\title{Get SHAP scores from a trained xgboost model}
 \usage{
 shap.values(xgb_model, X_train)
 }
@@ -17,7 +17,7 @@ a list of three elements: the SHAP values as data.table, ranked
 mean|SHAP|, and BIAS
 }
 \description{
-The \code{shap.values} returns a list of three objects from xgboost model: 1.
+\code{shap.values} returns a list of three objects from xgboost model: 1.
 a dataset (data.table) of SHAP scores. It has the same dimension as the
 X_train); 2. the ranked variable vector by each variable's mean absolute SHAP
 value, it ranks the predictors by their importance in the model; and 3. The

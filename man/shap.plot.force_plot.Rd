@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.plot.force_plot}
 \alias{shap.plot.force_plot}
-\title{make the SHAP force plot}
+\title{Make the SHAP force plot}
 \usage{
 shap.plot.force_plot(
   shapobs,

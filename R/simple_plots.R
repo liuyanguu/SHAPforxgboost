@@ -1,6 +1,6 @@
 # Scatterplot -------------------------------------------------------------
 
-#' simple scatter plot, adding marginal histogram by default.
+#' Simple scatter plot, adding marginal histogram by default.
 #' @import ggplot2
 #'
 #' @param data dataset
@@ -54,7 +54,7 @@ scatter.plot.simple <-  function(data, x, y, size0 = 0.2, alpha0 = 0.3,
   return(plot0)
 }
 
-#' make customized scatter plot with diagonal line and R2 printed.
+#' Make customized scatter plot with diagonal line and R2 printed.
 #' @importFrom ggpubr stat_cor
 #' @import data.table
 #' @importFrom BBmisc capitalizeStrings

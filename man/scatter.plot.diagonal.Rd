@@ -2,7 +2,7 @@
 % Please edit documentation in R/simple_plots.R
 \name{scatter.plot.diagonal}
 \alias{scatter.plot.diagonal}
-\title{make customized scatter plot with diagonal line and R2 printed.}
+\title{Make customized scatter plot with diagonal line and R2 printed.}
 \usage{
 scatter.plot.diagonal(
   data,
@@ -44,7 +44,7 @@ longer a ggplot2 object}
 ggplot2 object if \code{add_hist = FALSE}
 }
 \description{
-make customized scatter plot with diagonal line and R2 printed.
+Make customized scatter plot with diagonal line and R2 printed.
 }
 \examples{
 scatter.plot.diagonal(data = iris, x = "Sepal.Length", y = "Petal.Length")

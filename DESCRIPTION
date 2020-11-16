@@ -1,6 +1,6 @@
 Package: SHAPforxgboost
 Title: SHAP Plots for 'XGBoost'
-Version: 0.0.4
+Version: 0.0.5
 Authors@R: c(
     person(given = "Yang", family = "Liu", role = c("aut", "cre"), email = "lyhello@gmail.com",
            comment = c(ORCID = "0000-0001-6557-6439")),
@@ -33,4 +33,4 @@ Suggests:
     here,
     parallel
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1

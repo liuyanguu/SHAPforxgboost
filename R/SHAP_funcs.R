@@ -18,11 +18,11 @@ if(getRversion() >= "2.15.1")  {
   }
 
 
-# data preparation functions ----------------------------------------------
+# Data preparation functions ----------------------------------------------
 
-#' return SHAP contribution from xgboost model
+#' Get SHAP scores from a trained xgboost model
 #'
-#' The \code{shap.values} returns a list of three objects from xgboost model: 1.
+#' \code{shap.values} returns a list of three objects from xgboost model: 1.
 #' a dataset (data.table) of SHAP scores. It has the same dimension as the
 #' X_train); 2. the ranked variable vector by each variable's mean absolute SHAP
 #' value, it ranks the predictors by their importance in the model; and 3. The
@@ -63,7 +63,7 @@ shap.values <- function(xgb_model,
 
 
 
-#' prep SHAP values into long format for plotting
+#' Prepare SHAP values into long format for plotting
 #'
 #' Produce a dataset of 6 columns: ID of each observation, variable name, SHAP
 #' value, variable values (feature value), deviation of the feature value for
@@ -75,7 +75,7 @@ shap.values <- function(xgb_model,
 #' for better tracking, it is created as `1:nrow(shap_contrib)` before melting
 #' `shap_contrib` into long format.
 #'
-#' @param xgb_model a xgboost model object, will derive the SHAP values from it
+#' @param xgb_model an xgboost model object, will derive the SHAP values from it
 #' @param shap_contrib optional to directly supply a SHAP values dataset. If
 #'   supplied, it will overwrite the `xgb_model` if `xgb_model` is also supplied
 #' @param X_train the dataset of predictors used for the xgboost model, it
@@ -87,7 +87,7 @@ shap.values <- function(xgb_model,
 #' @import data.table
 #' @export shap.prep
 #'
-#' @return a long format data.table, named as `shap_long`
+#' @return a long-format data.table, named as `shap_long`
 #'
 #' @example R/example/example_fit_summary.R
 #' @example R/example/example_categorical.R
@@ -161,9 +161,9 @@ shap.prep <- function(xgb_model = NULL,
 }
 
 
-#' prepare the interaction SHAP values from predict.xgb.Booster
+#' Prepare the interaction SHAP values from predict.xgb.Booster
 #'
-#' This function just runs \code{shap_int <- predict(xgb_mod, (X_train), predinteraction = TRUE)}, thus it may not be necessary.
+#' `shap.prep.interaction` just runs \code{shap_int <- predict(xgb_mod, (X_train), predinteraction = TRUE)}, thus it may not be necessary.
 #' Read more about the xgboost predict function at `xgboost::predict.xgb.Booster`.
 #'
 #' @param xgb_model a xgboost model object
@@ -197,15 +197,15 @@ shap.prep.interaction <- function(xgb_model, X_train){
 #'
 #' @param data_long a long format data of SHAP values from
 #'   \code{\link{shap.prep}}
-#' @param x_bound to set horizontal axis limit in the plot
-#' @param dilute a number or logical, aim to make the test plot for large amount
-#'   of data faster. If dilute = 5 will plot 1/5 of the data. If dilute = TRUE
-#'   or a number, will plot at most half points per feature, so the plotting
-#'   won't be too slow. If you put dilute too high, at least 10 points per
-#'   feature would be kept. If the dataset is too small after dilution, will
-#'   just plot all the data
+#' @param x_bound use to set horizontal axis limit in the plot
+#' @param dilute being numeric or logical (TRUE/FALSE), it aims to help make the test
+#'   plot for large amount of data faster. If dilute = 5 will plot 1/5 of the
+#'   data. If dilute = TRUE or a number, will plot at most half points per
+#'   feature, so the plotting won't be too slow. If you put dilute too high, at
+#'   least 10 points per feature would be kept. If the dataset is too small
+#'   after dilution, will just plot all the data
 #' @param scientific  show the mean|SHAP| in scientific format. If TRUE, label
-#'   format is 0.0E-0, default to FALSE, whose format is 0.000
+#'   format is 0.0E-0, default to FALSE, and the format will be 0.000
 #' @param my_format supply your own number format if you really want
 #'
 #' @import ggplot2
@@ -272,7 +272,8 @@ shap.plot.summary <- function(data_long,
 
 #' A wrapped function to make summary plot from xgb model object and predictors
 #'
-#' wraps up function \code{\link{shap.prep}} and \code{\link{shap.plot.summary}}
+#' `shap.plot.summary.wrap1` wraps up function \code{\link{shap.prep}} and
+#' \code{\link{shap.plot.summary}}
 #' @param model the xgboost model
 #' @param X the dataset of predictors used for the xgboost model
 #' @param top_n how many predictors you want to show in the plot (ranked)
@@ -292,10 +293,13 @@ shap.plot.summary.wrap1 <- function(model, X, top_n, dilute = FALSE){
 
 #' A wrapped function to make summary plot from given SHAP values matrix
 #'
-#' Sometimes the SHAP matrix is returned from cross-validation.
-#' This function wraps up function \code{\link{shap.prep}} and \code{\link{shap.plot.summary}}.
+#' `shap.plot.summary.wrap2` wraps up function \code{\link{shap.prep}} and
+#' \code{\link{shap.plot.summary}}. Since SHAP matrix could be returned from
+#' cross-validation instead of only one xgboost model, here the wrapped
+#' \code{\link{shap.prep}} takes the SHAP score matrix `shap_score` as input
 #'
-#' @param shap_score the SHAP values dataset, could be obtained by \code{shap.prep}
+#' @param shap_score the SHAP values dataset, could be obtained by
+#'   \code{shap.prep}
 #' @param X the dataset of predictors used for the xgboost model
 #' @param top_n how many predictors you want to show in the plot (ranked)
 #' @inheritParams shap.plot.summary
@@ -314,11 +318,12 @@ shap.plot.summary.wrap2 <- function(shap_score, X, top_n, dilute = FALSE){
 
 # dependence plot  --------------------------------------------------------
 
-#' helper function to modify labels for features under plotting
+#' Modify labels for features under plotting
 #'
-#' If a list is created in the global environment named **new_labels**
-#' (\code{!is.null(new_labels}), the plots will use that list to replace default
-#' list of labels \code{\link{labels_within_package}}.
+#' `label.feature` helps to modify labels. If a list is created in the global
+#' environment named **new_labels** (\code{!is.null(new_labels}), the plots will
+#' use that list to replace default list of labels
+#' \code{\link{labels_within_package}}.
 #'
 #' @param x variable names
 #'
@@ -349,7 +354,7 @@ label.feature <- function(x){
 }
 
 
-#' internal-function to revise axis label for each feature
+#' Internal-function to revise axis label for each feature
 #'
 #' This function further fine-tune the format of each feature
 #'
@@ -555,7 +560,7 @@ shap.prep.stack.data <- function(
 }
 
 
-#' make the SHAP force plot
+#' Make the SHAP force plot
 #'
 #' The force/stack plot, optional to zoom in at certain x-axis location or zoom
 #' in a specific cluster of observations.
@@ -637,7 +642,7 @@ shap.plot.force_plot <- function(
 }
 
 
-#' make the stack plot, optional to zoom in at certain x or certain cluster
+#' Make the stack plot, optional to zoom in at certain x or certain cluster
 #'
 #' A collective display of zoom-in plots: one plot for every group of the
 #' clustered observations.

@@ -13,15 +13,16 @@ shap.plot.summary.wrap1(model, X, top_n, dilute = FALSE)
 
 \item{top_n}{how many predictors you want to show in the plot (ranked)}
 
-\item{dilute}{a number or logical, aim to make the test plot for large amount
-of data faster. If dilute = 5 will plot 1/5 of the data. If dilute = TRUE
-or a number, will plot at most half points per feature, so the plotting
-won't be too slow. If you put dilute too high, at least 10 points per
-feature would be kept. If the dataset is too small after dilution, will
-just plot all the data}
+\item{dilute}{being numeric or logical (TRUE/FALSE), it aims to help make the test
+plot for large amount of data faster. If dilute = 5 will plot 1/5 of the
+data. If dilute = TRUE or a number, will plot at most half points per
+feature, so the plotting won't be too slow. If you put dilute too high, at
+least 10 points per feature would be kept. If the dataset is too small
+after dilution, will just plot all the data}
 }
 \description{
-wraps up function \code{\link{shap.prep}} and \code{\link{shap.plot.summary}}
+\code{shap.plot.summary.wrap1} wraps up function \code{\link{shap.prep}} and
+\code{\link{shap.plot.summary}}
 }
 \examples{
 data("iris")

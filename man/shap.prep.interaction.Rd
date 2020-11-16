@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.prep.interaction}
 \alias{shap.prep.interaction}
-\title{prepare the interaction SHAP values from predict.xgb.Booster}
+\title{Prepare the interaction SHAP values from predict.xgb.Booster}
 \usage{
 shap.prep.interaction(xgb_model, X_train)
 }
@@ -15,7 +15,7 @@ shap.prep.interaction(xgb_model, X_train)
 a 3-dimention array: #obs x #features x #features
 }
 \description{
-This function just runs \code{shap_int <- predict(xgb_mod, (X_train), predinteraction = TRUE)}, thus it may not be necessary.
+\code{shap.prep.interaction} just runs \code{shap_int <- predict(xgb_mod, (X_train), predinteraction = TRUE)}, thus it may not be necessary.
 Read more about the xgboost predict function at \code{xgboost::predict.xgb.Booster}.
 }
 \examples{

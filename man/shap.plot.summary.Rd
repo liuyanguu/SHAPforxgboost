@@ -16,17 +16,17 @@ shap.plot.summary(
 \item{data_long}{a long format data of SHAP values from
 \code{\link{shap.prep}}}
 
-\item{x_bound}{to set horizontal axis limit in the plot}
+\item{x_bound}{use to set horizontal axis limit in the plot}
 
-\item{dilute}{a number or logical, aim to make the test plot for large amount
-of data faster. If dilute = 5 will plot 1/5 of the data. If dilute = TRUE
-or a number, will plot at most half points per feature, so the plotting
-won't be too slow. If you put dilute too high, at least 10 points per
-feature would be kept. If the dataset is too small after dilution, will
-just plot all the data}
+\item{dilute}{being numeric or logical (TRUE/FALSE), it aims to help make the test
+plot for large amount of data faster. If dilute = 5 will plot 1/5 of the
+data. If dilute = TRUE or a number, will plot at most half points per
+feature, so the plotting won't be too slow. If you put dilute too high, at
+least 10 points per feature would be kept. If the dataset is too small
+after dilution, will just plot all the data}
 
 \item{scientific}{show the mean|SHAP| in scientific format. If TRUE, label
-format is 0.0E-0, default to FALSE, whose format is 0.000}
+format is 0.0E-0, default to FALSE, and the format will be 0.000}
 
 \item{my_format}{supply your own number format if you really want}
 }

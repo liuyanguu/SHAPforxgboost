@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.prep}
 \alias{shap.prep}
-\title{prep SHAP values into long format for plotting}
+\title{Prepare SHAP values into long format for plotting}
 \usage{
 shap.prep(
   xgb_model = NULL,
@@ -13,7 +13,7 @@ shap.prep(
 )
 }
 \arguments{
-\item{xgb_model}{a xgboost model object, will derive the SHAP values from it}
+\item{xgb_model}{an xgboost model object, will derive the SHAP values from it}
 
 \item{shap_contrib}{optional to directly supply a SHAP values dataset. If
 supplied, it will overwrite the \code{xgb_model} if \code{xgb_model} is also supplied}
@@ -27,7 +27,7 @@ provides feature values to the plot, must be supplied}
 categorical variable}
 }
 \value{
-a long format data.table, named as \code{shap_long}
+a long-format data.table, named as \code{shap_long}
 }
 \description{
 Produce a dataset of 6 columns: ID of each observation, variable name, SHAP

@@ -2,7 +2,7 @@
 % Please edit documentation in R/simple_plots.R
 \name{scatter.plot.simple}
 \alias{scatter.plot.simple}
-\title{simple scatter plot, adding marginal histogram by default.}
+\title{Simple scatter plot, adding marginal histogram by default.}
 \usage{
 scatter.plot.simple(
   data,
@@ -40,7 +40,7 @@ longer a ggplot2 object}
 ggplot2 object if \code{add_hist = FALSE}
 }
 \description{
-simple scatter plot, adding marginal histogram by default.
+Simple scatter plot, adding marginal histogram by default.
 }
 \examples{
 scatter.plot.simple(data = iris, x = "Sepal.Length", y = "Petal.Length")
