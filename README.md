@@ -176,8 +176,8 @@ A BibTeX entry for LaTeX users is
 
 ## Reference
 
-Recently submitted paper from my lab that applies these figures:
-[Gradient Boosting Machine Learning to Improve Satellite-Derived Column Water Vapor Measurement Error](http://doi.org/10.5281/zenodo.3334713)
+Paper using these figures:  
+[Gradient Boosting Machine Learning to Improve Satellite-Derived Column Water Vapor Measurement Error](https://doi.org/10.5281/zenodo.3568449)
 
 Corresponding SHAP plots package in Python: [https://github.com/slundberg/shap](https://github.com/slundberg/shap)
 
