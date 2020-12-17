@@ -1,5 +1,7 @@
 # SHAPforxgboost
 
+[![CRAN version](http://www.r-pkg.org/badges/version/SHAPforxgboost)](https://cran.r-project.org/package=SHAPforxgboost)
+
 This package creates SHAP (SHapley Additive exPlanation) visualization plots
  for 'XGBoost' in R. It provides summary plot, dependence plot, interaction plot,
  and force plot. It relies on the 'dmlc/xgboost' package to produce SHAP values.
