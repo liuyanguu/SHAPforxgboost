@@ -63,7 +63,8 @@ y-axis, and color the points by the feature value of a designated variable.
 Not colored if \code{color_feature} is not supplied. If \code{data_int} (the
 SHAP interaction values dataset) is supplied, it will plot the interaction
 effect between \code{y} and \code{x} on the y-axis. Dependence plot is easy
-to make if you have the SHAP values dataset from \code{predict.xgb.Booster}.
+to make if you have the SHAP values dataset from \code{predict.xgb.Booster}
+or \code{predict.lgb.Booster}.
 It is not necessary to start with the long format data, but since that is
 used for the summary plot, we just continue to use it here.
 }

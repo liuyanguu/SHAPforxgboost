@@ -16,7 +16,7 @@ a 3-dimention array: #obs x #features x #features
 }
 \description{
 \code{shap.prep.interaction} just runs \code{shap_int <- predict(xgb_mod, (X_train), predinteraction = TRUE)}, thus it may not be necessary.
-Read more about the xgboost predict function at \code{xgboost::predict.xgb.Booster}.
+Read more about the xgboost predict function at \code{xgboost::predict.xgb.Booster}. Note that this functionality is unavailable for LightGBM models.
 }
 \examples{
 # To get the interaction SHAP dataset for plotting:

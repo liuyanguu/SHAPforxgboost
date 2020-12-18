@@ -20,21 +20,22 @@ if(getRversion() >= "2.15.1")  {
 
 # Data preparation functions ----------------------------------------------
 
-#' Get SHAP scores from a trained xgboost model
+#' Get SHAP scores from a trained XGBoost or LightGBM model
 #'
-#' \code{shap.values} returns a list of three objects from xgboost model: 1.
+#' \code{shap.values} returns a list of three objects from XGBoost or LightGBM model: 1.
 #' a dataset (data.table) of SHAP scores. It has the same dimension as the
 #' X_train); 2. the ranked variable vector by each variable's mean absolute SHAP
 #' value, it ranks the predictors by their importance in the model; and 3. The
 #' BIAS, which is like an intercept. The rowsum of SHAP values including the
 #' BIAS would equal to the predicted value (y_hat).
 #'
-#' @param xgb_model a xgboost model object
-#' @param X_train the dataset of predictors (independent variables) used for the
-#'   xgboost model, it should be a matrix
+#' @param xgb_model an XGBoost or LightGBM model object
+#' @param X_train the dataset of predictors (independent variables) used
+#'   for calculating SHAP values, it should be a matrix
 #'
 #' @import data.table
 #' @import xgboost
+#' @importFrom lightgbm lgb.Dataset lgb.train
 #' @importFrom stats cutree dist hclust predict lm na.omit
 #'
 #' @export shap.values
@@ -46,16 +47,28 @@ if(getRversion() >= "2.15.1")  {
 #'
 shap.values <- function(xgb_model,
                         X_train){
-  shap_contrib <- predict(
-                          xgb_model,
+
+  shap_contrib <- predict(xgb_model,
                           (X_train),
-                          predcontrib = TRUE,
-                          approxcontrib = FALSE)
+                          predcontrib = TRUE)
+
+  # Add colnames if not already there (required for LightGBM)
+  if (is.null(colnames(shap_contrib))) {
+    colnames(shap_contrib) <- c(colnames(X_train), "BIAS")
+  }
+
   shap_contrib <- as.data.table(shap_contrib)
-  BIAS0 <- shap_contrib[,ncol(shap_contrib), with = FALSE][1]
-  shap_contrib[, BIAS := NULL] # BIAS is an extra column produced by `predict`
-  # make SHAP score in decreasing order:
-  mean_shap_score <- colMeans(abs(shap_contrib))[order(colMeans(abs(shap_contrib)), decreasing = T)]
+
+  # For both XGBoost and LightGBM, the baseline value is kept in the last column
+  BIAS0 <- shap_contrib[, ncol(shap_contrib), with = FALSE][1]
+
+  # Remove baseline and ensure the shap matrix has column names
+  shap_contrib[, `:=`(BIAS, NULL)]
+
+  # Make SHAP score in decreasing order
+  imp <- colMeans(abs(shap_contrib))
+  mean_shap_score <- imp[order(imp, decreasing = T)]
+
   return(list(shap_score = shap_contrib,
               mean_shap_score = mean_shap_score,
               BIAS0 = BIAS0))
@@ -75,10 +88,10 @@ shap.values <- function(xgb_model,
 #' for better tracking, it is created as `1:nrow(shap_contrib)` before melting
 #' `shap_contrib` into long format.
 #'
-#' @param xgb_model an xgboost model object, will derive the SHAP values from it
+#' @param xgb_model an XGBoost (or LightGBM) model object, will derive the SHAP values from it
 #' @param shap_contrib optional to directly supply a SHAP values dataset. If
 #'   supplied, it will overwrite the `xgb_model` if `xgb_model` is also supplied
-#' @param X_train the dataset of predictors used for the xgboost model, it
+#' @param X_train the dataset of predictors used to calculate SHAP values, it
 #'   provides feature values to the plot, must be supplied
 #' @param top_n to choose top_n variables ranked by mean|SHAP| if needed
 #' @param var_cat if supplied, will provide long format data, grouped by this
@@ -91,6 +104,7 @@ shap.values <- function(xgb_model,
 #'
 #' @example R/example/example_fit_summary.R
 #' @example R/example/example_categorical.R
+#' @example R/example/example_lightgbm.R
 #'
 shap.prep <- function(xgb_model = NULL,
                       shap_contrib = NULL, # optional to directly supply SHAP values
@@ -164,7 +178,7 @@ shap.prep <- function(xgb_model = NULL,
 #' Prepare the interaction SHAP values from predict.xgb.Booster
 #'
 #' `shap.prep.interaction` just runs \code{shap_int <- predict(xgb_mod, (X_train), predinteraction = TRUE)}, thus it may not be necessary.
-#' Read more about the xgboost predict function at `xgboost::predict.xgb.Booster`.
+#' Read more about the xgboost predict function at `xgboost::predict.xgb.Booster`. Note that this functionality is unavailable for LightGBM models.
 #'
 #' @param xgb_model a xgboost model object
 #' @param X_train the dataset of predictors used for the xgboost model
@@ -175,6 +189,7 @@ shap.prep <- function(xgb_model = NULL,
 #' @return a 3-dimention array: #obs x #features x #features
 #' @example R/example/example_interaction_plot.R
 shap.prep.interaction <- function(xgb_model, X_train){
+  stopifnot(inherits(xgb_model, "xgb.Booster"))
   shap_int <- predict(xgb_model, (X_train), predinteraction = TRUE)
   return(shap_int)
 }
@@ -184,10 +199,10 @@ shap.prep.interaction <- function(xgb_model, X_train){
 #' SHAP summary plot core function using the long format SHAP values
 #'
 #' The summary plot (a sina plot) uses a long format data of SHAP values. The
-#' SHAP values could be obtained from either an xgboost model or a SHAP value
+#' SHAP values could be obtained from either a XGBoost/LightGBM model or a SHAP value
 #' matrix using \code{\link{shap.values}}. So this summary plot function
 #' normally follows the long format dataset obtained using `shap.values`. If you
-#' want to start with a xgboost model and data_X, use
+#' want to start with a model and data_X, use
 #' \code{\link{shap.plot.summary.wrap1}}. If you want to use a self-derived
 #' dataset of SHAP values, use \code{\link{shap.plot.summary.wrap2}}. If a list
 #' named **new_labels** is provided in the environment (`new_labels` is
@@ -270,12 +285,12 @@ shap.plot.summary <- function(data_long,
   return(plot1)
 }
 
-#' A wrapped function to make summary plot from xgb model object and predictors
+#' A wrapped function to make summary plot from model object and predictors
 #'
 #' `shap.plot.summary.wrap1` wraps up function \code{\link{shap.prep}} and
 #' \code{\link{shap.plot.summary}}
-#' @param model the xgboost model
-#' @param X the dataset of predictors used for the xgboost model
+#' @param model the model
+#' @param X the dataset of predictors used for calculating SHAP
 #' @param top_n how many predictors you want to show in the plot (ranked)
 #' @inheritParams shap.plot.summary
 #'
@@ -295,12 +310,12 @@ shap.plot.summary.wrap1 <- function(model, X, top_n, dilute = FALSE){
 #'
 #' `shap.plot.summary.wrap2` wraps up function \code{\link{shap.prep}} and
 #' \code{\link{shap.plot.summary}}. Since SHAP matrix could be returned from
-#' cross-validation instead of only one xgboost model, here the wrapped
+#' cross-validation instead of only one model, here the wrapped
 #' \code{\link{shap.prep}} takes the SHAP score matrix `shap_score` as input
 #'
 #' @param shap_score the SHAP values dataset, could be obtained by
 #'   \code{shap.prep}
-#' @param X the dataset of predictors used for the xgboost model
+#' @param X the dataset of predictors used for calculating SHAP values
 #' @param top_n how many predictors you want to show in the plot (ranked)
 #' @inheritParams shap.plot.summary
 #'
@@ -388,7 +403,8 @@ plot.label <- function(plot1, show_feature){
 #' Not colored if \code{color_feature} is not supplied. If \code{data_int} (the
 #' SHAP interaction values dataset) is supplied, it will plot the interaction
 #' effect between \code{y} and \code{x} on the y-axis. Dependence plot is easy
-#' to make if you have the SHAP values dataset from \code{predict.xgb.Booster}.
+#' to make if you have the SHAP values dataset from \code{predict.xgb.Booster}
+#' or \code{predict.lgb.Booster}.
 #' It is not necessary to start with the long format data, but since that is
 #' used for the summary plot, we just continue to use it here.
 #'
@@ -499,7 +515,7 @@ shap.plot.dependence <- function(
 #' portion of the data in case the dataset is large.
 #'
 #' @param shap_contrib shap_contrib is the SHAP value data returned from
-#'   predict.xgb.booster, here an ID variable is added for each observation in
+#'   predict, here an ID variable is added for each observation in
 #'   the `shap_contrib` dataset for better tracking, it is created in the
 #'   begining as `1:nrow(shap_contrib)`. The ID matches the output from
 #'   \code{\link{shap.prep}}

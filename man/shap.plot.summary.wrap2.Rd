@@ -10,7 +10,7 @@ shap.plot.summary.wrap2(shap_score, X, top_n, dilute = FALSE)
 \item{shap_score}{the SHAP values dataset, could be obtained by
 \code{shap.prep}}
 
-\item{X}{the dataset of predictors used for the xgboost model}
+\item{X}{the dataset of predictors used for calculating SHAP values}
 
 \item{top_n}{how many predictors you want to show in the plot (ranked)}
 
@@ -24,7 +24,7 @@ after dilution, will just plot all the data}
 \description{
 \code{shap.plot.summary.wrap2} wraps up function \code{\link{shap.prep}} and
 \code{\link{shap.plot.summary}}. Since SHAP matrix could be returned from
-cross-validation instead of only one xgboost model, here the wrapped
+cross-validation instead of only one model, here the wrapped
 \code{\link{shap.prep}} takes the SHAP score matrix \code{shap_score} as input
 }
 \examples{

@@ -2,14 +2,14 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.plot.summary.wrap1}
 \alias{shap.plot.summary.wrap1}
-\title{A wrapped function to make summary plot from xgb model object and predictors}
+\title{A wrapped function to make summary plot from model object and predictors}
 \usage{
 shap.plot.summary.wrap1(model, X, top_n, dilute = FALSE)
 }
 \arguments{
-\item{model}{the xgboost model}
+\item{model}{the model}
 
-\item{X}{the dataset of predictors used for the xgboost model}
+\item{X}{the dataset of predictors used for calculating SHAP}
 
 \item{top_n}{how many predictors you want to show in the plot (ranked)}
 
