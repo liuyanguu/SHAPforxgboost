@@ -5,13 +5,13 @@
 This package creates SHAP (SHapley Additive exPlanation) visualization plots
  for 'XGBoost' in R. It provides summary plot, dependence plot, interaction plot,
  and force plot and relies on the SHAP implementation provided by 'XGBoost' and 'LightGBM'.
- Please refer to 'slundberg/shap' for the original implementation of SHAP in Python. 
+ Please refer to ['slundberg/shap'](https://github.com/slundberg/shap) for the original implementation of SHAP in Python. 
 
-All the functions except force plot return ggplot object, it is possible to add more layers. The dependence plot `shap.plot.dependence` returns ggplot object if without the marginal histogram by default.
+All the functions except force plot return `ggplot` object, it is possible to add more layers. The dependence plot `shap.plot.dependence` returns `ggplot` object if without the marginal histogram by default.
 
-To revise feature names, you could define a global variable named `new_labels`, the plotting functions will use this list as new feature labels. The `SHAPforxgboost::new_labels` is an object default to `NULL`. Or you could just overwrite the labels on the ggplot by adding a `labs` layer to the ggplot object. 
+To revise feature names, you could define a global variable named `new_labels`, the plotting functions will use this list as new feature labels. The `SHAPforxgboost::new_labels` is a placeholder default to `NULL`. Or you could just overwrite the labels by adding a `labs` layer to the `ggplot` object. 
 
-Please refer to this blog for the vignette of this package: more examples and discussion on SHAP values in R, why use SHAP, and a comparison to Gain: 
+Please refer to this blog as the vignette: more examples and discussion on SHAP values in R, why use SHAP, and a comparison to Gain: 
 [SHAP visualization for XGBoost in R](https://liuyanguu.github.io/post/2019/07/18/visualization-of-shap-for-xgboost/)
 
 
@@ -160,7 +160,7 @@ The citation could be seen obtained using `citation("SHAPforxgboost")`
 ```{r}
 To cite package ‘SHAPforxgboost’ in publications use:
 
-  Yang Liu and Allan Just (2019). SHAPforxgboost: SHAP Plots for 'XGBoost'. R package version 0.0.3.
+  Yang Liu and Allan Just (2020). SHAPforxgboost: SHAP Plots for 'XGBoost'. R package version 0.1.0.
   https://github.com/liuyanguu/SHAPforxgboost/
 
 A BibTeX entry for LaTeX users is
@@ -168,8 +168,8 @@ A BibTeX entry for LaTeX users is
   @Manual{,
     title = {SHAPforxgboost: SHAP Plots for 'XGBoost'},
     author = {Yang Liu and Allan Just},
-    year = {2019},
-    note = {R package version 0.0.6},
+    year = {2020},
+    note = {R package version 0.1.0},
     url = {https://github.com/liuyanguu/SHAPforxgboost/},
   }
 ```
