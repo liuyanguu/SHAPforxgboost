@@ -1,6 +1,6 @@
 Package: SHAPforxgboost
 Title: SHAP Plots for 'XGBoost'
-Version: 0.0.5
+Version: 0.0.6
 Authors@R: c(
     person(given = "Yang", family = "Liu", role = c("aut", "cre"), email = "lyhello@gmail.com",
            comment = c(ORCID = "0000-0001-6557-6439")),
@@ -8,9 +8,9 @@ Authors@R: c(
            comment = c(ORCID = "0000-0003-4312-5957"))
     )
 Description: Aid in visual data investigations
- using SHAP (SHapley Additive exPlanation) visualization plots for 'XGBoost'. 
- It provides summary plot, dependence plot, interaction plot, and force plot. 
- It relies on the 'dmlc/xgboost' package to produce SHAP values.
+ using SHAP (SHapley Additive exPlanation) visualization plots for 'XGBoost' and 'LightGBM'. 
+ It provides summary plot, dependence plot, interaction plot, and force plot and relies on
+ the SHAP implementation provided by 'XGBoost' and 'LightGBM'.
  Please refer to 'slundberg/shap' for the original implementation of SHAP in 'Python'. 
 License: MIT + file LICENSE
 URL: https://github.com/liuyanguu/SHAPforxgboost
@@ -18,10 +18,11 @@ BugReports: https://github.com/liuyanguu/SHAPforxgboost/issues
 Encoding: UTF-8
 LazyData: true
 Depends: 
-    R (>= 3.3.0)
+    R (>= 3.5.0)
 Imports:
     ggplot2 (>= 3.0.0),
     xgboost (>= 0.81.0.0),
+    lightgbm (>= 2.1),
     data.table (>= 1.12.0),
     ggforce (>= 0.2.1.9000),
     ggExtra (>= 0.8),

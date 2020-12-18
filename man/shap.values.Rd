@@ -2,22 +2,22 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.values}
 \alias{shap.values}
-\title{Get SHAP scores from a trained xgboost model}
+\title{Get SHAP scores from a trained XGBoost or LightGBM model}
 \usage{
 shap.values(xgb_model, X_train)
 }
 \arguments{
-\item{xgb_model}{a xgboost model object}
+\item{xgb_model}{an XGBoost or LightGBM model object}
 
-\item{X_train}{the dataset of predictors (independent variables) used for the
-xgboost model, it should be a matrix}
+\item{X_train}{the dataset of predictors (independent variables) used
+for calculating SHAP values, it should be a matrix}
 }
 \value{
 a list of three elements: the SHAP values as data.table, ranked
 mean|SHAP|, and BIAS
 }
 \description{
-\code{shap.values} returns a list of three objects from xgboost model: 1.
+\code{shap.values} returns a list of three objects from XGBoost or LightGBM model: 1.
 a dataset (data.table) of SHAP scores. It has the same dimension as the
 X_train); 2. the ranked variable vector by each variable's mean absolute SHAP
 value, it ranks the predictors by their importance in the model; and 3. The

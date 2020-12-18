@@ -14,7 +14,7 @@ shap.prep.stack.data(
 }
 \arguments{
 \item{shap_contrib}{shap_contrib is the SHAP value data returned from
-predict.xgb.booster, here an ID variable is added for each observation in
+predict, here an ID variable is added for each observation in
 the \code{shap_contrib} dataset for better tracking, it is created in the
 begining as \code{1:nrow(shap_contrib)}. The ID matches the output from
 \code{\link{shap.prep}}}

@@ -35,10 +35,10 @@ returns a ggplot2 object, could add further layers.
 }
 \description{
 The summary plot (a sina plot) uses a long format data of SHAP values. The
-SHAP values could be obtained from either an xgboost model or a SHAP value
+SHAP values could be obtained from either a XGBoost/LightGBM model or a SHAP value
 matrix using \code{\link{shap.values}}. So this summary plot function
 normally follows the long format dataset obtained using \code{shap.values}. If you
-want to start with a xgboost model and data_X, use
+want to start with a model and data_X, use
 \code{\link{shap.plot.summary.wrap1}}. If you want to use a self-derived
 dataset of SHAP values, use \code{\link{shap.plot.summary.wrap2}}. If a list
 named \strong{new_labels} is provided in the environment (\code{new_labels} is
