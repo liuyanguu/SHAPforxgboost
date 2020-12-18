@@ -41,7 +41,7 @@ normally follows the long format dataset obtained using \code{shap.values}. If y
 want to start with a model and data_X, use
 \code{\link{shap.plot.summary.wrap1}}. If you want to use a self-derived
 dataset of SHAP values, use \code{\link{shap.plot.summary.wrap2}}. If a list
-named \strong{new_labels} is provided in the environment (\code{new_labels} is
+named \strong{new_labels} is provided in the global environment (\code{new_labels} is
 pre-loaded by the package as \code{NULL}), the plots will use that list to
 label the variables, here is an example of such a list (the default labels):
 \code{\link{labels_within_package}}.

@@ -7,17 +7,6 @@
 # Please cite if this is useful.
 #
 
-
-if(getRversion() >= "2.15.1")  {
-  utils::globalVariables(c(".", "rfvalue", "value","variable","stdfvalue",
-                           "x_feature", "mean_value",
-                           "int_value", "color_value",
-                           "new_labels","labels_within_package",
-                           "..var_cat",
-  "group", "rest_variables", "clusterid", "ID", "sorted_id", "BIAS"))
-  }
-
-
 # Data preparation functions ----------------------------------------------
 
 #' Get SHAP scores from a trained XGBoost or LightGBM model
@@ -205,7 +194,7 @@ shap.prep.interaction <- function(xgb_model, X_train){
 #' want to start with a model and data_X, use
 #' \code{\link{shap.plot.summary.wrap1}}. If you want to use a self-derived
 #' dataset of SHAP values, use \code{\link{shap.plot.summary.wrap2}}. If a list
-#' named **new_labels** is provided in the environment (`new_labels` is
+#' named **new_labels** is provided in the global environment (`new_labels` is
 #' pre-loaded by the package as \code{NULL}), the plots will use that list to
 #' label the variables, here is an example of such a list (the default labels):
 #' \code{\link{labels_within_package}}.
@@ -331,7 +320,7 @@ shap.plot.summary.wrap2 <- function(shap_score, X, top_n, dilute = FALSE){
 }
 
 
-# dependence plot  --------------------------------------------------------
+# Dependence plot  --------------------------------------------------------
 
 #' Modify labels for features under plotting
 #'
@@ -353,7 +342,7 @@ label.feature <- function(x){
     if(!is.list(new_labels)) {
       message("new_labels should be a list, for example,`list(var0 = 'VariableA')`.\n")
       }  else {
-      message("Plot will use user-defined labels.\n")
+      message("Plot will use your user-defined labels.\n")
       labs = new_labels
       }
   }
@@ -507,7 +496,7 @@ shap.plot.dependence <- function(
 }
 
 
-# stack plot --------------------------------------------------------------
+# Stack plot --------------------------------------------------------------
 
 #' Prepare data for SHAP force plot (stack plot)
 #'
@@ -703,3 +692,13 @@ shap.plot.force_plot_bygroup <- function(
   return(p)
 }
 
+
+# miscellaneous
+if(getRversion() >= "2.15.1")  {
+  utils::globalVariables(c(".", "rfvalue", "value","variable","stdfvalue",
+                           "x_feature", "mean_value",
+                           "int_value", "color_value",
+                           "new_labels","labels_within_package",
+                           "..var_cat",
+                           "group", "rest_variables", "clusterid", "ID", "sorted_id", "BIAS"))
+}
