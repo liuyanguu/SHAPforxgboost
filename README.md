@@ -7,7 +7,7 @@ This package creates SHAP (SHapley Additive exPlanation) visualization plots
  and force plot and relies on the SHAP implementation provided by 'XGBoost' and 'LightGBM'.
  Please refer to ['slundberg/shap'](https://github.com/slundberg/shap) for the original implementation of SHAP in Python. 
 
-All the functions except force plot return `ggplot` object, it is possible to add more layers. The dependence plot `shap.plot.dependence` returns `ggplot` object if without the marginal histogram by default.
+All the functions except the force plot return `ggplot` object thus it is possible to add more layers. The dependence plot `shap.plot.dependence` returns `ggplot` object if without the marginal histogram by default.
 
 To revise feature names, you could define a global variable named `new_labels`, the plotting functions will use this list as new feature labels. The `SHAPforxgboost::new_labels` is a placeholder default to `NULL`. Or you could just overwrite the labels by adding a `labs` layer to the `ggplot` object. 
 
@@ -58,7 +58,8 @@ shap_values$mean_shap_score
 shap_long <- shap.prep(xgb_model = mod, X_train = dataX)
 # is the same as: using given shap_contrib
 shap_long <- shap.prep(shap_contrib = shap_values$shap_score, X_train = dataX)
-# (Notice that there will be a data.table warning from `melt.data.table` due to `dayint` coerced from integer to double)
+# (Notice that there will be a data.table warning from `melt.data.table` due to `dayint` coerced from
+# integer to double)
 
 # **SHAP summary plot**
 shap.plot.summary(shap_long)
@@ -113,7 +114,8 @@ gridExtra::grid.arrange(grobs = fig_list, ncol = 2)
 
 ```{r}
 # prepare the data using either: 
-# notice: this step is slow since it calculates all the combinations of features. It may take over 5 minutes on a personal laptop.
+# notice: this step is slow since it calculates all the combinations of features. 
+# It may take over 5 minutes on a personal laptop.
 shap_int <- shap.prep.interaction(xgb_mod = mod, X_train = dataX)
 # it is the same as:
 shap_int <- predict(mod, dataX, predinteraction = TRUE)
