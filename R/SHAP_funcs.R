@@ -719,5 +719,6 @@ if(getRversion() >= "2.15.1")  {
                            "int_value", "color_value",
                            "new_labels","labels_within_package",
                            "..var_cat",
-                           "group", "rest_variables", "clusterid", "ID", "sorted_id", "BIAS"))
+                           "group", "rest_variables", "clusterid", "ID", "sorted_id", "BIAS",
+                           "cond_mean"))
 }

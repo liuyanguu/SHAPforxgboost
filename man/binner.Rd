@@ -2,10 +2,15 @@
 % Please edit documentation in R/utils.R
 \name{binner}
 \alias{binner}
-\title{Bins a variable into n_bins groups}
+\title{Bins a variable into n_bins quantile groups.}
 \usage{
 binner(y, n_bins = 7)
 }
+\arguments{
+\item{y}{Numeric vector to be binned.}
+
+\item{n_bins}{If \code{y} has up to this number of unique values, no binning is done.}
+}
 \description{
-Bins a variable into n_bins groups
+Internal function.
 }

@@ -2,10 +2,15 @@
 % Please edit documentation in R/utils.R
 \name{strongest_interaction}
 \alias{strongest_interaction}
-\title{Finds variable with presumably strongest interaction effect}
+\title{Finds variable with presumably strongest interaction effect.}
 \usage{
 strongest_interaction(X0, Xlong)
 }
+\arguments{
+\item{X0}{Data set corresponding to data0.}
+
+\item{Xlong}{Data set corresponding to data_long.}
+}
 \description{
-Finds variable with presumably strongest interaction effect
+Internal function.
 }

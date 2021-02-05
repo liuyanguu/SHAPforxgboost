@@ -1,6 +1,13 @@
 # Internal helper functions
 
-#' Bins a variable into n_bins groups
+#' Bins a variable into n_bins quantile groups.
+#'
+#' Internal function.
+#'
+#' @importFrom stats quantile
+#'
+#' @param y Numeric vector to be binned.
+#' @param n_bins If \code{y} has up to this number of unique values, no binning is done.
 binner <- function(y, n_bins = 7) {
   if (length(unique(y)) <= n_bins) {
     return(y)
@@ -9,7 +16,13 @@ binner <- function(y, n_bins = 7) {
   findInterval(y, unique(qu), rightmost.closed = TRUE)
 }
 
-#' Finds variable with presumably strongest interaction effect
+#' Finds variable with presumably strongest interaction effect.
+#'
+#' Internal function.
+#'
+#' @param X0 Data set corresponding to data0.
+#' @param Xlong Data set corresponding to data_long.
+#'
 #' @importFrom data.table ':='
 strongest_interaction <- function(X0, Xlong) {
   candidates <- setdiff(unique(Xlong[["variable"]]),
