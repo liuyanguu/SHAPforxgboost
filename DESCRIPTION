@@ -1,12 +1,13 @@
 Package: SHAPforxgboost
 Title: SHAP Plots for 'XGBoost'
-Version: 0.1.0
-Date: 2020-12-18
+Version: 0.1.1
+Date: 2021-02-05
 Authors@R: c(
     person(given = "Yang", family = "Liu", role = c("aut", "cre"), email = "lyhello@gmail.com",
            comment = c(ORCID = "0000-0001-6557-6439")),
     person(given = "Allan", family = "Just", role = c("aut", "ctb"), email = "allan.just@mssm.edu",
-           comment = c(ORCID = "0000-0003-4312-5957"))
+           comment = c(ORCID = "0000-0003-4312-5957")),
+    person(given = "Michael", family = "Mayer", role = c("ctb"), email = "mayermichael79@gmail.com")
     )
 Description: Aid in visual data investigations
  using SHAP (SHapley Additive exPlanation) visualization plots for 'XGBoost' and 'LightGBM'. 

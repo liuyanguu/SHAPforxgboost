@@ -103,5 +103,6 @@ shap_lgb <- shap.prep(mod_lgb, X_train = data.matrix(iris[, -1]))
 
 shap.plot.summary(shap_lgb)
 shap.plot.dependence(shap_lgb, x = "Sepal.Width")
+shap.plot.dependence(shap_lgb, x = "Sepal.Width", color_feature = "auto")
 
 }

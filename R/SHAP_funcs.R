@@ -404,7 +404,9 @@ plot.label <- function(plot1, show_feature){
 #'   that feature. y is default to x, if y is not provided, just plot the SHAP
 #'   values of x on the y-axis
 #' @param color_feature which feature value to use for coloring, color by the
-#'   feature value
+#'   feature value. If "auto", will select the feature "c" minimizing the
+#'   variance of the shap value given x and c, which can be viewed as a
+#'   heuristic for the strongest interaction.
 #' @param data_int the 3-dimention SHAP interaction values array. if `data_int`
 #'   is supplied, y-axis will plot the interaction values of y (vs. x).
 #'   `data_int` is obtained from either \code{predict.xgb.Booster} or
@@ -441,14 +443,22 @@ shap.plot.dependence <- function(
   add_stat_cor = FALSE
   ){
   if (is.null(y)) y <- x
-  data0 <- data_long[variable == y,.(variable, value)] # the shap value to plot for dependence plot
+  data0 <- data_long[variable == y, .(variable, value)] # the shap value to plot for dependence plot
   data0$x_feature <- data_long[variable == x, rfvalue]
-  if (!is.null(color_feature)) data0$color_value <- data_long[variable == color_feature, rfvalue]
+
+  # Note: strongest_interaction can return NULL if there is no color feature available
+  # Thus, we keep this condition outside the next condition
+  if (!is.null(color_feature) && color_feature == "auto") {
+    color_feature <- strongest_interaction(X0 = data0, Xlong = data_long)
+  }
+  if (!is.null(color_feature)) {
+    data0$color_value <- data_long[variable == color_feature, rfvalue]
+  }
   if (!is.null(data_int)) data0$int_value <- data_int[, x, y]
 
   nrow_X <- nrow(data0)
   if (is.null(dilute)) dilute = FALSE
-  if (dilute!=0){
+  if (dilute != 0){
     dilute <- ceiling(min(nrow(data0)/10, abs(as.numeric(dilute))))
     # not allowed to dilute to fewer than 10 obs/feature
     set.seed(1234)
@@ -456,40 +466,49 @@ shap.plot.dependence <- function(
   }
 
   # for dayint, reformat date
-  if (x == 'dayint'){
-    data0[, x_feature:= as.Date(data0[,x_feature], format = "%Y-%m-%d",
+  if (x == "dayint"){
+    data0[, x_feature:= as.Date(data0[, x_feature], format = "%Y-%m-%d",
                                 origin = "1970-01-01")]
   }
-  if (is.null(size0)) size0 <- if(nrow(data0)<1000L) 1 else 0.4
+
+  if (is.null(size0)) {
+    size0 <- if (nrow(data0) < 1000L) 1 else 0.4
+  }
+
   plot1 <- ggplot(data = data0,
                   aes(x = x_feature,
                       y = if (is.null(data_int)) value else int_value,
-                      color = if (!is.null(color_feature)) color_value else NULL))+
-    geom_point(size = size0, alpha = if(nrow(data0)<1000L) 1 else 0.6)+
+                      color = if (!is.null(color_feature)) color_value else NULL)) +
+    geom_point(size = size0, alpha = if (nrow(data0) < 1000L) 1 else 0.6) +
     labs(y = if (is.null(data_int)) paste0("SHAP value for ", label.feature(y)) else
-      paste0("SHAP interaction values for\n", label.feature(x), " and ", label.feature(y)) ,
+      paste0("SHAP interaction values for\n", label.feature(x), " and ", label.feature(y)),
          x = label.feature(x),
          color = if (!is.null(color_feature))
            paste0(label.feature(color_feature), "\n","(Feature value)") else NULL) +
     scale_color_gradient(low="#FFCC33", high="#6600CC",
                          guide = guide_colorbar(barwidth = 10, barheight = 0.3)) +
     theme_bw() +
-    theme(legend.position="bottom",
-          legend.title=element_text(size=10),
-          legend.text=element_text(size=8))
-    # a loess smoothing line:
-  if(smooth){
-    plot1 <- plot1 + geom_smooth(method = 'loess', color = 'red', size = 0.4, se = F)
+    theme(legend.position = "bottom",
+          legend.title = element_text(size = 10),
+          legend.text = element_text(size = 8))
+
+  # a loess smoothing line:
+  if (smooth) {
+    plot1 <- plot1 +
+      geom_smooth(method = "loess", color = "red", size = 0.4, se = FALSE)
   }
   plot1 <- plot.label(plot1, show_feature = x)
+
   # add correlation
-  if(add_stat_cor){
+  if (add_stat_cor) {
     plot1 <- plot1 + ggpubr::stat_cor(method = "pearson")
   }
 
   # add histogram
-  if(add_hist){
-    plot1 <- ggExtra::ggMarginal(plot1, type = "histogram", bins = 50, size = 10, color="white")
+  if (add_hist) {
+    plot1 <- ggExtra::ggMarginal(
+      plot1, type = "histogram", bins = 50, size = 10, color = "white"
+    )
   }
 
   plot1
