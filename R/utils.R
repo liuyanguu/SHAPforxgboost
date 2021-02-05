@@ -32,6 +32,5 @@ strongest_interaction <- function(X0, Xlong) {
           by = c("x_feature", "color_feature")]
     var_candidates[cand] <- X0[, sum((value - cond_mean)^2, na.rm = TRUE)]
   }
-  print(var_candidates)
   names(which.min(var_candidates))[1]
 }
