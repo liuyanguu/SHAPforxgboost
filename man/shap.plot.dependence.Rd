@@ -28,7 +28,9 @@ that feature. y is default to x, if y is not provided, just plot the SHAP
 values of x on the y-axis}
 
 \item{color_feature}{which feature value to use for coloring, color by the
-feature value}
+feature value. If "auto", will select the feature "c" minimizing the
+variance of the shap value given x and c, which can be viewed as a
+heuristic for the strongest interaction.}
 
 \item{data_int}{the 3-dimention SHAP interaction values array. if \code{data_int}
 is supplied, y-axis will plot the interaction values of y (vs. x).
