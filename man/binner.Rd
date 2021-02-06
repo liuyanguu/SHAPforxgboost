@@ -14,3 +14,4 @@ binner(y, n_bins = 7)
 \description{
 Internal function.
 }
+\keyword{internal}

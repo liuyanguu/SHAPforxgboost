@@ -21,6 +21,8 @@ Encoding: UTF-8
 LazyData: true
 Depends: 
     R (>= 3.5.0)
+VignetteBuilder: 
+    knitr
 Imports:
     stats,
     ggplot2 (>= 3.0.0),
@@ -33,6 +35,8 @@ Imports:
     ggpubr,
     BBmisc
 Suggests:
+    knitr,
+    rmarkdown,
     gridExtra (>= 2.3),
     here,
     parallel

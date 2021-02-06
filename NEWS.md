@@ -1,6 +1,9 @@
 # SHAPforxgboost 0.1.1
+
 * 05/02/2021 Added color_feature = "auto" in shap.plot.dependence in order to 
 colorize the (heuristically found) strongest interaction.
+
+* Added vignettes
 
 # SHAPforxgboost 0.1.0
 * 12/12/2020 Added support for LightGBM.

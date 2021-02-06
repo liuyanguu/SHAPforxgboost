@@ -14,3 +14,4 @@ strongest_interaction(X0, Xlong)
 \description{
 Internal function.
 }
+\keyword{internal}
