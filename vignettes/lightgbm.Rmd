@@ -57,10 +57,14 @@ fit <- lgb.train(
 Now, we can prepare the SHAP values and analyze the results. All this in just very few lines of code!
 
 ```{r}
+# Crunch SHAP values
 shap <- shap.prep(fit, X_train = X)
+
+# SHAP importance plot
 shap.plot.summary(shap)
 
-for (x in colnames(X)) {
+# Dependence plots in decreasing order of importance
+for (x in shap.importance(shap, names_only = TRUE)) {
   p <- shap.plot.dependence(shap, x = x, color_feature = "auto", smooth = FALSE) +
           ggtitle(x)
   print(p)
