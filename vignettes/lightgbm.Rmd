@@ -1,7 +1,7 @@
 ---
 title: "Using SHAPforxgboost with LightGBM"
-author: "Yang Liu, Michael Mayer"
-date: "`r Sys.Date()`"
+description: >
+  This vignette describes how SHAPforxgboost is being used with LightGBM.
 bibliography: "biblio.bib"
 link-citations: true
 output: rmarkdown::html_vignette
@@ -22,6 +22,10 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Introduction
+
+This vignette shows how to use `SHAPforxgboost` for interpretation of models trained with `LightGBM`, a hightly efficient gradient boosting implementation [@ke2017lightgbm].
+
 ```{r setup}
 library(ggplot2)
 library(SHAPforxgboost)
@@ -29,10 +33,6 @@ library(lightgbm)
 
 set.seed(9375)
 ```
-
-## Introduction
-
-This vignette shows how to use `SHAPforxgboost` for interpretation of models trained with `LightGBM`, a hightly efficient gradient boosting implementation [@ke2017lightgbm].
 
 ## Training the model
 
