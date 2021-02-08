@@ -319,6 +319,36 @@ shap.plot.summary.wrap2 <- function(shap_score, X, top_n, dilute = FALSE){
   shap.plot.summary(shap_long2, dilute = dilute)
 }
 
+# SHAP importance ----------------------------------------------------------
+
+#' Variable importance as measured by mean absolute SHAP value.
+#'
+#' @param data_long a long format data of SHAP values from
+#'   \code{\link{shap.prep}}
+#' @param names_only If \code{TRUE}, returns variable names only.
+#' @param top_n How many variables to be returned?
+#'
+#' @return returns \code{data.table} with average absolute SHAP
+#' values per variable, sorted in decreasing order of importance.
+#'
+#' @export
+#'
+#' @examples
+#'
+#' shap.importance(shap_long_iris)
+#'
+#' shap.importance(shap_long_iris, names_only = 1)
+#'
+shap.importance <- function(data_long, names_only = FALSE, top_n = Inf) {
+  out <- data_long[, list(mean_abs_shap = mean_value[1]), by = "variable"]
+  out <- out[order(mean_abs_shap, decreasing = TRUE)]
+  n <- min(nrow(out), top_n)
+
+  if (isTRUE(names_only)) {
+    out <- as.character(out[["variable"]])
+  }
+  out[seq_len(n)]
+}
 
 # Dependence plot  --------------------------------------------------------
 
@@ -711,7 +741,6 @@ shap.plot.force_plot_bygroup <- function(
   return(p)
 }
 
-
 # miscellaneous
 if(getRversion() >= "2.15.1")  {
   utils::globalVariables(c(".", "rfvalue", "value","variable","stdfvalue",
@@ -720,5 +749,5 @@ if(getRversion() >= "2.15.1")  {
                            "new_labels","labels_within_package",
                            "..var_cat",
                            "group", "rest_variables", "clusterid", "ID", "sorted_id", "BIAS",
-                           "cond_mean"))
+                           "cond_mean", "mean_abs_shap"))
 }

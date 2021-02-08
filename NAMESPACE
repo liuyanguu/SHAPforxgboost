@@ -2,6 +2,7 @@
 
 export(scatter.plot.diagonal)
 export(scatter.plot.simple)
+export(shap.importance)
 export(shap.plot.dependence)
 export(shap.plot.force_plot)
 export(shap.plot.force_plot_bygroup)
