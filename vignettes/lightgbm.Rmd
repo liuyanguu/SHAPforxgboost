@@ -65,8 +65,15 @@ shap.plot.summary(shap)
 
 # Dependence plots in decreasing order of importance
 for (x in shap.importance(shap, names_only = TRUE)) {
-  p <- shap.plot.dependence(shap, x = x, color_feature = "auto", smooth = FALSE) +
-          ggtitle(x)
+  p <- shap.plot.dependence(
+    shap, 
+    x = x, 
+    color_feature = "auto", 
+    smooth = FALSE, 
+    jitter_width = 0.01, 
+    alpha = 0.4
+    ) +
+  ggtitle(x)
   print(p)
 }
 
