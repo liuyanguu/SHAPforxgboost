@@ -8,6 +8,8 @@
 #'
 #' @param y Numeric vector to be binned.
 #' @param n_bins If \code{y} has up to this number of unique values, no binning is done.
+#'
+#' @keywords internal
 binner <- function(y, n_bins = 7) {
   if (length(unique(y)) <= n_bins) {
     return(y)
@@ -24,6 +26,8 @@ binner <- function(y, n_bins = 7) {
 #' @param Xlong Data set corresponding to data_long.
 #'
 #' @importFrom data.table ':='
+#'
+#' @keywords internal
 strongest_interaction <- function(X0, Xlong) {
   candidates <- setdiff(unique(Xlong[["variable"]]),
                         X0[["variable"]][1])

@@ -1,0 +1,78 @@
+---
+title: "Using SHAPforxgboost with LightGBM"
+description: >
+  This vignette describes how SHAPforxgboost is being used with LightGBM.
+bibliography: "biblio.bib"
+link-citations: true
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using SHAPforxgboost with LightGBM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 5,
+  fig.height = 4
+)
+```
+
+## Introduction
+
+This vignette shows how to use `SHAPforxgboost` for interpretation of models trained with `LightGBM`, a hightly efficient gradient boosting implementation [@ke2017lightgbm].
+
+```{r setup}
+library(ggplot2)
+library(SHAPforxgboost)
+library(lightgbm)
+
+set.seed(9375)
+```
+
+## Training the model
+
+Let's train a small model to predict the first column in the iris data set, namely `Sepal.Length`.
+
+```{r}
+head(iris)
+
+X <- data.matrix(iris[, -1])
+
+fit <- lgb.train(
+  params = list(objective = "regression"),
+  data = lgb.Dataset(X, label = iris[[1]]),
+  nrounds = 50,
+  verbose = -2
+)
+
+```
+
+## SHAP analysis
+
+Now, we can prepare the SHAP values and analyze the results. All this in just very few lines of code!
+
+```{r}
+# Crunch SHAP values
+shap <- shap.prep(fit, X_train = X)
+
+# SHAP importance plot
+shap.plot.summary(shap)
+
+# Dependence plots in decreasing order of importance
+for (x in shap.importance(shap, names_only = TRUE)) {
+  p <- shap.plot.dependence(shap, x = x, color_feature = "auto", smooth = FALSE) +
+          ggtitle(x)
+  print(p)
+}
+
+```
+
+Note: `print` is required only in the context of using `ggplot` in `rmarkdown` and for loop.
+
+## References
+
