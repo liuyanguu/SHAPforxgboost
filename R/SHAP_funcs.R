@@ -451,7 +451,7 @@ plot.label <- function(plot1, show_feature){
 #'   TRUE. But notice the plot after adding histogram is a `ggExtraPlot` object
 #'   instead of `ggplot2` so cannot add `geom` to that anymore. Turn the
 #'   histogram off if you wish to add more `ggplot2` geoms
-#' @param add_stat_cor add correlation and p-value from `ggpubr::stat_cor`,
+#' @param add_stat_cor add correlation and p-value from `ggpubr::stat_cor`
 #' @param alpha point transparancy, default to 1 if nobs<1000 else 0.6
 #' @param jitter_height amount of vertical jitter (see hight in \code{geom_jitter})
 #' @param jitter_width amount of horizontal jitter (see width in \code{geom_jitter}). Use values close to 0, e.g. 0.02
