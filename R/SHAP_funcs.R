@@ -446,12 +446,16 @@ plot.label <- function(plot1, show_feature){
 #'   20% of the data. As long as dilute != FALSE, will plot at most half the
 #'   data
 #' @param smooth optional to add a _loess_ smooth line, default to TRUE.
-#' @param size0 point size, default to 1 of nobs<1000, 0.4 if nobs>1000
+#' @param size0 point size, default to 1 if nobs<1000, 0.4 if nobs>1000
 #' @param add_hist whether to add histogram using \code{ggMarginal}, default to
 #'   TRUE. But notice the plot after adding histogram is a `ggExtraPlot` object
 #'   instead of `ggplot2` so cannot add `geom` to that anymore. Turn the
 #'   histogram off if you wish to add more `ggplot2` geoms
 #' @param add_stat_cor add correlation and p-value from `ggpubr::stat_cor`
+#' @param alpha point transparancy, default to 1 if nobs<1000 else 0.6
+#' @param jitter_height amount of vertical jitter (see hight in \code{geom_jitter})
+#' @param jitter_width amount of horizontal jitter (see width in \code{geom_jitter}). Use values close to 0, e.g. 0.02
+#' @param ... additional parameters passed to \code{geom_jitter}
 #'
 #' @export shap.plot.dependence
 #'
@@ -470,7 +474,11 @@ shap.plot.dependence <- function(
   smooth = TRUE,
   size0 = NULL,
   add_hist = FALSE,
-  add_stat_cor = FALSE
+  add_stat_cor = FALSE,
+  alpha = NULL,
+  jitter_height = 0,
+  jitter_width = 0,
+  ...
   ){
   if (is.null(y)) y <- x
   data0 <- data_long[variable == y, .(variable, value)] # the shap value to plot for dependence plot
@@ -505,11 +513,22 @@ shap.plot.dependence <- function(
     size0 <- if (nrow(data0) < 1000L) 1 else 0.4
   }
 
-  plot1 <- ggplot(data = data0,
-                  aes(x = x_feature,
-                      y = if (is.null(data_int)) value else int_value,
-                      color = if (!is.null(color_feature)) color_value else NULL)) +
-    geom_point(size = size0, alpha = if (nrow(data0) < 1000L) 1 else 0.6) +
+  if (is.null(alpha)) {
+    alpha <- if (nrow(data0) < 1000L) 1 else 0.6
+  }
+  plot1 <- ggplot(
+    data = data0,
+    aes(x = x_feature,
+        y = if (is.null(data_int)) value else int_value,
+        color = if (!is.null(color_feature)) color_value else NULL)
+    ) +
+    geom_jitter(
+      size = size0,
+      width = jitter_width,
+      height = jitter_height,
+      alpha = alpha,
+      ...
+    ) +
     labs(y = if (is.null(data_int)) paste0("SHAP value for ", label.feature(y)) else
       paste0("SHAP interaction values for\n", label.feature(x), " and ", label.feature(y)),
          x = label.feature(x),
