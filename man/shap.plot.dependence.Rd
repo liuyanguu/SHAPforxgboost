@@ -55,7 +55,7 @@ TRUE. But notice the plot after adding histogram is a \code{ggExtraPlot} object
 instead of \code{ggplot2} so cannot add \code{geom} to that anymore. Turn the
 histogram off if you wish to add more \code{ggplot2} geoms}
 
-\item{add_stat_cor}{add correlation and p-value from \code{ggpubr::stat_cor},}
+\item{add_stat_cor}{add correlation and p-value from \code{ggpubr::stat_cor}}
 
 \item{alpha}{point transparancy, default to 1 if nobs<1000 else 0.6}
 
