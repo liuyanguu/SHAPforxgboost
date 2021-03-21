@@ -253,29 +253,29 @@ histogram off if you wish to add more <code>ggplot2</code> geoms</p></td>
 layers.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># **SHAP dependence plot**</span>
+    <pre class="examples"><div class='input'><span class='co'># **SHAP dependence plot**</span>
 
 <span class='co'># 1. simple dependence plot with SHAP values of x on the y axis</span>
 <span class='fu'>shap.plot.dependence</span><span class='op'>(</span>data_long <span class='op'>=</span> <span class='va'>shap_long_iris</span>, x<span class='op'>=</span><span class='st'>"Petal.Length"</span>,
                      add_hist <span class='op'>=</span> <span class='cn'>TRUE</span>, add_stat_cor <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using formula 'y ~ x'</span></div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using formula 'y ~ x'</span></div><div class='img'><img src='shap.plot.dependence-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># 2. can choose a different SHAP values on the y axis</span>
 <span class='fu'>shap.plot.dependence</span><span class='op'>(</span>data_long <span class='op'>=</span> <span class='va'>shap_long_iris</span>, x<span class='op'>=</span><span class='st'>"Petal.Length"</span>,
                            y <span class='op'>=</span> <span class='st'>"Petal.Width"</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using formula 'y ~ x'</span></div><div class='img'><img src='shap.plot.dependence-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># 3. color by another feature's feature values</span>
 <span class='fu'>shap.plot.dependence</span><span class='op'>(</span>data_long <span class='op'>=</span> <span class='va'>shap_long_iris</span>, x<span class='op'>=</span><span class='st'>"Petal.Length"</span>,
                            color_feature <span class='op'>=</span> <span class='st'>"Petal.Width"</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using formula 'y ~ x'</span></div><div class='img'><img src='shap.plot.dependence-3.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># 4. choose 3 different variables for x, y, and color</span>
 <span class='fu'>shap.plot.dependence</span><span class='op'>(</span>data_long <span class='op'>=</span> <span class='va'>shap_long_iris</span>, x<span class='op'>=</span><span class='st'>"Petal.Length"</span>,
                            y <span class='op'>=</span> <span class='st'>"Petal.Width"</span>, color_feature <span class='op'>=</span> <span class='st'>"Petal.Width"</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using formula 'y ~ x'</span></div><div class='input'>
 <span class='co'># Optional to add hist or remove smooth line, optional to plot fewer data (make plot quicker)</span>
 <span class='fu'>shap.plot.dependence</span><span class='op'>(</span>data_long <span class='op'>=</span> <span class='va'>shap_long_iris</span>, x<span class='op'>=</span><span class='st'>"Petal.Length"</span>,
                      y <span class='op'>=</span> <span class='st'>"Petal.Width"</span>, color_feature <span class='op'>=</span> <span class='st'>"Petal.Width"</span>,
                      add_hist <span class='op'>=</span> <span class='cn'>TRUE</span>, smooth <span class='op'>=</span> <span class='cn'>FALSE</span>, dilute <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-
+</div><div class='img'><img src='shap.plot.dependence-4.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># to make a list of plot</span>
 <span class='va'>plot_list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>]</span>, <span class='va'>shap.plot.dependence</span>, data_long <span class='op'>=</span> <span class='va'>shap_long_iris</span><span class='op'>)</span>
 
@@ -298,7 +298,7 @@ layers.</p>
                            x<span class='op'>=</span><span class='st'>"Petal.Length"</span>,
                            y <span class='op'>=</span> <span class='st'>"Petal.Width"</span>,
                            color_feature <span class='op'>=</span> <span class='st'>"Petal.Width"</span><span class='op'>)</span>
-</pre>
+</div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using formula 'y ~ x'</span></div><div class='img'><img src='shap.plot.dependence-5.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

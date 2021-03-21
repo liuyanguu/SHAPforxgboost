@@ -164,7 +164,7 @@ after dilution, will just plot all the data</p></td>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"iris"</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"iris"</span><span class='op'>)</span>
 <span class='va'>X1</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>iris</span><span class='op'>[</span>,<span class='op'>-</span><span class='fl'>5</span><span class='op'>]</span><span class='op'>)</span>
 <span class='va'>mod1</span> <span class='op'>=</span> <span class='fu'>xgboost</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>xgboost</a></span><span class='op'>(</span>
   data <span class='op'>=</span> <span class='va'>X1</span>, label <span class='op'>=</span> <span class='va'>iris</span><span class='op'>$</span><span class='va'>Species</span>, gamma <span class='op'>=</span> <span class='fl'>0</span>, eta <span class='op'>=</span> <span class='fl'>1</span>,
@@ -174,7 +174,8 @@ after dilution, will just plot all the data</p></td>
 <span class='co'># data matrix and ranked features by mean|SHAP|</span>
 <span class='va'>shap_values</span> <span class='op'>&lt;-</span> <span class='fu'><a href='shap.values.html'>shap.values</a></span><span class='op'>(</span>xgb_model <span class='op'>=</span> <span class='va'>mod1</span>, X_train <span class='op'>=</span> <span class='va'>X1</span><span class='op'>)</span>
 <span class='va'>shap_values</span><span class='op'>$</span><span class='va'>mean_shap_score</span>
-<span class='va'>shap_values_iris</span> <span class='op'>&lt;-</span> <span class='va'>shap_values</span><span class='op'>$</span><span class='va'>shap_score</span>
+</div><div class='output co'>#&gt; Petal.Length  Petal.Width Sepal.Length  Sepal.Width 
+#&gt;   0.62935975   0.21664035   0.02910357   0.00000000 </div><div class='input'><span class='va'>shap_values_iris</span> <span class='op'>&lt;-</span> <span class='va'>shap_values</span><span class='op'>$</span><span class='va'>shap_score</span>
 
 <span class='co'># shap.prep() returns the long-format SHAP data from either model or</span>
 <span class='va'>shap_long_iris</span> <span class='op'>&lt;-</span> <span class='fu'><a href='shap.prep.html'>shap.prep</a></span><span class='op'>(</span>xgb_model <span class='op'>=</span> <span class='va'>mod1</span>, X_train <span class='op'>=</span> <span class='va'>X1</span><span class='op'>)</span>
@@ -183,16 +184,16 @@ after dilution, will just plot all the data</p></td>
 
 <span class='co'># **SHAP summary plot**</span>
 <span class='fu'><a href='shap.plot.summary.html'>shap.plot.summary</a></span><span class='op'>(</span><span class='va'>shap_long_iris</span>, scientific <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='fu'><a href='shap.plot.summary.html'>shap.plot.summary</a></span><span class='op'>(</span><span class='va'>shap_long_iris</span>, x_bound  <span class='op'>=</span> <span class='fl'>1.5</span>, dilute <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
-
+</div><div class='img'><img src='shap.plot.summary.wrap1-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='shap.plot.summary.html'>shap.plot.summary</a></span><span class='op'>(</span><span class='va'>shap_long_iris</span>, x_bound  <span class='op'>=</span> <span class='fl'>1.5</span>, dilute <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+</div><div class='img'><img src='shap.plot.summary.wrap1-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Alternatives options to make the same plot:</span>
 <span class='co'># option 1: from the xgboost model</span>
 <span class='fu'>shap.plot.summary.wrap1</span><span class='op'>(</span><span class='va'>mod1</span>, X <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>iris</span><span class='op'>[</span>,<span class='op'>-</span><span class='fl'>5</span><span class='op'>]</span><span class='op'>)</span>, top_n <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-
+</div><div class='img'><img src='shap.plot.summary.wrap1-3.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># option 2: supply a self-made SHAP values dataset</span>
 <span class='co'># (e.g. sometimes as output from cross-validation)</span>
 <span class='fu'><a href='shap.plot.summary.wrap2.html'>shap.plot.summary.wrap2</a></span><span class='op'>(</span>shap_score <span class='op'>=</span> <span class='va'>shap_values_iris</span>, X <span class='op'>=</span> <span class='va'>X1</span>, top_n <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-</pre>
+</div><div class='img'><img src='shap.plot.summary.wrap1-4.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

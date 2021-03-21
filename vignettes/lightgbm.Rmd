@@ -27,9 +27,9 @@ knitr::opts_chunk$set(
 This vignette shows how to use `SHAPforxgboost` for interpretation of models trained with `LightGBM`, a hightly efficient gradient boosting implementation [@ke2017lightgbm].
 
 ```{r setup}
-library(ggplot2)
-library(SHAPforxgboost)
-library(lightgbm)
+library("ggplot2")
+library("SHAPforxgboost")
+library("lightgbm")
 
 set.seed(9375)
 ```
