@@ -27,7 +27,6 @@ Imports:
     stats,
     ggplot2 (>= 3.0.0),
     xgboost (>= 0.81.0.0),
-    lightgbm (>= 2.1),
     data.table (>= 1.12.0),
     ggforce (>= 0.2.1.9000),
     ggExtra (>= 0.8),
@@ -39,6 +38,7 @@ Suggests:
     rmarkdown,
     gridExtra (>= 2.3),
     here,
-    parallel
+    parallel,
+    lightgbm (>= 2.1)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1

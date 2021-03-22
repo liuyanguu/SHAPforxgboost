@@ -24,7 +24,6 @@
 #'
 #' @import data.table
 #' @import xgboost
-#' @importFrom lightgbm lgb.Dataset lgb.train
 #' @importFrom stats cutree dist hclust predict lm na.omit
 #'
 #' @export shap.values
@@ -93,7 +92,6 @@ shap.values <- function(xgb_model,
 #'
 #' @example R/example/example_fit_summary.R
 #' @example R/example/example_categorical.R
-#' @example R/example/example_lightgbm.R
 #'
 shap.prep <- function(xgb_model = NULL,
                       shap_contrib = NULL, # optional to directly supply SHAP values
