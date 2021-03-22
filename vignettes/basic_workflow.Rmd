@@ -1,12 +1,12 @@
 ---
-title: "Using SHAPforxgboost with LightGBM"
+title: "Basic Workflow"
 description: >
-  This vignette describes how SHAPforxgboost is being used with LightGBM.
+  This vignette describes the basic workflow of SHAPforxgboost.
 bibliography: "biblio.bib"
 link-citations: true
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using SHAPforxgboost with LightGBM}
+  %\VignetteIndexEntry{Basic Workflow}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -24,12 +24,12 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-This vignette shows how to use `SHAPforxgboost` for interpretation of models trained with `LightGBM`, a hightly efficient gradient boosting implementation [@ke2017lightgbm].
+This vignette shows the basic workflow of using `SHAPforxgboost` for interpretation of models trained with `XGBoost`, a hightly efficient gradient boosting implementation [@chen2016].
 
 ```{r setup}
 library("ggplot2")
 library("SHAPforxgboost")
-library("lightgbm")
+library("xgboost")
 
 set.seed(9375)
 ```
@@ -42,12 +42,15 @@ Let's train a small model to predict the first column in the iris data set, name
 head(iris)
 
 X <- data.matrix(iris[, -1])
+dtrain <- xgb.DMatrix(X, label = iris[[1]])
 
-fit <- lgb.train(
-  params = list(objective = "regression"),
-  data = lgb.Dataset(X, label = iris[[1]]),
-  nrounds = 50,
-  verbose = -2
+fit <- xgb.train(
+  params = list(
+    objective = "reg:squarederror",
+    learning_rate = 0.1
+  ), 
+  data = dtrain,
+  nrounds = 50
 )
 
 ```
@@ -64,6 +67,7 @@ shap <- shap.prep(fit, X_train = X)
 shap.plot.summary(shap)
 
 # Dependence plots in decreasing order of importance
+# (colored by strongest interacting variable)
 for (x in shap.importance(shap, names_only = TRUE)) {
   p <- shap.plot.dependence(
     shap, 
@@ -79,7 +83,9 @@ for (x in shap.importance(shap, names_only = TRUE)) {
 
 ```
 
-Note: `print` is required only in the context of using `ggplot` in `rmarkdown` and for loop.
+*Note: `print` is required only in the context of using `ggplot` in `rmarkdown` and for loop.*
+
+This is just a teaser: `SHAPforxgboost` can do much more! Check out the README for much more information.
 
 ## References
 
