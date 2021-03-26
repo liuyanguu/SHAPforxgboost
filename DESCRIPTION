@@ -1,7 +1,7 @@
 Package: SHAPforxgboost
 Title: SHAP Plots for 'XGBoost'
 Version: 0.1.1
-Date: 2021-02-05
+Date: 2021-03-23
 Authors@R: c(
     person(given = "Yang", family = "Liu", role = c("aut", "cre"), email = "lyhello@gmail.com",
            comment = c(ORCID = "0000-0001-6557-6439")),
@@ -27,7 +27,6 @@ Imports:
     stats,
     ggplot2 (>= 3.0.0),
     xgboost (>= 0.81.0.0),
-    lightgbm (>= 2.1),
     data.table (>= 1.12.0),
     ggforce (>= 0.2.1.9000),
     ggExtra (>= 0.8),
@@ -39,6 +38,7 @@ Suggests:
     rmarkdown,
     gridExtra (>= 2.3),
     here,
-    parallel
+    parallel,
+    lightgbm (>= 2.1)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1

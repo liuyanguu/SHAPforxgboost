@@ -89,19 +89,4 @@ shap_long2 <- shap.prep(xgb_model = mod1, X_train = X_train, var_cat = "Group")
 # **SHAP summary plot**
 shap.plot.summary(shap_long2, scientific = TRUE) +
   ggplot2::facet_wrap(~ Group)
-####
-#
-# **LightGBM**
-mod_lgb = lightgbm::lgb.train(
-  params = list(objective = "regression"),
-  data = lightgbm::lgb.Dataset(data.matrix(iris[, -1]),
-                               label = iris[[1]]),
-  nrounds = 10,
-  verbose = -2
-)
-
-shap_lgb <- shap.prep(mod_lgb, X_train = data.matrix(iris[, -1]))
-
-shap.plot.summary(shap_lgb)
-shap.plot.dependence(shap_lgb, x = "Sepal.Width", smooth = FALSE)
 }
