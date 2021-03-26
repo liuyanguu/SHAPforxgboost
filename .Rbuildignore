@@ -5,3 +5,6 @@
 \.git
 Sample_code.R
 docs
+vignettes/basic_workflow_using_lightgbm.Rmd
+^doc$
+^Meta$

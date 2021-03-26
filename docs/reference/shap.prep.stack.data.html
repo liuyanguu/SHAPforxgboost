@@ -96,7 +96,10 @@ portion of the data in case the dataset is large." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/lightgbm.html">Using SHAPforxgboost with LightGBM</a>
+      <a href="../articles/basic_workflow.html">Basic Workflow</a>
+    </li>
+    <li>
+      <a href="../articles/basic_workflow_using_lightgbm.html">Using SHAPforxgboost with LightGBM</a>
     </li>
   </ul>
 </li>
@@ -180,16 +183,16 @@ details</p></td>
     <p>a dataset for stack plot</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples">
+    <pre class="examples"><div class='input'>
 <span class='co'># **SHAP force plot**</span>
 <span class='va'>plot_data</span> <span class='op'>&lt;-</span> <span class='fu'>shap.prep.stack.data</span><span class='op'>(</span>shap_contrib <span class='op'>=</span> <span class='va'>shap_values_iris</span>,
                                   n_groups <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>
-<span class='fu'><a href='shap.plot.force_plot.html'>shap.plot.force_plot</a></span><span class='op'>(</span><span class='va'>plot_data</span><span class='op'>)</span>
-<span class='fu'><a href='shap.plot.force_plot.html'>shap.plot.force_plot</a></span><span class='op'>(</span><span class='va'>plot_data</span>,  zoom_in_group <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='message'>All the features will be used.</span></div><div class='input'><span class='fu'><a href='shap.plot.force_plot.html'>shap.plot.force_plot</a></span><span class='op'>(</span><span class='va'>plot_data</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Data has N = 150 | zoom in length is 50 at location 90.</span></div><div class='img'><img src='shap.prep.stack.data-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='shap.plot.force_plot.html'>shap.plot.force_plot</a></span><span class='op'>(</span><span class='va'>plot_data</span>,  zoom_in_group <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Data has N = 150 | zoom in at cluster 2 with N = 28.</span></div><div class='img'><img src='shap.prep.stack.data-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># plot all the clusters:</span>
 <span class='fu'><a href='shap.plot.force_plot_bygroup.html'>shap.plot.force_plot_bygroup</a></span><span class='op'>(</span><span class='va'>plot_data</span><span class='op'>)</span>
-</pre>
+</div><div class='img'><img src='shap.prep.stack.data-3.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
