@@ -1,4 +1,4 @@
-# SHAPforxgboost
+# SHAPforxgboost <a href='https://github.com/liuyanguu/SHAPforxgboost'><img src='man/figures/logo.png' align="right" height="138.5" /></a>
 
 [![CRAN version](http://www.r-pkg.org/badges/version/SHAPforxgboost)](https://cran.r-project.org/package=SHAPforxgboost) [![](https://cranlogs.r-pkg.org/badges/SHAPforxgboost)](https://cran.r-project.org/package=SHAPforxgboost) [![](https://cranlogs.r-pkg.org/badges/grand-total/SHAPforxgboost?color=orange)](https://cran.r-project.org/package=SHAPforxgboost)
 
