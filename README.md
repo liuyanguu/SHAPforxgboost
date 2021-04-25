@@ -1,6 +1,9 @@
 # SHAPforxgboost <a href='https://github.com/liuyanguu/SHAPforxgboost'><img src='man/figures/logo.png' align="right" height="138.5" /></a>
 
-[![CRAN version](http://www.r-pkg.org/badges/version/SHAPforxgboost)](https://cran.r-project.org/package=SHAPforxgboost) [![](https://cranlogs.r-pkg.org/badges/SHAPforxgboost)](https://cran.r-project.org/package=SHAPforxgboost) [![](https://cranlogs.r-pkg.org/badges/grand-total/SHAPforxgboost?color=orange)](https://cran.r-project.org/package=SHAPforxgboost)
+[![CRAN](http://www.r-pkg.org/badges/version/SHAPforxgboost)](https://cran.r-project.org/package=SHAPforxgboost) 
+[![status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Downloads](https://cranlogs.r-pkg.org/badges/SHAPforxgboost)](https://cran.r-project.org/package=SHAPforxgboost)
+[![](https://cranlogs.r-pkg.org/badges/grand-total/SHAPforxgboost?color=orange)](https://cran.r-project.org/package=SHAPforxgboost)
 
 This package creates SHAP (SHapley Additive exPlanation) visualization plots
  for 'XGBoost' in R. It provides summary plot, dependence plot, interaction plot,
