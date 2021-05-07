@@ -1,23 +1,48 @@
-# SHAPforxgboost <a href='https://github.com/liuyanguu/SHAPforxgboost'><img src='man/figures/logo.png' align="right" height="138.5" /></a>
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
 
-[![CRAN version](http://www.r-pkg.org/badges/version/SHAPforxgboost)](https://cran.r-project.org/package=SHAPforxgboost) [![](https://cranlogs.r-pkg.org/badges/SHAPforxgboost)](https://cran.r-project.org/package=SHAPforxgboost) [![](https://cranlogs.r-pkg.org/badges/grand-total/SHAPforxgboost?color=orange)](https://cran.r-project.org/package=SHAPforxgboost)
+# SHAPforxgboost <img src="man/figures/logo.png" alt="SHAPforxgboost logo" width="120px" align="right"/>
 
-This package creates SHAP (SHapley Additive exPlanation) visualization plots
- for 'XGBoost' in R. It provides summary plot, dependence plot, interaction plot,
- and force plot and relies on the SHAP implementation provided by 'XGBoost' and 'LightGBM'.
- Please refer to ['slundberg/shap'](https://github.com/slundberg/shap) for the original implementation of SHAP in Python. 
+<!-- badges: start -->
 
-All the functions except the force plot return `ggplot` object thus it is possible to add more layers. The dependence plot `shap.plot.dependence` returns `ggplot` object if without the marginal histogram by default.
+[![CRAN
+status](https://www.r-pkg.org/badges/version/SHAPforxgboost)](https://CRAN.R-project.org/package=SHAPforxgboost)
+[![status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![](https://cranlogs.r-pkg.org/badges/SHAPforxgboost)](https://cran.r-project.org/package=SHAPforxgboost)
+[![](https://cranlogs.r-pkg.org/badges/grand-total/SHAPforxgboost?color=orange)](https://cran.r-project.org/package=SHAPforxgboost)
 
-To revise feature names, you could define a global variable named `new_labels`, the plotting functions will use this list as new feature labels. The `SHAPforxgboost::new_labels` is a placeholder default to `NULL`. Or you could just overwrite the labels by adding a `labs` layer to the `ggplot` object. 
+<!-- badges: end -->
 
-Please refer to this blog as the vignette: more examples and discussion on SHAP values in R, why use SHAP, and a comparison to Gain: 
-[SHAP visualization for XGBoost in R](https://liuyanguu.github.io/post/2019/07/18/visualization-of-shap-for-xgboost/)
+This package creates convenient SHAP (SHapley Additive exPlanation)
+visualization plots for 'XGBoost' in R. It provides summary plot,
+dependence plot, interaction plot, and force plot and relies on the SHAP
+implementation provided by 'XGBoost' and 'LightGBM'. Please refer to
+['slundberg/shap'](https://github.com/slundberg/shap) for the original
+implementation of SHAP and related visualizations in Python.
 
+All the functions except the force plot return `ggplot` object thus it
+is possible to add more layers. The dependence plot
+`shap.plot.dependence` returns `ggplot` object if without the marginal
+histogram by default.
+
+To revise feature names, you could define a global variable named
+`new_labels`, the plotting functions will use this list as new feature
+labels. The `SHAPforxgboost::new_labels` is a placeholder default to
+`NULL`. Or you could just overwrite the labels by adding a `labs` layer
+to the `ggplot` object.
+
+Please refer to this blog as the vignette: more examples and discussion
+on SHAP values in R, why use SHAP, and a comparison to Gain: [SHAP
+visualization for XGBoost in
+R](https://liuyanguu.github.io/post/2019/07/18/visualization-of-shap-for-xgboost/)
 
 ## Installation
 
 Please install from CRAN or Github:
+
 ``` r
 install.packages("SHAPforxgboost")
 ```
@@ -26,7 +51,39 @@ install.packages("SHAPforxgboost")
 devtools::install_github("liuyanguu/SHAPforxgboost")
 ```
 
-## Examples
+## Note on the package
+
+**SHAP values**
+
+`SHAPforxgboost` plots the SHAP values returned by the `predict`
+function. The `shap.values` function obtains SHAP values using:
+
+    predict(object = xgb_model, newdata = X_train, predcontrib = TRUE)
+
+If you are using 'XGBoost', see `?xgboost::predict.xgb.Booster` for more
+details. If you are new to SHAP plot, it may be a good idea to try the
+examples in the default SHAP plotting function in the 'XGBoost' package
+first:
+
+    ?xgboost::xgb.plot.shap
+
+**Cross-validation**
+
+Although the function `shap.values` names the parameter `X_train`, it is
+just the data you would provide to the `predict` function together with
+the xgboost model object to make predictions. So it can be training data
+or testing data. SHAP values help to explain how the model works and how
+each feature contributes to the predicted values.
+
+As an example of feature selection using SHAP values: if uses 5-fold
+cross-validation, for each iteration, the model is fit using 4/5 of the
+data, then y_hat is predicted using the rest 1/5 of the data. Then SHAP
+values are obtained for the 1/5 testing data. After the 5 iterations, we
+combine the 5 groups of SHAP values (just like how we combine the y_hat)
+for the 5 folds to get SHAP values in the same dimension as the data_X
+and can use SHAP values to rank feature importance.
+
+## Example
 
 **Summary plot**
 
@@ -102,7 +159,6 @@ shap.plot.dependence(data_long = shap_long, x= "dayint",
   <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-11-1.png"/>
 </p>
 
-
 ```{r}
 # To make plots for a group of features:
 fig_list = lapply(names(shap_values$mean_shap_score)[1:6], shap.plot.dependence, 
@@ -112,10 +168,13 @@ gridExtra::grid.arrange(grobs = fig_list, ncol = 2)
 
 **SHAP interaction plot**
 
+This example will take very long, don't run it, try a small dataset or
+check the example in `shap.prep.interaction.`
+
 ```{r}
 # prepare the data using either: 
 # notice: this step is slow since it calculates all the combinations of features. 
-# It may take over 5 minutes on a personal laptop.
+# It may take very long on personal laptop.
 shap_int <- shap.prep.interaction(xgb_mod = mod, X_train = dataX)
 # it is the same as:
 shap_int <- predict(mod, dataX, predinteraction = TRUE)
@@ -131,8 +190,6 @@ shap.plot.dependence(data_long = shap_long,
 <p align="center">
   <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-15-1.png"/>
 </p>
-
-
 
 **SHAP force plot**
 
@@ -158,7 +215,9 @@ shap.plot.force_plot_bygroup(plot_data)
 </p>
 
 ## Citation
+
 The citation could be seen obtained using `citation("SHAPforxgboost")`
+
 ```{r}
 To cite package ‘SHAPforxgboost’ in publications use:
 
@@ -178,11 +237,16 @@ A BibTeX entry for LaTeX users is
 
 ## Reference
 
-My lab's paper using these figures:  
-[Gradient Boosting Machine Learning to Improve Satellite-Derived Column Water Vapor Measurement Error](https://doi.org/10.5281/zenodo.3568449)
+Our lab's paper applying this package:  
+[Gradient Boosting Machine Learning to Improve Satellite-Derived Column
+Water Vapor Measurement Error](https://doi.org/10.5281/zenodo.3568449)
 
-Corresponding SHAP plots package in Python: [https://github.com/slundberg/shap](https://github.com/slundberg/shap)
-Paper 1. 2017 [A Unified Approach to Interpreting Model Predictions](https://arxiv.org/abs/1705.07874)  
+Corresponding SHAP plots package in Python:
+<https://github.com/slundberg/shap>
+
+Paper 1. 2017 [A Unified Approach to Interpreting Model
+Predictions](https://arxiv.org/abs/1705.07874)  
 Paper 2. 2019 [Consistent Individualized Feature Attribution for Tree
 Ensembles](https://arxiv.org/abs/1802.03888)  
-Paper 3. 2019 [Explainable AI for Trees: From Local Explanations to Global Understanding](https://arxiv.org/abs/1905.04610)
+Paper 3. 2019 [Explainable AI for Trees: From Local Explanations to
+Global Understanding](https://arxiv.org/abs/1905.04610)
