@@ -26,24 +26,6 @@ install.packages("SHAPforxgboost")
 devtools::install_github("liuyanguu/SHAPforxgboost")
 ```
 
-## Note on the package
-
-**SHAP values**
-
-`SHAPforxgboost` plots the SHAP values returned by the `predict` function. The `shap.values` function obtains SHAP values using:
-
-    predict(object = xgb_model, newdata = X_train, predcontrib = TRUE)
-
-If you are using 'XGBoost', see `?xgboost::predict.xgb.Booster` for more details. If you are new to SHAP plot, it may be a good idea to try the examples in the default SHAP plotting function in the 'XGBoost' package first:
-
-    ?xgboost::xgb.plot.shap
-
-**Cross-validation**
-
-Although the function `shap.values` names the parameter `X_train`, it is just the data you would provide to the `predict` function together with the xgboost model object to make predictions. So it can be training data or testing data. SHAP values help to explain how the model works and how each feature contributes to the predicted values.
-
-As an example of feature selection using SHAP values: if uses 5-fold cross-validation, for each iteration, the model is fit using 4/5 of the data, then y_hat is predicted using the rest 1/5 of the data. Then SHAP values are obtained for the 1/5 testing data. After the 5 iterations, we combine the 5 groups of SHAP values (just like how we combine the y_hat) for the 5 folds to get SHAP values in the same dimension as the data_X and can use SHAP values to rank feature importance.
-
 ## Example
 
 **Summary plot**
@@ -173,6 +155,24 @@ shap.plot.force_plot_bygroup(plot_data)
 <p align="center">  
   <img src = "https://liuyanguu.github.io/post/2019-07-18-visualization-of-shap-for-xgboost_files/figure-html/unnamed-chunk-16-2.png"/>
 </p>
+
+## Note on the package
+
+**SHAP values**
+
+`SHAPforxgboost` plots the SHAP values returned by the `predict` function. The `shap.values` function obtains SHAP values using:
+
+    predict(object = xgb_model, newdata = X_train, predcontrib = TRUE)
+
+If you are using 'XGBoost', see `?xgboost::predict.xgb.Booster` for more details. If you are new to SHAP plot, it may be a good idea to try the examples in the default SHAP plotting function in the 'XGBoost' package first:
+
+    ?xgboost::xgb.plot.shap
+
+**Cross-validation**
+
+Although the function `shap.values` names the parameter `X_train`, it is just the data you would provide to the `predict` function together with the xgboost model object to make predictions. So it can be training data or testing data. SHAP values help to explain how the model works and how each feature contributes to the predicted values.
+
+As an example of feature selection using SHAP values: if uses 5-fold cross-validation, for each round, the model is fit using 4/5 of the data, then the predictions are obtained using the 1/5 withheld data. Then SHAP values are obtained for these 1/5 testing data. After the 5 iterations, we combine the 5 groups of SHAP values (just like how we obtain the overall y_hat) for the 5 folds to get SHAP values in the same dimension as the data_X and can use SHAP values to rank feature importance. Hyper-parameter tuning of the model is performed separately in each round of cross-validation.
 
 ## Citation
 
