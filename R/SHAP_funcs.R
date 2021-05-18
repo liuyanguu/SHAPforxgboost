@@ -211,7 +211,11 @@ shap.prep.interaction <- function(xgb_model, X_train){
 #' @param scientific  show the mean|SHAP| in scientific format. If TRUE, label
 #'   format is 0.0E-0, default to FALSE, and the format will be 0.000
 #' @param my_format supply your own number format if you really want
-#'
+#' @param min_color_bound min color hex code for colormap. Color gradient is 
+#'   scaled between min_color_bound and max_color_bound. Default is "#FFCC33".
+#' @param max_color_bound max color hex code for colormap. Color gradient is 
+#'   scaled between min_color_bound and max_color_bound. Default is "#6600CC".
+#' 
 #' @import ggplot2
 #' @importFrom ggforce geom_sina
 #' @export shap.plot.summary
@@ -223,7 +227,9 @@ shap.plot.summary <- function(data_long,
                               x_bound = NULL,
                               dilute = FALSE,
                               scientific = FALSE,
-                              my_format = NULL){
+                              my_format = NULL,
+                              min_color_bound = "#FFCC33",
+                              max_color_bound = "#6600CC"){
 
   if (scientific){label_format = "%.1e"} else {label_format = "%.3f"}
   if (!is.null(my_format)) label_format <- my_format
@@ -256,7 +262,7 @@ shap.plot.summary <- function(data_long,
     # # add a "SHAP" bar notation
     # annotate("text", x = -Inf, y = -Inf, vjust = -0.2, hjust = 0, size = 3,
     #          label = expression(group("|", bar(SHAP), "|"))) +
-    scale_color_gradient(low="#FFCC33", high="#6600CC",
+    scale_color_gradient(low=min_color_bound, high=max_color_bound,
                          breaks=c(0,1), labels=c(" Low","High "),
                          guide = guide_colorbar(barwidth = 12, barheight = 0.3)) +
     theme_bw() +
