@@ -9,7 +9,9 @@ shap.plot.summary(
   x_bound = NULL,
   dilute = FALSE,
   scientific = FALSE,
-  my_format = NULL
+  my_format = NULL,
+  min_color_bound = "#FFCC33",
+  max_color_bound = "#6600CC"
 )
 }
 \arguments{
@@ -29,6 +31,12 @@ after dilution, will just plot all the data}
 format is 0.0E-0, default to FALSE, and the format will be 0.000}
 
 \item{my_format}{supply your own number format if you really want}
+
+\item{min_color_bound}{min color hex code for colormap. Color gradient is
+scaled between min_color_bound and max_color_bound. Default is "#FFCC33".}
+
+\item{max_color_bound}{max color hex code for colormap. Color gradient is
+scaled between min_color_bound and max_color_bound. Default is "#6600CC".}
 }
 \value{
 returns a ggplot2 object, could add further layers.

@@ -9,20 +9,22 @@ shap.values(xgb_model, X_train)
 \arguments{
 \item{xgb_model}{an XGBoost or LightGBM model object}
 
-\item{X_train}{the dataset of predictors (independent variables) used
-for calculating SHAP values, it should be a matrix}
+\item{X_train}{the data supplied to the \code{predict} function to get the
+prediction. It should be a matrix. Notice that coercing the matrix to a
+dense matrix by using \code{as.matrix} might lead to wrong behaviors in some
+cases. See discussion in issues on this topic.}
 }
 \value{
 a list of three elements: the SHAP values as data.table, ranked
 mean|SHAP|, and BIAS
 }
 \description{
-\code{shap.values} returns a list of three objects from XGBoost or LightGBM model: 1.
-a dataset (data.table) of SHAP scores. It has the same dimension as the
-X_train); 2. the ranked variable vector by each variable's mean absolute SHAP
-value, it ranks the predictors by their importance in the model; and 3. The
-BIAS, which is like an intercept. The rowsum of SHAP values including the
-BIAS would equal to the predicted value (y_hat).
+\code{shap.values} returns a list of three objects from XGBoost or LightGBM
+model: 1. a dataset (data.table) of SHAP scores. It has the same dimension as
+the X_train); 2. the ranked variable vector by each variable's mean absolute
+SHAP value, it ranks the predictors by their importance in the model; and 3.
+The BIAS, which is like an intercept. The rowsum of SHAP values including the
+BIAS would equal to the predicted value (y_hat) generally speaking.
 }
 \examples{
 data("iris")
