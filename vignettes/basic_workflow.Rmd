@@ -66,6 +66,9 @@ shap <- shap.prep(fit, X_train = X)
 # SHAP importance plot
 shap.plot.summary(shap)
 
+# Alternatively, mean absolute SHAP values
+shap.plot.summary(shap, kind = "bar")
+
 # Dependence plots in decreasing order of importance
 # (colored by strongest interacting variable)
 for (x in shap.importance(shap, names_only = TRUE)) {

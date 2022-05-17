@@ -1,3 +1,7 @@
+# SHAPforxgboost 0.1.2
+
+* 17/05/2022 Added option `kind = "bar"` to `shap.plot.summary()`.
+
 # SHAPforxgboost 0.1.1
 
 * 22/03/2021 Moved `lightgbm` from imported to suggested package.

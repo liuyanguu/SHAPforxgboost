@@ -1,7 +1,7 @@
 Package: SHAPforxgboost
 Title: SHAP Plots for 'XGBoost'
-Version: 0.1.1
-Date: 2021-03-23
+Version: 0.1.2
+Date: 2022-05-17
 Authors@R: c(
     person(given = "Yang", family = "Liu", role = c("aut", "cre"), email = "lyhello@gmail.com",
            comment = c(ORCID = "0000-0001-6557-6439")),
@@ -41,4 +41,4 @@ Suggests:
     parallel,
     lightgbm (>= 2.1)
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
