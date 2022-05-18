@@ -11,7 +11,8 @@ shap.plot.summary(
   scientific = FALSE,
   my_format = NULL,
   min_color_bound = "#FFCC33",
-  max_color_bound = "#6600CC"
+  max_color_bound = "#6600CC",
+  kind = c("sina", "bar")
 )
 }
 \arguments{
@@ -37,6 +38,11 @@ scaled between min_color_bound and max_color_bound. Default is "#FFCC33".}
 
 \item{max_color_bound}{max color hex code for colormap. Color gradient is
 scaled between min_color_bound and max_color_bound. Default is "#6600CC".}
+
+\item{kind}{By default, a "sina" plot is shown. As an alternative,
+set \code{kind = "bar"} to visualize mean absolute SHAP values as a
+barplot. Its color is controlled by \code{max_color_bound}. Other
+arguments are ignored for this kind of plot.}
 }
 \value{
 returns a ggplot2 object, could add further layers.

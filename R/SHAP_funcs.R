@@ -215,6 +215,10 @@ shap.prep.interaction <- function(xgb_model, X_train){
 #'   scaled between min_color_bound and max_color_bound. Default is "#FFCC33".
 #' @param max_color_bound max color hex code for colormap. Color gradient is
 #'   scaled between min_color_bound and max_color_bound. Default is "#6600CC".
+#' @param kind By default, a "sina" plot is shown. As an alternative,
+#'   set \code{kind = "bar"} to visualize mean absolute SHAP values as a
+#'   barplot. Its color is controlled by \code{max_color_bound}. Other
+#'   arguments are ignored for this kind of plot.
 #'
 #' @import ggplot2
 #' @importFrom ggforce geom_sina
@@ -229,7 +233,21 @@ shap.plot.summary <- function(data_long,
                               scientific = FALSE,
                               my_format = NULL,
                               min_color_bound = "#FFCC33",
-                              max_color_bound = "#6600CC"){
+                              max_color_bound = "#6600CC",
+                              kind = c("sina", "bar")){
+
+  kind <- match.arg(kind)
+  if (kind == "bar") {
+    imp <- shap.importance(data_long)
+    p <- ggplot(imp, aes(x = variable, y = mean_abs_shap)) +
+      geom_bar(stat = "identity", fill = max_color_bound) +
+      coord_flip() +
+      scale_x_discrete(limits = rev(levels(imp[["variable"]]))) +
+      theme_bw() +
+      theme(axis.title.x = element_text(size = 10)) +
+      labs(x = element_blank(), y = "Avg(|SHAP|)")
+    return(p)
+  }
 
   if (scientific){label_format = "%.1e"} else {label_format = "%.3f"}
   if (!is.null(my_format)) label_format <- my_format
