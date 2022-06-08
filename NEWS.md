@@ -1,5 +1,6 @@
 # SHAPforxgboost 0.1.2
 
+* 08/06/2022 Comply to LightGBM's 4.0 `predict()` interface. 
 * 17/05/2022 Added option `kind = "bar"` to `shap.plot.summary()`.
 
 # SHAPforxgboost 0.1.1

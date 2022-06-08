@@ -25,6 +25,7 @@ VignetteBuilder:
     knitr
 Imports:
     stats,
+    utils,
     ggplot2 (>= 3.0.0),
     xgboost (>= 0.81.0.0),
     data.table (>= 1.12.0),
