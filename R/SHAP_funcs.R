@@ -38,8 +38,9 @@
 shap.values <- function(xgb_model,
                         X_train){
 
-  # New predict() interface for LGB 4
-  if (inherits(xgb_model, "lgb.Booster") && utils::packageVersion("lightgbm") >= 4) {
+  # New predict() interface for LGB > 3.3.2
+  new_lgb <- utils::packageVersion("lightgbm") > package_version("3.3.2")
+  if (inherits(xgb_model, "lgb.Booster") && new_lgb) {
     shap_contrib <- predict(xgb_model, X_train, type = "contrib")
   } else {
     shap_contrib <- predict(xgb_model, X_train, predcontrib = TRUE)
