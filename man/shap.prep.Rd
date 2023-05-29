@@ -46,7 +46,7 @@ data("iris")
 X1 = as.matrix(iris[,-5])
 mod1 = xgboost::xgboost(
   data = X1, label = iris$Species, gamma = 0, eta = 1,
-  lambda = 0, nrounds = 1, verbose = FALSE)
+  lambda = 0, nrounds = 1, verbose = FALSE, nthread = 1)
 
 # shap.values(model, X_dataset) returns the SHAP
 # data matrix and ranked features by mean|SHAP|
@@ -83,7 +83,7 @@ data.table::setDT(iris)
 X_train = as.matrix(iris[,c(colnames(iris)[1:4], "Group"), with = FALSE])
 mod1 = xgboost::xgboost(
   data = X_train, label = iris$Species, gamma = 0, eta = 1,
-  lambda = 0, nrounds = 1, verbose = FALSE)
+  lambda = 0, nrounds = 1, verbose = FALSE, nthread = 1)
 
 shap_long2 <- shap.prep(xgb_model = mod1, X_train = X_train, var_cat = "Group")
 # **SHAP summary plot**

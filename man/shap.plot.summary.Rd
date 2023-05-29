@@ -65,7 +65,7 @@ data("iris")
 X1 = as.matrix(iris[,-5])
 mod1 = xgboost::xgboost(
   data = X1, label = iris$Species, gamma = 0, eta = 1,
-  lambda = 0, nrounds = 1, verbose = FALSE)
+  lambda = 0, nrounds = 1, verbose = FALSE, nthread = 1)
 
 # shap.values(model, X_dataset) returns the SHAP
 # data matrix and ranked features by mean|SHAP|

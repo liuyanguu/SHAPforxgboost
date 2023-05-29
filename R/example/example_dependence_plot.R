@@ -29,7 +29,7 @@ plot_list <- lapply(names(iris)[2:3], shap.plot.dependence, data_long = shap_lon
 # To get the interaction SHAP dataset for plotting, need to get `shap_int` first:
 mod1 = xgboost::xgboost(
   data = as.matrix(iris[,-5]), label = iris$Species,
-  gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = FALSE)
+  gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = FALSE, nthread = 1)
 # Use either:
 data_int <- shap.prep.interaction(xgb_mod = mod1,
                                   X_train = as.matrix(iris[,-5]))

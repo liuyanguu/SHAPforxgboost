@@ -1,8 +1,10 @@
 # To get the interaction SHAP dataset for plotting:
 # fit the xgboost model
+
+# options("Ncup" = 1)
 mod1 = xgboost::xgboost(
   data = as.matrix(iris[,-5]), label = iris$Species,
-  gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = FALSE)
+  gamma = 0, eta = 1, lambda = 0, nrounds = 1, verbose = FALSE, nthread = 1)
 # Use either:
 data_int <- shap.prep.interaction(xgb_mod = mod1,
                                   X_train = as.matrix(iris[,-5]))
