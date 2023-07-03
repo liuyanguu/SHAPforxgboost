@@ -103,7 +103,7 @@ shap.prep <- function(xgb_model = NULL,
                       ){
   if (is.null(xgb_model) & is.null(shap_contrib)) stop("Please provide either `xgb_model` or `shap_contrib`")
   if (!is.null(shap_contrib)){
-    if(paste0(dim(shap_contrib), collapse = " ") != paste0(dim(X_train), collapse = " ")) stop("supply correct shap_contrib, remove BIAS column.\n")
+    if(paste0(dim(shap_contrib$shap_score), collapse = " ") != paste0(dim(X_train), collapse = " ")) stop("supply correct shap_contrib, remove BIAS column.\n")
   }
 
   # prep long-data
