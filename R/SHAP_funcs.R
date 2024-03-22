@@ -38,9 +38,15 @@
 shap.values <- function(xgb_model,
                         X_train){
 
-  shap_contrib <- predict(xgb_model,
+  if(class(xgb_model)[1] == "lgb.Booster" & packageVersion("lightgbm") >= '4.0'){
+    shap_contrib <- predict(xgb_model,
+                          (X_train),
+                          type = 'contrib')
+  }else{
+    shap_contrib <- predict(xgb_model,
                           (X_train),
                           predcontrib = TRUE)
+  }
 
   # Add colnames if not already there (required for LightGBM)
   if (is.null(colnames(shap_contrib))) {
