@@ -1,6 +1,6 @@
 Package: SHAPforxgboost
 Title: SHAP Plots for 'XGBoost'
-Version: 0.1.3
+Version: 0.2.0
 Date: 2023-05-18
 Authors@R: c(
     person(given = "Yang", family = "Liu", role = c("aut", "cre"), email = "lyhello@gmail.com",
@@ -13,7 +13,6 @@ Description: Aid in visual data investigations
  using SHAP (SHapley Additive exPlanation) visualization plots for 'XGBoost' and 'LightGBM'. 
  It provides summary plot, dependence plot, interaction plot, and force plot and relies on
  the SHAP implementation provided by 'XGBoost' and 'LightGBM'.
- Please refer to 'slundberg/shap' for the original implementation of SHAP in 'Python'. 
 License: MIT + file LICENSE
 URL: https://github.com/liuyanguu/SHAPforxgboost
 BugReports: https://github.com/liuyanguu/SHAPforxgboost/issues
@@ -42,4 +41,4 @@ Suggests:
     parallel,
     lightgbm (>= 2.1)
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.3.2

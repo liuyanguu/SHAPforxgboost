@@ -13,66 +13,66 @@ shap.prep(
 )
 }
 \arguments{
-\item{xgb_model}{an XGBoost (or LightGBM) model object, will derive the SHAP values from it}
+\item{xgb_model}{an XGBoost or LightGBM model object (will derive SHAP values from it)}
 
-\item{shap_contrib}{optional to directly supply a SHAP values dataset. If
-supplied, it will overwrite the \code{xgb_model} if \code{xgb_model} is also supplied}
+\item{shap_contrib}{optional: a matrix of SHAP values (without baseline column).
+If supplied, will use these values instead of computing from \code{xgb_model}}
 
-\item{X_train}{the dataset of predictors used to calculate SHAP values, it
-provides feature values to the plot, must be supplied}
+\item{X_train}{the predictor matrix used to calculate SHAP values (required)}
 
-\item{top_n}{to choose top_n variables ranked by mean|SHAP| if needed}
+\item{top_n}{number of top features to include, ranked by mean|SHAP| (default: all)}
 
-\item{var_cat}{if supplied, will provide long format data, grouped by this
-categorical variable}
+\item{var_cat}{optional: name of a categorical variable for grouped/faceted plots}
 }
 \value{
 a long-format data.table, named as \code{shap_long}
 }
 \description{
-Produce a dataset of 6 columns: ID of each observation, variable name, SHAP
-value, variable values (feature value), deviation of the feature value for
-each observation (for coloring the point), and the mean SHAP values for each
-variable. You can view this example dataset included in the package:
-\code{\link{shap_long_iris}}
+Produces a data.table with 6 columns: ID (observation identifier), variable
+(feature name), value (SHAP value), rfvalue (raw feature value), stdfvalue
+(standardized feature value for coloring), and mean_value (mean absolute SHAP
+value per feature). See \code{\link{shap_long_iris}} for an example.
 }
 \details{
-The ID variable is added for each observation in the \code{shap_contrib} dataset
-for better tracking, it is created as \code{1:nrow(shap_contrib)} before melting
-\code{shap_contrib} into long format.
+The ID variable (\code{1:nrow(shap_contrib)}) is added to track each
+observation before converting to long format.
 }
 \examples{
-data("iris")
-X1 = as.matrix(iris[,-5])
-mod1 = xgboost::xgboost(
-  data = X1, label = iris$Species, gamma = 0, eta = 1,
-  lambda = 0, nrounds = 1, verbose = FALSE, nthread = 1)
+# Example: Basic workflow for SHAP summary plot
+# Note: For xgboost 3.x, use xgb.DMatrix + xgb.train, and convert factor labels to numeric
 
-# shap.values(model, X_dataset) returns the SHAP
-# data matrix and ranked features by mean|SHAP|
+data("iris")
+X1 = as.matrix(iris[,1:4])
+y1 = as.numeric(iris[[5]]) - 1  # Convert factor to numeric
+dtrain = xgboost::xgb.DMatrix(data = X1, label = y1)
+params = list(learning_rate = 1, min_split_loss = 0, reg_lambda = 0,
+              objective = 'reg:squarederror', nthread = 1)
+mod1 = xgboost::xgb.train(params = params, data = dtrain,
+                          nrounds = 1, verbose = 0)
+
+# Get SHAP values and feature importance
 shap_values <- shap.values(xgb_model = mod1, X_train = X1)
-shap_values$mean_shap_score
+shap_values$mean_shap_score  # Ranked features by mean|SHAP|
 shap_values_iris <- shap_values$shap_score
 
-# shap.prep() returns the long-format SHAP data from either model or
+# Prepare long-format data for plotting
 shap_long_iris <- shap.prep(xgb_model = mod1, X_train = X1)
-# is the same as: using given shap_contrib
+# Alternative: use pre-computed SHAP values
 shap_long_iris <- shap.prep(shap_contrib = shap_values_iris, X_train = X1)
 
-# **SHAP summary plot**
+# SHAP summary plot
 shap.plot.summary(shap_long_iris, scientific = TRUE)
 shap.plot.summary(shap_long_iris, x_bound  = 1.5, dilute = 10)
 
-# Alternatives options to make the same plot:
-# option 1: from the xgboost model
-shap.plot.summary.wrap1(mod1, X = as.matrix(iris[,-5]), top_n = 3)
+# Alternative options:
+# Option 1: directly from xgboost model
+shap.plot.summary.wrap1(mod1, X = as.matrix(iris[,1:4]), top_n = 3)
 
-# option 2: supply a self-made SHAP values dataset
-# (e.g. sometimes as output from cross-validation)
+# Option 2: from pre-computed SHAP values (useful for cross-validation)
 shap.plot.summary.wrap2(shap_score = shap_values_iris, X = X1, top_n = 3)
-####
-#
-# use `var_cat` to add a categorical variable, output the long-format data differently:
+# Example: Using var_cat to group by a categorical variable
+# The var_cat argument creates grouped long-format data for faceted plots
+
 library("data.table")
 data("iris")
 set.seed(123)
@@ -81,12 +81,15 @@ iris[sample(1:nrow(iris), nrow(iris)/2), "Group"] <- 1
 
 data.table::setDT(iris)
 X_train = as.matrix(iris[,c(colnames(iris)[1:4], "Group"), with = FALSE])
-mod1 = xgboost::xgboost(
-  data = X_train, label = iris$Species, gamma = 0, eta = 1,
-  lambda = 0, nrounds = 1, verbose = FALSE, nthread = 1)
+y_train = as.numeric(iris$Species) - 1  # Convert factor to numeric
+dtrain = xgboost::xgb.DMatrix(data = X_train, label = y_train)
+params = list(learning_rate = 1, min_split_loss = 0, reg_lambda = 0,
+              objective = 'reg:squarederror', nthread = 1)
+mod1 = xgboost::xgb.train(params = params, data = dtrain,
+                          nrounds = 1, verbose = 0)
 
+# Use var_cat to create faceted plots by Group
 shap_long2 <- shap.prep(xgb_model = mod1, X_train = X_train, var_cat = "Group")
-# **SHAP summary plot**
 shap.plot.summary(shap_long2, scientific = TRUE) +
   ggplot2::facet_wrap(~ Group)
 }

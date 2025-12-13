@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.plot.force_plot}
 \alias{shap.plot.force_plot}
-\title{Make the SHAP force plot}
+\title{Create SHAP force plot (stacked bar chart)}
 \usage{
 shap.plot.force_plot(
   shapobs,
@@ -31,17 +31,19 @@ the data.}
 \item{zoom_in_group}{optional to zoom in certain cluster.}
 }
 \description{
-The force/stack plot, optional to zoom in at certain x-axis location or zoom
-in a specific cluster of observations.
+Displays feature contributions as stacked bars for individual predictions.
+Each bar shows how features push the prediction above or below the baseline.
+Supports optional zoom-in for detailed inspection of observation clusters.
 }
 \examples{
+# Example: SHAP force plots (stacked bar charts)
+# Shows contribution of each feature to individual predictions
 
-# **SHAP force plot**
 plot_data <- shap.prep.stack.data(shap_contrib = shap_values_iris,
                                   n_groups = 4)
 shap.plot.force_plot(plot_data)
-shap.plot.force_plot(plot_data,  zoom_in_group = 2)
+shap.plot.force_plot(plot_data, zoom_in_group = 2)
 
-# plot all the clusters:
+# Plot all clusters separately
 shap.plot.force_plot_bygroup(plot_data)
 }

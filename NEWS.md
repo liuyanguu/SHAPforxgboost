@@ -1,9 +1,10 @@
-# SHAPforxgboost 0.1.2
+# SHAPforxgboost 0.2.0
+* 12/12/2025 Update to support xgboost 1.7.0 and above.
 
+# SHAPforxgboost 0.1.2
 * 17/05/2022 Added option `kind = "bar"` to `shap.plot.summary()`.
 
 # SHAPforxgboost 0.1.1
-
 * 22/03/2021 Moved `lightgbm` from imported to suggested package.
 
 * 05/02/2021 Added `color_feature = "auto"` in `shap.plot.dependence` in order to 

@@ -1,0 +1,5 @@
+# _pkgdown.yml
+
+url: https://liuyanguu.github.io/SHAPforxgboost/
+template:
+  bootstrap: 5

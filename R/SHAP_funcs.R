@@ -15,8 +15,10 @@
 #' model: 1. a dataset (data.table) of SHAP scores. It has the same dimension as
 #' the X_train); 2. the ranked variable vector by each variable's mean absolute
 #' SHAP value, it ranks the predictors by their importance in the model; and 3.
-#' The BIAS, which is like an intercept. The rowsum of SHAP values including the
-#' BIAS would equal to the predicted value (y_hat) generally speaking.
+#' The baseline value (intercept), which is stored in the last column of the
+#' SHAP contribution matrix (named "BIAS" in older xgboost versions or
+#' "(Intercept)" in newer versions). The rowsum of SHAP values including the
+#' baseline would equal to the predicted value (y_hat) generally speaking.
 #'
 #' @param xgb_model an XGBoost or LightGBM model object
 #' @param X_train the data supplied to the `predict` function to get the
@@ -30,36 +32,40 @@
 #'
 #' @export shap.values
 #'
-#' @return a list of three elements: the SHAP values as data.table, ranked
-#'   mean|SHAP|, and BIAS
+#' @return a list of three elements:
+#'   \item{shap_score}{A data.table of SHAP values (without the baseline column)}
+#'   \item{mean_shap_score}{Ranked features by mean absolute SHAP value}
+#'   \item{BIAS0}{The baseline/intercept value (from the '(Intercept)' column in xgboost 3.x)}
 #'
 #' @example R/example/example_fit_summary.R
 #'
 shap.values <- function(xgb_model,
                         X_train){
 
-  if(class(xgb_model)[1] == "lgb.Booster" & packageVersion("lightgbm") >= '4.0'){
-    shap_contrib <- predict(xgb_model,
-                          (X_train),
-                          type = 'contrib')
-  }else{
-    shap_contrib <- predict(xgb_model,
-                          (X_train),
-                          predcontrib = TRUE)
+  if (inherits(xgb_model, "lgb.Booster")) {
+    shap_contrib <- predict(xgb_model, X_train, type = "contrib")
+  } else if (inherits(xgb_model, "xgb.Booster")) {
+    shap_contrib <- predict(xgb_model, as.matrix(X_train), predcontrib  = TRUE)
+  } else if ("finalModel" %in% names(xgb_model) && inherits(xgb_model$finalModel, "xgb.Booster")) {
+    # caret model
+    shap_contrib <- predict(xgb_model$finalModel, as.matrix(X_train), predcontrib = TRUE)
+  } else {
+    stop("Model class not supported for SHAP contributions.")
   }
 
-  # Add colnames if not already there (required for LightGBM)
+  # Add colnames if not already there (required for LightGBM or older xgboost)
   if (is.null(colnames(shap_contrib))) {
-    colnames(shap_contrib) <- c(colnames(X_train), "BIAS")
+    colnames(shap_contrib) <- c(colnames(X_train), "(Intercept)")
   }
 
   shap_contrib <- as.data.table(shap_contrib)
 
   # For both XGBoost and LightGBM, the baseline value is kept in the last column
+  last_col_name <- colnames(shap_contrib)[ncol(shap_contrib)]
   BIAS0 <- shap_contrib[, ncol(shap_contrib), with = FALSE][1]
 
-  # Remove baseline and ensure the shap matrix has column names
-  shap_contrib[, `:=`(BIAS, NULL)]
+  # Remove baseline column by its actual name
+  shap_contrib[, (last_col_name) := NULL]
 
   # Make SHAP score in decreasing order
   imp <- colMeans(abs(shap_contrib))
@@ -74,24 +80,20 @@ shap.values <- function(xgb_model,
 
 #' Prepare SHAP values into long format for plotting
 #'
-#' Produce a dataset of 6 columns: ID of each observation, variable name, SHAP
-#' value, variable values (feature value), deviation of the feature value for
-#' each observation (for coloring the point), and the mean SHAP values for each
-#' variable. You can view this example dataset included in the package:
-#' \code{\link{shap_long_iris}}
+#' Produces a data.table with 6 columns: ID (observation identifier), variable
+#' (feature name), value (SHAP value), rfvalue (raw feature value), stdfvalue
+#' (standardized feature value for coloring), and mean_value (mean absolute SHAP
+#' value per feature). See \code{\link{shap_long_iris}} for an example.
 #'
-#' The ID variable is added for each observation in the `shap_contrib` dataset
-#' for better tracking, it is created as `1:nrow(shap_contrib)` before melting
-#' `shap_contrib` into long format.
+#' The ID variable (\code{1:nrow(shap_contrib)}) is added to track each
+#' observation before converting to long format.
 #'
-#' @param xgb_model an XGBoost (or LightGBM) model object, will derive the SHAP values from it
-#' @param shap_contrib optional to directly supply a SHAP values dataset. If
-#'   supplied, it will overwrite the `xgb_model` if `xgb_model` is also supplied
-#' @param X_train the dataset of predictors used to calculate SHAP values, it
-#'   provides feature values to the plot, must be supplied
-#' @param top_n to choose top_n variables ranked by mean|SHAP| if needed
-#' @param var_cat if supplied, will provide long format data, grouped by this
-#'   categorical variable
+#' @param xgb_model an XGBoost or LightGBM model object (will derive SHAP values from it)
+#' @param shap_contrib optional: a matrix of SHAP values (without baseline column).
+#'   If supplied, will use these values instead of computing from \code{xgb_model}
+#' @param X_train the predictor matrix used to calculate SHAP values (required)
+#' @param top_n number of top features to include, ranked by mean|SHAP| (default: all)
+#' @param var_cat optional: name of a categorical variable for grouped/faceted plots
 #'
 #' @import data.table
 #' @export shap.prep
@@ -109,7 +111,7 @@ shap.prep <- function(xgb_model = NULL,
                       ){
   if (is.null(xgb_model) & is.null(shap_contrib)) stop("Please provide either `xgb_model` or `shap_contrib`")
   if (!is.null(shap_contrib)){
-    if(paste0(dim(shap_contrib), collapse = " ") != paste0(dim(X_train), collapse = " ")) stop("supply correct shap_contrib, remove BIAS column.\n")
+    if(paste0(dim(shap_contrib), collapse = " ") != paste0(dim(X_train), collapse = " ")) stop("supply correct shap_contrib, remove the baseline column (BIAS or (Intercept)).\n")
   }
 
   # prep long-data
@@ -172,8 +174,10 @@ shap.prep <- function(xgb_model = NULL,
 
 #' Prepare the interaction SHAP values from predict.xgb.Booster
 #'
-#' `shap.prep.interaction` just runs \code{shap_int <- predict(xgb_mod, (X_train), predinteraction = TRUE)}, thus it may not be necessary.
-#' Read more about the xgboost predict function at `xgboost::predict.xgb.Booster`. Note that this functionality is unavailable for LightGBM models.
+#' This is a convenience wrapper for
+#' \code{predict(xgb_model, X_train, predinteraction = TRUE)}.
+#' See \code{xgboost::predict.xgb.Booster} for details.
+#' Note: This functionality is only available for XGBoost models, not LightGBM.
 #'
 #' @param xgb_model a xgboost model object
 #' @param X_train the dataset of predictors used for the xgboost model
@@ -191,19 +195,15 @@ shap.prep.interaction <- function(xgb_model, X_train){
 
 # SHAP summary plot ----------------------------------------------------------
 
-#' SHAP summary plot core function using the long format SHAP values
+#' SHAP summary plot using long-format SHAP values
 #'
-#' The summary plot (a sina plot) uses a long format data of SHAP values. The
-#' SHAP values could be obtained from either a XGBoost/LightGBM model or a SHAP value
-#' matrix using \code{\link{shap.values}}. So this summary plot function
-#' normally follows the long format dataset obtained using `shap.values`. If you
-#' want to start with a model and data_X, use
-#' \code{\link{shap.plot.summary.wrap1}}. If you want to use a self-derived
-#' dataset of SHAP values, use \code{\link{shap.plot.summary.wrap2}}. If a list
-#' named **new_labels** is provided in the global environment (`new_labels` is
-#' pre-loaded by the package as \code{NULL}), the plots will use that list to
-#' label the variables, here is an example of such a list (the default labels):
-#' \code{\link{labels_within_package}}.
+#' Creates a beeswarm/sina plot or bar chart showing feature importance.
+#' The sina plot shows SHAP value distributions for each feature, colored by
+#' feature values. For a simpler workflow, use \code{\link{shap.plot.summary.wrap1}}
+#' (directly from model) or \code{\link{shap.plot.summary.wrap2}} (from SHAP matrix).
+#'
+#' To customize feature labels, define \code{new_labels} in the global environment
+#' as a named list (see \code{\link{labels_within_package}} for examples).
 #'
 #' @param data_long a long format data of SHAP values from
 #'   \code{\link{shap.prep}}
@@ -443,20 +443,16 @@ plot.label <- function(plot1, show_feature){
 }
 
 
-#' SHAP dependence plot and interaction plot, optional to be colored by a
-#' selected feature
+#' SHAP dependence and interaction plots
 #'
-#' This function by default makes a simple dependence plot with feature values
-#' on the x-axis and SHAP values on the y-axis, optional to color by another
-#' feature. It is optional to use a different variable for SHAP values on the
-#' y-axis, and color the points by the feature value of a designated variable.
-#' Not colored if \code{color_feature} is not supplied. If \code{data_int} (the
-#' SHAP interaction values dataset) is supplied, it will plot the interaction
-#' effect between \code{y} and \code{x} on the y-axis. Dependence plot is easy
-#' to make if you have the SHAP values dataset from \code{predict.xgb.Booster}
-#' or \code{predict.lgb.Booster}.
-#' It is not necessary to start with the long format data, but since that is
-#' used for the summary plot, we just continue to use it here.
+#' Creates scatter plots showing the relationship between feature values (x-axis)
+#' and SHAP values (y-axis). Can display:
+#' \itemize{
+#'   \item Simple dependence: how feature values affect predictions
+#'   \item Colored by another feature: to explore interactions
+#'   \item Interaction effects: when \code{data_int} is provided, shows
+#'         pairwise SHAP interaction values
+#' }
 #'
 #' @param data_long the long format SHAP values from \code{\link{shap.prep}}
 #'
@@ -575,7 +571,7 @@ shap.plot.dependence <- function(
   # a loess smoothing line:
   if (smooth) {
     plot1 <- plot1 +
-      geom_smooth(method = "loess", color = "red", size = 0.4, se = FALSE)
+      geom_smooth(method = "loess", color = "red", linewidth = 0.4, se = FALSE)
   }
   plot1 <- plot.label(plot1, show_feature = x)
 
@@ -597,10 +593,16 @@ shap.plot.dependence <- function(
 
 # Stack plot --------------------------------------------------------------
 
-#' Prepare data for SHAP force plot (stack plot)
+#' Prepare data for SHAP force plot (stacked bar chart)
 #'
-#' Make force plot for \code{top_n} features, optional to randomly plot certain
-#' portion of the data in case the dataset is large.
+#' Transforms SHAP values into a format suitable for force plots, which show
+#' how features contribute to individual predictions. The function:
+#' \itemize{
+#'   \item Ranks features by importance
+#'   \item Optionally combines less important features into 'rest_variables'
+#'   \item Clusters observations for better visualization
+#'   \item Assigns group labels for faceted plots
+#' }
 #'
 #' @param shap_contrib shap_contrib is the SHAP value data returned from
 #'   predict, here an ID variable is added for each observation in
@@ -664,10 +666,11 @@ shap.prep.stack.data <- function(
 }
 
 
-#' Make the SHAP force plot
+#' Create SHAP force plot (stacked bar chart)
 #'
-#' The force/stack plot, optional to zoom in at certain x-axis location or zoom
-#' in a specific cluster of observations.
+#' Displays feature contributions as stacked bars for individual predictions.
+#' Each bar shows how features push the prediction above or below the baseline.
+#' Supports optional zoom-in for detailed inspection of observation clusters.
 #'
 #' @param shapobs The dataset obtained by \code{shap.prep.stack.data}.
 #' @param id the id variable.
@@ -697,7 +700,7 @@ shap.plot.force_plot <- function(
   shapobs_long <- melt.data.table(shapobs,
        measure.vars = colnames(shapobs)[!colnames(shapobs)%in%c(id, "group", "ID")])
   # display.brewer.pal("Paired")
-  p <- ggplot(shapobs_long, aes_string(x = id, y = "value" , fill = "variable")) +
+  p <- ggplot(shapobs_long, aes(x = .data[[id]], y = .data[["value"]], fill = .data[["variable"]])) +
     geom_col(width =1, alpha = 0.9) +
     # geom_area() +
     labs(fill = 'Feature', x = 'Observation',
@@ -746,10 +749,10 @@ shap.plot.force_plot <- function(
 }
 
 
-#' Make the stack plot, optional to zoom in at certain x or certain cluster
+#' Create faceted SHAP force plots by cluster
 #'
-#' A collective display of zoom-in plots: one plot for every group of the
-#' clustered observations.
+#' Creates a faceted display with one force plot per observation cluster,
+#' allowing comparison of prediction patterns across different groups.
 #'
 #' @param shapobs The dataset obtained by \code{shap.prep.stack.data}.
 #' @param id the id variable.
@@ -769,7 +772,7 @@ shap.plot.force_plot_bygroup <- function(
   # optional: location to zoom in certain part of the plot
   shapobs_long <- melt.data.table(shapobs,
     measure.vars = colnames(shapobs)[!colnames(shapobs)%in%c(id, "group", "ID")])
-  p <- ggplot(shapobs_long, aes_string(x = id, y = "value" , fill = "variable")) +
+  p <- ggplot(shapobs_long, aes(x = .data[[id]], y = .data[["value"]], fill = .data[["variable"]])) +
     geom_col(width =1, alpha = 0.9) +
     facet_wrap(~ group, scales = "free", ncol = 2) +
     # geom_area() +
@@ -792,12 +795,14 @@ shap.plot.force_plot_bygroup <- function(
 }
 
 # miscellaneous
+#' @importFrom utils globalVariables
 if(getRversion() >= "2.15.1")  {
   utils::globalVariables(c(".", "rfvalue", "value","variable","stdfvalue",
                            "x_feature", "mean_value",
                            "int_value", "color_value",
                            "new_labels","labels_within_package",
                            "..var_cat",
-                           "group", "rest_variables", "clusterid", "ID", "sorted_id", "BIAS",
+                           "group", "rest_variables", "clusterid", "ID", "sorted_id",
+                           "BIAS", "(Intercept)",
                            "cond_mean", "mean_abs_shap"))
 }

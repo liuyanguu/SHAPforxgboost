@@ -8,3 +8,7 @@ docs
 vignettes/basic_workflow_using_lightgbm.Rmd
 ^doc$
 ^Meta$
+^_pkgdown\.yml$
+^pkgdown$
+^docs$
+^doc$

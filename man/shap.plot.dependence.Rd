@@ -2,8 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.plot.dependence}
 \alias{shap.plot.dependence}
-\title{SHAP dependence plot and interaction plot, optional to be colored by a
-selected feature}
+\title{SHAP dependence and interaction plots}
 \usage{
 shap.plot.dependence(
   data_long,
@@ -70,59 +69,58 @@ be default a \code{ggplot2} object, based on which you could add more geom
 layers.
 }
 \description{
-This function by default makes a simple dependence plot with feature values
-on the x-axis and SHAP values on the y-axis, optional to color by another
-feature. It is optional to use a different variable for SHAP values on the
-y-axis, and color the points by the feature value of a designated variable.
-Not colored if \code{color_feature} is not supplied. If \code{data_int} (the
-SHAP interaction values dataset) is supplied, it will plot the interaction
-effect between \code{y} and \code{x} on the y-axis. Dependence plot is easy
-to make if you have the SHAP values dataset from \code{predict.xgb.Booster}
-or \code{predict.lgb.Booster}.
-It is not necessary to start with the long format data, but since that is
-used for the summary plot, we just continue to use it here.
+Creates scatter plots showing the relationship between feature values (x-axis)
+and SHAP values (y-axis). Can display:
+\itemize{
+\item Simple dependence: how feature values affect predictions
+\item Colored by another feature: to explore interactions
+\item Interaction effects: when \code{data_int} is provided, shows
+pairwise SHAP interaction values
+}
 }
 \examples{
-# **SHAP dependence plot**
+# Example: SHAP dependence plots
 
-# 1. simple dependence plot with SHAP values of x on the y axis
+# 1. Simple dependence plot: SHAP values vs feature values
 shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length",
                      add_hist = TRUE, add_stat_cor = TRUE)
 
-# 2. can choose a different SHAP values on the y axis
+# 2. Show different SHAP values on y-axis
 shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length",
                            y = "Petal.Width")
 
-# 3. color by another feature's feature values
+# 3. Color by another feature's values
 shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length",
                            color_feature = "Petal.Width")
 
-# 4. choose 3 different variables for x, y, and color
+# 4. Customize x, y, and color features
 shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length",
                            y = "Petal.Width", color_feature = "Petal.Width")
 
-# Optional to add hist or remove smooth line, optional to plot fewer data (make plot quicker)
+# 5. Additional options: histogram, smooth line, data dilution
 shap.plot.dependence(data_long = shap_long_iris, x="Petal.Length",
                      y = "Petal.Width", color_feature = "Petal.Width",
                      add_hist = TRUE, smooth = FALSE, dilute = 3)
 
-# to make a list of plot
+# Create multiple plots at once
 plot_list <- lapply(names(iris)[2:3], shap.plot.dependence, data_long = shap_long_iris)
 
-# **SHAP interaction effect plot **
+# SHAP interaction effect plot
+# First, prepare the model and interaction data
+X_iris = as.matrix(iris[,1:4])
+y_iris = as.numeric(iris[[5]]) - 1
+dtrain = xgboost::xgb.DMatrix(data = X_iris, label = y_iris)
+params = list(learning_rate = 1, min_split_loss = 0, reg_lambda = 0,
+              objective = 'reg:squarederror', nthread = 1)
+mod1 = xgboost::xgb.train(params = params, data = dtrain,
+                          nrounds = 1, verbose = 0)
 
-# To get the interaction SHAP dataset for plotting, need to get `shap_int` first:
-mod1 = xgboost::xgboost(
-  data = as.matrix(iris[,-5]), label = iris$Species,
-  gamma = 0, eta = 1, lambda = 0,nrounds = 1, verbose = FALSE, nthread = 1)
-# Use either:
-data_int <- shap.prep.interaction(xgb_mod = mod1,
-                                  X_train = as.matrix(iris[,-5]))
-# or:
-shap_int <- predict(mod1, as.matrix(iris[,-5]),
-                    predinteraction = TRUE)
+# Get interaction SHAP values (two methods):
+data_int <- shap.prep.interaction(xgb_model = mod1, X_train = X_iris)
+# Or directly:
+shap_int <- predict(mod1, X_iris, predinteraction = TRUE)
 
-# if data_int is supplied, y axis will plot the interaction values of y (vs. x)
+# Plot interaction effects (y-axis shows interaction values)
 shap.plot.dependence(data_long = shap_long_iris,
                            data_int = shap_int_iris,
                            x="Petal.Length",

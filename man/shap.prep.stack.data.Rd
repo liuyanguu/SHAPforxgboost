@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.prep.stack.data}
 \alias{shap.prep.stack.data}
-\title{Prepare data for SHAP force plot (stack plot)}
+\title{Prepare data for SHAP force plot (stacked bar chart)}
 \usage{
 shap.prep.stack.data(
   shap_contrib,
@@ -35,17 +35,24 @@ details}
 a dataset for stack plot
 }
 \description{
-Make force plot for \code{top_n} features, optional to randomly plot certain
-portion of the data in case the dataset is large.
+Transforms SHAP values into a format suitable for force plots, which show
+how features contribute to individual predictions. The function:
+\itemize{
+\item Ranks features by importance
+\item Optionally combines less important features into 'rest_variables'
+\item Clusters observations for better visualization
+\item Assigns group labels for faceted plots
+}
 }
 \examples{
+# Example: SHAP force plots (stacked bar charts)
+# Shows contribution of each feature to individual predictions
 
-# **SHAP force plot**
 plot_data <- shap.prep.stack.data(shap_contrib = shap_values_iris,
                                   n_groups = 4)
 shap.plot.force_plot(plot_data)
-shap.plot.force_plot(plot_data,  zoom_in_group = 2)
+shap.plot.force_plot(plot_data, zoom_in_group = 2)
 
-# plot all the clusters:
+# Plot all clusters separately
 shap.plot.force_plot_bygroup(plot_data)
 }

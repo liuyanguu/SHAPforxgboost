@@ -2,7 +2,7 @@
 % Please edit documentation in R/SHAP_funcs.R
 \name{shap.plot.force_plot_bygroup}
 \alias{shap.plot.force_plot_bygroup}
-\title{Make the stack plot, optional to zoom in at certain x or certain cluster}
+\title{Create faceted SHAP force plots by cluster}
 \usage{
 shap.plot.force_plot_bygroup(shapobs, id = "sorted_id", y_parent_limit = NULL)
 }
@@ -14,17 +14,18 @@ shap.plot.force_plot_bygroup(shapobs, id = "sorted_id", y_parent_limit = NULL)
 \item{y_parent_limit}{set y-axis limits.}
 }
 \description{
-A collective display of zoom-in plots: one plot for every group of the
-clustered observations.
+Creates a faceted display with one force plot per observation cluster,
+allowing comparison of prediction patterns across different groups.
 }
 \examples{
+# Example: SHAP force plots (stacked bar charts)
+# Shows contribution of each feature to individual predictions
 
-# **SHAP force plot**
 plot_data <- shap.prep.stack.data(shap_contrib = shap_values_iris,
                                   n_groups = 4)
 shap.plot.force_plot(plot_data)
-shap.plot.force_plot(plot_data,  zoom_in_group = 2)
+shap.plot.force_plot(plot_data, zoom_in_group = 2)
 
-# plot all the clusters:
+# Plot all clusters separately
 shap.plot.force_plot_bygroup(plot_data)
 }
